@@ -83,6 +83,8 @@ class ControlCenter:
             --window-icon=stock_search \
             --width=1000 --height=300 \
             --wrap --center --button=Close:1 --editable=false <<< "$output" ''']},
+        {"name": "External monitor", "icon": 'display-settings',
+         "cmd": ["rofi-monitor.py"]},
         *listAppImg()
     ]
 

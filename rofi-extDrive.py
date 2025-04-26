@@ -89,12 +89,12 @@ class BlockManager:
 
             self.blocks.append(Block(toAdd))
 
-    def _rofi(self, menu):
+    def _rofi(self, menu, maxWidth=50):
         echo = sp.Popen(["echo", "-en", '\n'.join(menu)], stdout=sp.PIPE, stderr=sp.PIPE)
         try:
             return sp.check_output(["rofi", "-dmenu", "-icon-theme", "rofi", "-theme", "overlays/center-dialog",
-                                    '-p', 'Drive manager'],
-                               stdin=echo.stdout).decode("utf-8").strip()
+                                    '-theme+window+width', f'{maxWidth+10}ch', '-p', 'Drive manager'],
+                               stdin=echo.stdout).decode().strip()
         except sp.CalledProcessError:
             exit(0)
 
@@ -112,13 +112,15 @@ class BlockManager:
 
     def rofiListBlock(self):
         menu = []
+        maxWidth=16
         for block in self.getMountedBlocks() + self.getUnmountedBlock():
             menu.append(block.rofiItem)
-        menu.append(f"{'-'*45}{I}zigzag")
+            if len(block.listname) > maxWidth: maxWidth = len(block.listname)
+        if len(menu) > 0: menu.append(f"{'-' * maxWidth}{I}zigzag")
         menu.append(f'{REFRESH_MMC}{I}loading-arrow')
         if self.countUnmounted(): menu.append(f"{MOUNT_ALL}{I}external-hard-drive")
         if self.countMounted(): menu.append(f"{EJECT_ALL}{I}eject-red")
-        return self._rofi(menu)
+        return self._rofi(menu, maxWidth)
 
     def findBlock(self, name):
         for block in self.blocks:
