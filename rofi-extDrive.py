@@ -8,6 +8,7 @@ I = "\\x00icon\\x1f"
 EJECT_ALL="Eject all"
 MOUNT_ALL="Mount all"
 REFRESH_MMC="Refresh MMC slot"
+NO_DRIVE="No external drive "
 
 def flash(title, msg):
     sp.Popen(["notify-send", "-t", "3000", "-ea", "Ext Disk Manager", title, msg])
@@ -112,11 +113,12 @@ class BlockManager:
 
     def rofiListBlock(self):
         menu = []
-        maxWidth=16
+        maxWidth=len(NO_DRIVE)
         for block in self.getMountedBlocks() + self.getUnmountedBlock():
             menu.append(block.rofiItem)
             if len(block.listname) > maxWidth: maxWidth = len(block.listname)
-        if len(menu) > 0: menu.append(f"{'-' * maxWidth}{I}zigzag")
+        if len(menu) == 0: menu.append(f"{NO_DRIVE}{I}shrug")
+        menu.append(f"{'-' * maxWidth}{I}zigzag")
         menu.append(f'{REFRESH_MMC}{I}loading-arrow')
         if self.countUnmounted(): menu.append(f"{MOUNT_ALL}{I}external-hard-drive")
         if self.countMounted(): menu.append(f"{EJECT_ALL}{I}eject-red")
