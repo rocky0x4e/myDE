@@ -10,9 +10,9 @@ col2 = []
 memKb = []
 col3 = []
 unit = {
-    "GB": 1024**2,
-    "MB": 1024,
-    "KB": 1,
+    "GB2": 1024**2,
+    "MB4": 1024,
+    "KB2": 1,
 }
 with open("/proc/meminfo", "r") as f:
     for i in range(6):
@@ -23,12 +23,15 @@ with open("/proc/meminfo", "r") as f:
         for k, v in unit.items():
             n = used / v
             if  n > 1 :
-                used = f"{n:.2f} {k}"
+                used = f"{n:.2f}{I}{k}"
+                break
+            elif n == 0:
+                used = f"{n}{I}null"
                 break
         usedPercent = f"{memKb[-1] * 100 / memKb[0]:.2f}".rstrip('0').rstrip(".").rjust(5)
         col1.append(f"{memType}{I}memory")
         col2.append(str(used))
-        col3.append(f"{usedPercent}%")
+        col3.append(f"{usedPercent}%{I}pie-chart")
 maxCharCol2 = max([len(x) for x in col2])
 col2 = [x.rjust(maxCharCol2) for x in col2]
 col1.append(f"{CC}{I}broom")
