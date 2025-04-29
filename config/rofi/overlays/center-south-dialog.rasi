@@ -1,0 +1,19 @@
+@theme "config"
+
+window {
+    width: 30%;
+    height: "fit";
+    location: south;
+    anchor: south;
+    border-radius: 10;
+}
+
+listview {
+    scrollbar: false;
+    padding: 0;
+}
+
+element-text {
+	vertical-align: 0.5;
+	horizontal-align: 0;
+}

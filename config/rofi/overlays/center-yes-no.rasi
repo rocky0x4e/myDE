@@ -1,0 +1,30 @@
+@theme "config"
+
+window {
+    width: 40ch;
+    height: "fit";
+    location: 0;
+    anchor: center;
+    border-radius: 10;
+}
+
+listview {
+    scrollbar: false;
+    padding: 0;
+    columns: 2;
+    lines: 1;
+}
+
+element-text {
+	vertical-align: 0.5;
+	horizontal-align: 0.5;
+}
+
+inputbar {
+    children: [prompt];
+}
+
+textbox-custom {
+  expand: false;
+  content: "My Message";
+}

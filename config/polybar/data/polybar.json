@@ -1,0 +1,22 @@
+{
+   "systemHealth": {
+      "enable": true,
+      "runWhileHidden": false,
+      "blockConf": {
+         "cpu": true,
+         "temp": false,
+         "mem": true
+      }
+   },
+   "coinMarket": {
+      "enable": false,
+      "runWhileHidden": true,
+      "notificationEnable": false,
+      "lastNotified": "2024-03-10T23:50:52.269Z",
+      "notificationCount": 14,
+      "fibonacci": 13,
+      "blockConf": {
+         "bnb": true
+      }
+   }
+}

@@ -1,0 +1,28 @@
+@theme "config"
+
+window {
+    border-radius:0;
+    width: 20em;
+    height: 100%;
+    location: northeast;
+    anchor: 0;
+}
+
+listview {
+    scrollbar: false;
+    columns: 1;
+    padding: 0;
+}
+
+element-text {
+	vertical-align: 0.5;
+	horizontal-align: 0;
+}
+
+@media ( enabled: env(CLICKED, false )) {
+    window {
+        height: 97%;
+        location: southeast;
+        anchor: southeast;
+    }
+}

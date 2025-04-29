@@ -1,0 +1,132 @@
+/**
+ * ROFI Color theme
+ * User: Rocky
+ * Copyright: Rocky
+ */
+
+* {
+
+    txtDefault:  #fff;
+    inputbarBg:  #554444aa;
+    inputbarTxt: #88cc22;
+    bgMain:      #1c1c1ccc;
+    errBg:       #cd5c5c;
+    txtUrgent:   #cc5533;
+    eleSelected: #1c1c1c;
+    selected:    #88cc22;
+    focused:     #87ceeb;
+    txtSelected: bold gold;
+    borderSelected:  0px 3px;
+
+    // Bold, Italic, Underline
+    highlight: bold #ffffff;
+    text-color:  @txtDefault;
+    background-color:  rgba(0,0,0,0);
+    font: "Noto Sans Mono 12";
+    border-radius:  8px;
+}
+window {
+    border-radius:  20px;
+    height:   100%;
+    width: 30em;
+    location: east;
+    anchor:   east;
+    border:  0px;
+    text-color: @txtDefault;
+    padding: 2 2 2 2;
+}
+mode-switcher {
+    border: 2px 0px 0px 0px;
+    background-color: @inputbarBg;
+    padding: 4px;
+}
+button selected {
+    border-color: @selected;
+    text-color: @selected;
+}
+inputbar {
+    background-color: @inputbarBg;
+    text-color: @inputbarTxt;
+    padding: 8px;
+    children:   [ icon-search, entry ];
+}
+icon-search {
+    expand:     false;
+    filename:   "search";
+    size: 48px;
+}
+icon-search, entry, element-icon, element-text {
+    vertical-align: 0.5;
+}
+entry {
+    font:   inherit;
+    padding: 0 8px;
+    placeholder         : "Search";
+    placeholder-color   : @inputbarTxt;
+    text-color: inherit;
+    blink: false;
+}
+mainbox {
+    expand: true;
+    background-color: @bgMain;
+    spacing: 1em;
+}
+listview {
+    padding: 0em 0.4em;
+    dynamic: false;
+    lines: 0;
+}
+element {
+    padding:            2px 2px;
+    spacing:            16px;
+    background-color:   transparent;
+}
+element-icon {
+    size:   1.5em;
+    padding: 0 5px;
+    border-radius: 0;
+}
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+}
+element-text selected {
+    text-transform: @txtSelected ;
+}
+element selected normal {
+    border: @borderSelected;
+    border-radius: 0px;
+    border-color: @selected;
+    text-color: @selected;
+}
+element normal active {
+    text-color: @focused;
+}
+element normal urgent {
+    text-color: @txtUrgent;
+}
+element alternate normal {
+}
+element alternate active {
+    text-color: @focused;
+}
+element alternate urgent {
+    text-color: @txtUrgent;
+}
+element selected active {
+    border: @borderSelected;
+    border-radius: 0px;
+    border-color: @focused;
+    text-color: @focused;
+}
+element selected urgent {
+    background-color: @txtUrgent;
+    text-color: @eleSelected;
+}
+error-message {
+    expand: true;
+    background-color: @errBg;
+    border-color: darkred;
+    border: 2px;
+    padding: 1em;
+}

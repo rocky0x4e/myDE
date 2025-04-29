@@ -1,0 +1,6 @@
+lab*
+log*
+*.log
+.vscode
+tmp
+*cache*

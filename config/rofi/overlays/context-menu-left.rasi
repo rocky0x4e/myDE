@@ -1,0 +1,18 @@
+@theme "config"
+
+window {
+    width: 20em;
+    height: "fit";
+    location: northwest;
+    anchor: northeast;
+    border-radius: 10;
+}
+
+listview {
+    padding: 0;
+}
+
+element-text {
+	vertical-align: 0.5;
+	horizontal-align: 0;
+}

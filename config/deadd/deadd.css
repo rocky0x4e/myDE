@@ -1,0 +1,163 @@
+/* ---------------- coloring -----------------  */
+
+.blurredBG,
+#main_window {
+    background: rgba(34, 43, 48, 0.85);
+}
+
+.body,
+.title,
+label,
+label.notification {
+    color: #000000;
+}
+
+label.critical.title {
+    color: #eeeff5;
+}
+
+.blurredBG.notification,
+.blurredBG.notification.normal,
+.notificationInCenter.normal,
+.notificationInCenter {
+    background: rgba(222, 255, 184, 0.85);
+}
+
+button {
+    background: rgba(0, 0, 0, 0);
+}
+
+.blurredBG.notification.critical,
+.notificationInCenter.critical,
+button.delete-all {
+    background: rgba(255, 113, 113, 0.85);
+}
+
+.blurredBG.notification.low,
+.notificationInCenter.low {
+    background: rgba(119, 255, 153, 0.85);
+}
+
+.noti-center.time,
+.noti-center.date {
+    color: rgb(222, 255, 184);
+}
+
+.appname,
+.time {
+    color: rgb(90, 85, 16);
+}
+
+button {
+    color: rgb(48, 5, 5);
+}
+
+button:hover {
+    color: rgba(147, 212, 207, 0.548);
+}
+
+.userbutton {
+    background: rgba(20, 0, 0, 0.15);
+}
+
+.userbuttonlabel {
+    color: #222;
+}
+
+.userbutton:hover {
+    background: rgba(20, 0, 0, 0.2);
+}
+
+.userbuttonlabel:hover {
+    color: #111;
+}
+
+button.buttonState1 {
+    background: rgba(0, 0, 0, 0.726);
+}
+
+.userbuttonlabel.buttonState1 {
+    color: #fff;
+}
+
+button.buttonState1:hover {
+    background: rgba(20, 0, 0, 0.4);
+}
+
+.userbuttonlabel.buttonState1:hover {
+    color: #111;
+}
+
+button.buttonState2 {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.userbuttonlabel.buttonState2 {
+    color: #111;
+}
+
+button.buttonState2:hover {
+    background: rgba(20, 0, 0, 0.3);
+}
+
+.userbuttonlabel.buttonState2:hover {
+    color: #000;
+}
+
+
+/*------------------------------------------------*/
+.noti-center.time {
+    font-size: 32px;
+}
+
+.noti-center.date {
+    font-size: 16px;
+}
+
+.notification.content {
+    margin-left: 15px;
+    margin-right: 10px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.body {
+    margin-left: 10px;
+}
+
+.appname,
+.time {
+    font-size: 12px;
+    margin-right: 15px;
+}
+
+.blurredBG.notification,
+.notificationInCenter {
+    border-radius: 10px;
+}
+
+button.delete-all {
+    margin-bottom: 10px;
+}
+
+button {
+    border-radius: 3px;
+    text-shadow: none;
+    margin-right: 5px;
+}
+
+
+button:hover {
+    border-radius: 3px;
+}
+
+.userbuttonlabel {
+    font-size: 12px;
+}
+
+image.deadd-noti-center.notification.image {
+    margin-left: 20px;
+}
