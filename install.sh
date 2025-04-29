@@ -1,7 +1,7 @@
 #!/bin/bash
 
 for f in config/*; do
-    if [[ $FORCE == "yes"]]; then
+    if [[ $FORCE == "yes" ]]; then
         unlink $HOME/.config/$(basename $f)
         rm -Rf $HOME/.config/$(basename $f)
     fi
@@ -13,3 +13,7 @@ for f in tools/*; do
     # unlink $HOME/.config/$(basename $f)
 done
 
+
+for f in icons/*; do
+    ln -fs "$(pwd)/$f" $HOME/.local/share/icons/
+done

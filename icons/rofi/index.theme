@@ -1,0 +1,15 @@
+[Icon Theme]
+Name=rofi
+Comment=My custom icon theme
+Inherits=hicolor
+Directories=512x512/apps,scalable/apps
+
+[512x512/apps]
+Size=512
+Context=Apps
+Type=Fixed
+
+[scalable/apps]
+Size=48
+Context=Apps
+Type=Scalable
