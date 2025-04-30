@@ -1,0 +1,9 @@
+[Unit]
+Description=Periodically check for xserver idle then act on that
+
+[Timer]
+OnCalendar=hourly
+Persistent=false
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,12 @@
+[Unit]
+Description = Check if the the system is idling then suspend
+
+[Service]
+Type = oneshot
+ExecStart = %h/myDe/services/scripts/idleHandler.sh
+StandardOutput = journal
+StandardError = journal
+SyslogIdentifier = idleHandler
+
+[Install]
+WantedBy = multi-user.target
