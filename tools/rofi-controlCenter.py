@@ -10,11 +10,14 @@ I = '\\x00icon\\x1f'
 W = ""
 SEP = f"--------------------------------{I}zigzag"
 H = Path.home()
-autolockStt = False
-for item in psutil.process_iter(['name']):
-    if item.info['name'] == "xautolock":
-        autolockStt = True
-        break
+
+
+def isProcRunning(procName):
+    autolockStt = False
+    for item in psutil.process_iter(['name']):
+        if item.info['name'] == procName:
+            return True
+    return False
 
 def listAppImg():
     appPath = Path.home() / "programs"
@@ -37,7 +40,7 @@ class ControlCenter:
         {
             True: {"name": "XAutolock: ON", "icon": "secure", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]},
             False:{"name": "XAutolock: OFF", "icon": "unprotected", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]}
-        }[autolockStt],
+        }[isProcRunning("xautolock")],
         {
             True:  {'name':"Auto sleep: ON", "icon":"auto-sleep-on", "cmd":["systemctl", "--user", "stop", "Idle.timer"]},
             False: {'name':"Auto sleep: OFF", "icon":"green-tea", "cmd":["systemctl", "--user", "start", "Idle.timer"]}
