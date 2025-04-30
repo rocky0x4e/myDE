@@ -9,28 +9,12 @@ PROMPT = "System Control"
 I = '\\x00icon\\x1f'
 W = ""
 SEP = f"--------------------------------{I}zigzag"
-
-SCREENLOCK = "xAutolock: OFF"
-SCREENLOCK_IC = "unprotected"
+H = Path.home()
+autolockStt = False
 for item in psutil.process_iter(['name']):
-    if item.info['name'] == "xautolock":
-        SCREENLOCK = "xAutolock: ON"
-        SCREENLOCK_IC = "secure"
+    if item.info['name'] == "xautolockStt":
+        autolockStt = True
         break
-
-AUTOSLEEP = "Auto sleep: ON";
-AUTOSLEEP_IC = "auto-sleep-on"
-AUTOSLEEP_TOGGLE = ["systemctl", "--user", "stop Idle.timer"]
-timerStt = sp.check_output(["systemctl", "--user", "status", "Idle.timer"]).decode().strip().splitlines()
-if "Active: active" in timerStt[3]:
-    AUTOSLEEP = "Auto sleep: OFF"
-    AUTOSLEEP_IC = "green-tea"
-    AUTOSLEEP_TOGGLE = ["systemctl", "--user", "start Idle.timer"]
-
-mitmMenu = "Stop MITM" if sp.run(["tmuxControl.sh", "check", "mitmweb"]).returncode == 0 else "Start MITM"
-appiumMenu = "Stop Appium" if sp.run(["tmuxControl.sh", "check", "appium"]).returncode == 0 else "Start Appium"
-uxplayMenu = "Stop UxPlay" if sp.run(["tmuxControl.sh", "check", "uxplay"]).returncode == 0 else "Start UxPlay"
-
 
 def listAppImg():
     appPath = Path.home() / "programs"
@@ -49,16 +33,22 @@ class ControlCenter:
         {"name": "Suspend", "icon": "system-suspend",
          "cmd": ["systemctl", "suspend"]},
         {"name": "Lock", "icon": "system-lock-screen",
-         "cmd": [str(Path.home() / ".config/i3/scripts/i3lock.sh"), "locker"]},
-        {"name": SCREENLOCK, "icon": SCREENLOCK_IC,
-         "cmd": ["/home/rocky/.config/i3/scripts/i3lock.sh", "toggle"]},
-        {"name": AUTOSLEEP, "icon": AUTOSLEEP_IC,
-         "cmd": AUTOSLEEP_TOGGLE},
-        {"name": "DNS SEC >>", "icon": "ethernet",
-         "cmd": ["rofi-dnssec.sh"]},
+         "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "locker"]},
+        {
+            True: {"name": "xautolockStt: ON", "icon": "secure", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]},
+            False:{"name": "xautolockStt: OFF", "icon": "unprotected", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]}
+        }[autolockStt],
+        {
+            True: {'name':"Auto sleep: ON", "icon":"auto-sleep-on", "cmd":["systemctl", "--user", "stop", "Idle.timer"]},
+            False: {'name':"Auto sleep: OFF", "icon":"green-tea", "cmd":["systemctl", "--user", "start", "Idle.timer"]}
+        }[sp.run(["systemctl", "--user", "is-active", "Idle.timer"]).returncode == 0],
+        {"name": "Cinnamon settings", "icon":"gnome-settings",
+         "cmd":['cinnamon-settings']},
+        {"name": "Theme settings", "icon":"cinnamon-preferences-color",
+         "cmd":['cinnamon-settings', 'themes']},
         {"name": SEP, 'icon': 'zig-zag'},
         {"name": "HF builds", "icon": "apk-64",
-         "cmd": ['rofi-apkInstaller.sh', str(Path.home() / 'HF-data/builds')]},
+         "cmd": ['rofi-apkInstaller.sh', f'{H}/HF-data/builds']},
         {"name": "Restmail", "icon": "email",
          "cmd": ["restmail.py"]},
         {"name": "Pixel 6a", "icon": "smartphone",
@@ -68,12 +58,18 @@ class ControlCenter:
         {"name": "AWS VPN", "icon": "VPN",
          "cmd": ["bash", "-c", r"""if ! i3-msg '[class="AWS VPN Client"]' focus; then
                         dex /usr/share/applications/awsvpnclient.desktop; fi """]},
-        {"name": mitmMenu, "icon": "hacker-activity",
-         "cmd": ["tmuxControl.sh", "toggle", "mitmweb"]},
-        {"name": appiumMenu, "icon": "appium",
-         "cmd": ["tmuxControl.sh", "toggle", "appium"]},
-        {"name": uxplayMenu, "icon": "airplay",
-         "cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
+        {
+            True: {"name": "Stop MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "toggle", "mitmweb"]},
+            False: {"name": "Start MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "toggle", "mitmweb"]}
+        }[sp.run(["tmuxControl.sh", "check", "mitmweb"]).returncode == 0],
+        {
+            True: {"name": "Stop Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "toggle", "appium"]},
+            False: {"name": "Start Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "toggle", "appium"]}
+        }[sp.run(["tmuxControl.sh", "check", "appium"]).returncode == 0],
+        {
+            True: {"name": "Stop UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
+            False: {"name": "Start UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]}
+        }[sp.run(["tmuxControl.sh", "check", "uxplay"]).returncode == 0],
         {"name": SEP, 'icon': 'zig-zag'},
         {"name": "Screen recorder", "icon": "recording",
          "cmd": ["dex", "/usr/share/applications/simplescreenrecorder.desktop"]},

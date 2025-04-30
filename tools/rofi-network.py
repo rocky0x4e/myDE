@@ -10,6 +10,7 @@ ICONS={
     }
 SHOW_ALL = "Show more"
 NET_MAN = "Open Network Manager"
+DNS_SEC = "Private DNS setting"
 TOGGLE = {True: "down", False: "up"}
 
 class NetworkMan:
@@ -43,14 +44,19 @@ class NetworkMan:
             if con['type'] != 'loopback' and con['type'] != 'bridge':
                 menu.append(f"{con['name']}{I}{ICONS[con['type']][con["dev"] != ""]}")
             menuAll.append(f"{con['name']}{I}{ICONS[con['type']][con["dev"] != ""]}")
+        menu.append(f"{DNS_SEC}{I}dns")
         menu.append(f"{NET_MAN}{I}manager")
         menu.append(f"{SHOW_ALL}{I}ethernet")
+        menuAll.append(f"{DNS_SEC}{I}dns")
         menuAll.append(f"{NET_MAN}{I}manager")
         select = self._rofi(menu)
         if select==SHOW_ALL:
             select = self._rofi(menuAll)
         if select == NET_MAN:
             sp.Popen(["cinnamon-settings", "network"])
+            exit(0)
+        if select == DNS_SEC:
+            sp.Popen(["rofi-dnssec.sh"])
             exit(0)
         return select
 
