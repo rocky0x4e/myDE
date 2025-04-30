@@ -1,19 +1,32 @@
 #!/bin/bash
 
-for f in config/*; do
-    if [[ $FORCE == "yes" ]]; then
-        unlink $HOME/.config/$(basename $f)
-        rm -Rf $HOME/.config/$(basename $f)
+function backup {
+    local f=$1
+    if [[ -L $f ]]; then
+        unlink "$f"
+    else
+        mv "$f" "${f}.bk" 2> /dev/null
     fi
-    ln -s "$(pwd)/$f" $HOME/.config/
+}
+
+echo "Installing configs..."
+for f in config/*; do
+    echo "    Installing $f"
+    backup $HOME/.config/$(basename $f)
+    ln -s "$(pwd)/$f" "$HOME/.config/"
 done
 
+echo "Installing tools..."
 for f in tools/*; do
-    ln -fs "$(pwd)/$f" $HOME/.local/bin
-    # unlink $HOME/.config/$(basename $f)
+    echo "    Installing $f"
+    backup $HOME/.local/bin/$(basename $f)
+    ln -s "$(pwd)/$f" $HOME/.local/bin
 done
 
 
+echo "Installing icons..."
 for f in icons/*; do
+    echo "    Installing $f"
+    backup $HOME/.local/share/icons/$(basename $f)
     ln -fs "$(pwd)/$f" $HOME/.local/share/icons/
 done
