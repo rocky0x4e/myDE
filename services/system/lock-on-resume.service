@@ -1,0 +1,15 @@
+[Unit]
+Description=Lock the screen after resume from suspend
+After=suspend.target
+Requires=user@1000.service
+PartOf=suspend.target
+
+[Service]
+Type=oneshot
+User=rocky
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/run/user/1000/.Xauthority
+ExecStart=/usr/bin/bash -c 'pgrep i3lock >/dev/null || i3lock -enfc 0E1621 -i /home/rocky/.config/i3/img/i3-lock.png'
+
+[Install]
+WantedBy=suspend.target
