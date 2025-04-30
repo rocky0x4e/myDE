@@ -4,11 +4,11 @@ SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 fileName=${0##*/}
 thisScript="$SCRIPTPATH/${fileName}"
 lockMinute=15 # minutes
-notificationSecond=15 # seconds
+warnSecond=30 # seconds
 lockImg=~/.config/i3/img/i3-lock.png
 lockColor=0E1621
-iconEnabled=~/programs/my-scripts/icons/secure.png
-iconDisabled=~/programs/my-scripts/icons/unprotected.png
+iconEnabled=~/.local/share/icons/rofi/512x512/apps/secure.png
+iconDisabled=~/.local/share/icons/rofi/512x512/apps/unprotected.png
 
 function flash {
     flashOff
@@ -50,14 +50,15 @@ function lockerFork {
 }
 
 function notifier {
-    flash --hint string:image-path:file:///$iconEnabled "Autolock" "Screen lock in 15s."
+    flash --hint string:image-path:file:///$iconEnabled "Autolock" "Screen lock in ${warnSecond}s."
+    curl -d "Screen lock in ${warnSecond} seconds" https://ntfy.sh/MSI-laptop-alerts
     paplay ~/Music/sound/ding-36029.mp3
 }
 
 function launcher {
     xautolock -exit
     sleep 1
-    /usr/bin/xautolock -time $lockMinute -notify $notificationSecond -notifier "$thisScript notifier" -locker "$thisScript locker" &
+    /usr/bin/xautolock -time $lockMinute -notify $warnSecond -notifier "$thisScript notifier" -locker "$thisScript locker" &
 }
 
 function toggle {
