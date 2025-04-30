@@ -12,7 +12,7 @@ SEP = f"--------------------------------{I}zigzag"
 H = Path.home()
 autolockStt = False
 for item in psutil.process_iter(['name']):
-    if item.info['name'] == "xautolockStt":
+    if item.info['name'] == "xautolock":
         autolockStt = True
         break
 
@@ -35,11 +35,11 @@ class ControlCenter:
         {"name": "Lock", "icon": "system-lock-screen",
          "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "locker"]},
         {
-            True: {"name": "xautolockStt: ON", "icon": "secure", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]},
-            False:{"name": "xautolockStt: OFF", "icon": "unprotected", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]}
+            True: {"name": "XAutolock: ON", "icon": "secure", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]},
+            False:{"name": "XAutolock: OFF", "icon": "unprotected", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]}
         }[autolockStt],
         {
-            True: {'name':"Auto sleep: ON", "icon":"auto-sleep-on", "cmd":["systemctl", "--user", "stop", "Idle.timer"]},
+            True:  {'name':"Auto sleep: ON", "icon":"auto-sleep-on", "cmd":["systemctl", "--user", "stop", "Idle.timer"]},
             False: {'name':"Auto sleep: OFF", "icon":"green-tea", "cmd":["systemctl", "--user", "start", "Idle.timer"]}
         }[sp.run(["systemctl", "--user", "is-active", "Idle.timer"]).returncode == 0],
         {"name": "Cinnamon settings", "icon":"gnome-settings",
@@ -59,15 +59,15 @@ class ControlCenter:
          "cmd": ["bash", "-c", r"""if ! i3-msg '[class="AWS VPN Client"]' focus; then
                         dex /usr/share/applications/awsvpnclient.desktop; fi """]},
         {
-            True: {"name": "Stop MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "toggle", "mitmweb"]},
+            True:  {"name": "Stop MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "toggle", "mitmweb"]},
             False: {"name": "Start MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "toggle", "mitmweb"]}
         }[sp.run(["tmuxControl.sh", "check", "mitmweb"]).returncode == 0],
         {
-            True: {"name": "Stop Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "toggle", "appium"]},
+            True:  {"name": "Stop Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "toggle", "appium"]},
             False: {"name": "Start Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "toggle", "appium"]}
         }[sp.run(["tmuxControl.sh", "check", "appium"]).returncode == 0],
         {
-            True: {"name": "Stop UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
+            True:  {"name": "Stop UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
             False: {"name": "Start UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]}
         }[sp.run(["tmuxControl.sh", "check", "uxplay"]).returncode == 0],
         {"name": SEP, 'icon': 'zig-zag'},
