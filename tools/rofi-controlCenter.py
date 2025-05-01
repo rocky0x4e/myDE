@@ -24,6 +24,10 @@ def listAppImg():
     return [{"name": item.name, "cmd": [str(item.absolute())], "icon": "app"}
             for item in appPath.iterdir() if item.name.endswith('.AppImage')]
 
+def listAvds():
+    avds = sp.check_output(["emulator", "-list-avds",]).decode().strip().splitlines()
+    return [{"name": avd, "icon": "smartphone", 
+             "cmd": ["emulator", f"@{avd}", "-feature", "-Vulkan", "-id", avd, "-restart-when-stalled"]} for avd in avds]
 
 class ControlCenter:
     CONTROLERS = [
@@ -54,24 +58,21 @@ class ControlCenter:
          "cmd": ['rofi-apkInstaller.sh', f'{H}/HF-data/builds']},
         {"name": "Restmail", "icon": "email",
          "cmd": ["restmail.py"]},
-        {"name": "Pixel 6a", "icon": "smartphone",
-         "cmd": ["emulator", "@Pixel_6a_API_33", "-feature", "-Vulkan", "-restart-when-stalled"]},
-        {"name": "Pixel 7pro", "icon": "smartphone",
-         "cmd": ["emulator", "@Pixel_7_Pro_API_35", "-feature", "-Vulkan", "-restart-when-stalled"]},
+        *listAvds(),
         {"name": "AWS VPN", "icon": "VPN",
          "cmd": ["bash", "-c", r"""if ! i3-msg '[class="AWS VPN Client"]' focus; then
                         dex /usr/share/applications/awsvpnclient.desktop; fi """]},
         {
-            True:  {"name": "Stop MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "toggle", "mitmweb"]},
-            False: {"name": "Start MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "toggle", "mitmweb"]}
+            True:  {"name": "Stop MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "stop", "mitmweb"]},
+            False: {"name": "Start MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "start", "mitmweb"]}
         }[sp.run(["tmuxControl.sh", "check", "mitmweb"]).returncode == 0],
         {
-            True:  {"name": "Stop Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "toggle", "appium"]},
-            False: {"name": "Start Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "toggle", "appium"]}
+            True:  {"name": "Stop Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "stop", "appium"]},
+            False: {"name": "Start Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "start", "appium"]}
         }[sp.run(["tmuxControl.sh", "check", "appium"]).returncode == 0],
         {
             True:  {"name": "Stop UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
-            False: {"name": "Start UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]}
+            False: {"name": "Start UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "start", "uxplay -a -nc -reg -nohold -reset 1"]}
         }[sp.run(["tmuxControl.sh", "check", "uxplay"]).returncode == 0],
         {"name": SEP, 'icon': 'zig-zag'},
         {"name": "Screen recorder", "icon": "recording",

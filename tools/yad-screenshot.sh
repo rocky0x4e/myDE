@@ -9,7 +9,7 @@ SaveClip=0
 SaveFile=2
 SaveFile3=4
 SaveClip3=6
-
+appName=Screenshot
 select=$(yad --list \
     --title="Select an Option" \
     --width=500 --height=300 \
@@ -29,7 +29,8 @@ button=$?
 case "$button" in
     "$SaveFile")  
         saveTo="File"
-        saveMode="~/Pictures/screenshots/$(date +%Y%m%d-%H%M%S).png"; ;;
+        saveMode="~/Pictures/screenshots/$(date +%Y%m%d-%H%M%S).png"
+        appName=R.Screenshot ;;
     "$SaveClip")
         saveTo="Clipboard"
         saveMode="| xclip -selection clipboard -t image/png" ;;
@@ -40,6 +41,7 @@ case "$button" in
     "$SaveFile3")
         saveTo="File under ~/Picture/screenshots"
         saveMode="~/Pictures/screenshots/$(date +%Y%m%d-%H%M%S).png"
+        appName=R.Screenshot 
         sleep 3 ;;
 esac
 
@@ -52,5 +54,5 @@ esac
 
 eval "maim $maimMode $saveMode" 
 
-notify-send -t 3000 -ea "Screenshot" "Screenshot taken" "Saved to $saveTo"
+notify-send -t 3000 -ea $appName "Screenshot taken" "Saved to $saveTo"
 

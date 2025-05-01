@@ -3,7 +3,18 @@
 I="\x00icon\x1f"
 DELMODE="Delete"
 function installApk {
-    file=$1
+    local file=$1
+    if [[ ! $file =~ patched.apk && ! -f ${file//.apk/}-patched.apk ]]; then
+        select=$(echo -en "Patch\nInstall" | rofi -dmenu -icon-theme rofi -theme overlays/center-dialog -p "Patch or install") || exit 0
+        if [[ $select == "Patch" ]]; then
+            local pid=$(notify-send -pet 0 "Patching" "$(basename $file)")
+            apk-mitm "$file"
+            notify-send -er $pid -t 3000 "Pathching" "Done"
+            return
+        fi
+    fi
+
+
     adb start-server > /dev/null 2>&1
     devices=()
     while IFS=$'\n' read -r line; do
