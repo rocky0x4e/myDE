@@ -5,15 +5,15 @@ DELMODE="Delete"
 function installApk {
     local file=$1
     if [[ ! $file =~ patched.apk && ! -f ${file//.apk/}-patched.apk ]]; then
-        select=$(echo -en "Patch\nInstall" | rofi -dmenu -icon-theme rofi -theme overlays/center-dialog -p "Patch or install") || exit 0
+        select=$(echo -en "Patch${I}bandage\nInstall${I}download" | rofi -dmenu -icon-theme rofi -theme overlays/center-dialog \
+            -p "Patch for MITM snooping or just install?" -theme+inputbar+children '[ prompt ]') || exit 0
         if [[ $select == "Patch" ]]; then
-            local pid=$(notify-send -pet 0 "Patching" "$(basename $file)")
+            local pid=$(notify-send -pet 0 "Patching, wait..." "$(basename $file) for MITM snooping")
             apk-mitm "$file"
-            notify-send -er $pid -t 3000 "Pathching" "Done"
+            notify-send -er $pid -t 3000 "Pathching" "$(basename $file) Done"
             return
         fi
     fi
-
 
     adb start-server > /dev/null 2>&1
     devices=()
@@ -50,13 +50,14 @@ function browse {
     IFS=$'\n' sorted=($(sort -r <<<"${items[*]}"))
 
     folder="back${I}back\n"
+    openF="Open folder${I}open-folder"
     apkFiles=""
     for item in "${sorted[@]}"; do
         if [[ -d "$path/$item" ]]; then folder+="$item"${I}folder"\n"; fi
         if [[ "$item" =~ ".apk"$ ]]; then apkFiles+="$item"${I}apk-64"\n"; fi
     done
 
-    select=$(echo -en "${folder}${apkFiles}" | rofi -dmenu -icon-theme rofi -select test -theme overlays/thin-side-bar)
+    select=$(echo -en "${folder}${apkFiles}${openF}" | rofi -dmenu -icon-theme rofi -select test -theme overlays/thin-side-bar)
     echo $select
 }
 
@@ -65,8 +66,11 @@ path=$1
 while [[ -d $path ]]; do
     select=$(browse $path)
     if [[ -z $select ]]; then exit 0; fi
-    if [[ $select == 'back' ]]; then path=$(dirname $path);
-    else path="$path/$select"; fi
+    case $select in
+        "back") path=$(dirname $path);;
+        "Open folder") xdg-open $path; exit 0;;
+        *) path="$path/$select";;
+    esac
 done
 
 if [[ $path =~ ".apk"$ ]]; then
