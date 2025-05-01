@@ -23,8 +23,8 @@ label.critical.title {
     background: rgba(222, 255, 184, 0.85);
 }
 
-button {
-    background: rgba(0, 0, 0, 0);
+.actionbutton {
+    background: rgba(214, 211, 1, 0.85);
 }
 
 .blurredBG.notification.critical,
@@ -46,10 +46,6 @@ button.delete-all {
 .appname,
 .time {
     color: rgb(90, 85, 16);
-}
-
-button {
-    color: rgb(48, 5, 5);
 }
 
 button:hover {
@@ -144,14 +140,13 @@ button.delete-all {
 }
 
 button {
-    border-radius: 3px;
+    border-radius: 8px;
     text-shadow: none;
     margin-right: 5px;
 }
 
-
 button:hover {
-    border-radius: 3px;
+    border-radius: 8px;
 }
 
 .userbuttonlabel {

@@ -252,9 +252,19 @@ notification:
     modify:
       actions:
         - open-folder
-        - Open screenshot folder
+        - Click to open
       action-commands:
         open-folder: open ~/Pictures/screenshots &
+      action-icons: false
+
+  - match:
+      app-name: "R.Torrent"
+    modify:
+      actions:
+        - open-web
+        - Click to open
+      action-commands:
+        open-web: brave-browser https://rocky-0x4e.sytes.net/transmission/web/ &
       action-icons: false
 
   - match:
