@@ -5,14 +5,14 @@ DELMODE="Delete"
 function installApk {
     local file=$1
     if [[ ! $file =~ patched.apk && ! -f ${file//.apk/}-patched.apk ]]; then
-        select=$(echo -en "Patch${I}bandage\nInstall${I}download" | rofi -dmenu -icon-theme rofi -theme overlays/center-dialog \
+        select=$(echo -en "Patch${I}bandage\nPatch and Install${I}bandage\nInstall${I}download" | rofi -dmenu -icon-theme rofi -theme overlays/center-dialog \
             -p "Patch for MITM snooping or just install?" -theme+inputbar+children '[ prompt ]') || exit 0
-        if [[ $select == "Patch" ]]; then
+        if [[ $select =~ "Patch" ]]; then
             local pid=$(notify-send -pet 0 "Patching, wait..." "$(basename $file) for MITM snooping")
             apk-mitm "$file"
             notify-send -er $pid -t 3000 "Pathching" "$(basename $file) Done"
-            return
         fi
+        if ! [[ $select =~ "Install" ]]; then return; fi
     fi
 
     adb start-server > /dev/null 2>&1
