@@ -17,7 +17,6 @@ unit = {
 
 def main():
     rf = rofi('-theme', 'overlays/center-dialog',
-              '-theme+listview+columns', '3', '-theme+listview+lines', '7',
               '-theme+window+width', f'70ch',
               '-p', 'Memory usage', '-theme+inputbar+children', '[ prompt ]')
     rf.makeTable(3)

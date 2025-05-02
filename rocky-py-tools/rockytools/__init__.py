@@ -26,9 +26,7 @@ class rofi:
         return self
 
     def makeTable(self, numOfCol):
-        self.items = []
-        for i in range(numOfCol):
-            self.items.append([])
+        self.items = [[] for i in range(numOfCol)]
         return self
 
     def addTableItem(self, item, icon=None, column=0):
@@ -41,14 +39,17 @@ class rofi:
         return self
 
     def run(self, args=None, addArgs=None):
+        addArgs = [] if addArgs is None else addArgs
         try:
             menu = "\n".join(self.items)
         except TypeError:
             items = []
             for col in self.items:
-                for item in col:
-                    items.append(item)
+                items.extend(col)
             menu = "\n".join(items)
+            colNum = str(len(self.items))
+            lineNum = str(max([len(x) for x in self.items]))
+            addArgs.extend(['-theme+listview+columns', colNum, '-theme+listview+lines', lineNum,])
 
         echo = sp.Popen(["echo", "-en", menu], stdout=sp.PIPE, stderr=sp.PIPE)
         if not args:
@@ -56,7 +57,6 @@ class rofi:
         for arg in self.defaultArgs:
             if arg not in args:
                 args.append(arg)
-        addArgs = [] if addArgs is None else addArgs
         try:
             return sp.check_output(["rofi", *args, *addArgs], stdin=echo.stdout).decode().strip()
         except sp.CalledProcessError:
@@ -67,8 +67,7 @@ class rofi:
 
     def yesNo(self, msg):
         self.newMenu()
-        args = ['-dmenu', '-theme', "overlays/center-yes-no",
-                '-icon-theme', 'rofi', '-p', "Are you sure?"]
+        args = ['-dmenu', '-theme', "overlays/center-yes-no", '-icon-theme', 'rofi', '-p', "Are you sure?"]
         return self.addItem("Yes", "yes").addItem("No", "no").run(args)
 
     def isMenuEmpty():
