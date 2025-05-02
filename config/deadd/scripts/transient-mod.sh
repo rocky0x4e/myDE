@@ -1,7 +1,7 @@
 #!/bin/bash
 shopt -s extglob
 
-tmp=/home/rocky/.config/deadd/tmp/log.json
+tmp=$HOME/.config/deadd/tmp/log.json
 echo debug > $tmp
 
 # # Read notification from STDIN

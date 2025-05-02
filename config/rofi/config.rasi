@@ -118,45 +118,4 @@ configuration {
 /*	kb-custom-13: "Alt+number} */
 }
 
-
-//@theme "/home/rocky/.config/rofi/themes/material.rasi"
-
-//@theme "/usr/local/share/rofi/themes/Adapta-Nokto.rasi"
-
-//@theme "/usr/local/share/rofi/themes/android_notification.rasi"
-
-//@theme "/usr/local/share/rofi/themes/blue.rasi"
-
-//@theme "/usr/local/share/rofi/themes/fancy2.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-blue-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-green-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-purple-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-gray-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-orange-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-yellow-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-nord-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-red-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-purple-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/spotlight-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-yellow-dark.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/rounded-nord-dark.rasi"
-
-//@theme "/usr/local/share/rofi/themes/blue.rasi"
-
-//@theme "/usr/local/share/rofi/themes/DarkBlue.rasi"
-
-//@theme "/home/rocky/.config/rofi/themes/material.rasi"
-
-@theme "/home/rocky/.config/rofi/themes/rounded-blue-dark.rasi"
+@theme "rounded-blue-dark.rasi"

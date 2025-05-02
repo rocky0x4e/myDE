@@ -235,7 +235,6 @@ notification:
       transient: true
       app-name: "CopyQ"
       body: "Data is copied!!!"
-    # script: "/home/rocky/.config/deadd/lab.sh"
 
   - match:
       app-name: "blueman"
@@ -269,7 +268,7 @@ notification:
 
   - match:
       app-name: ""
-    script: "/home/rocky/.config/deadd/scripts/transient-mod.sh"
+    script: "$HOME/.config/deadd/scripts/transient-mod.sh"
 
   # - match:
   #     title: Bildschirmhelligkeit
