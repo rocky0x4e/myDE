@@ -16,7 +16,7 @@ for f in config/*; do
     ln -s "$(pwd)/$f" "$HOME/.config/"
 done
 
-echo "Installing tools..."
+echo "Installing bash tools..."
 for f in tools/*; do
     echo "    Installing $f"
     backup $HOME/.local/bin/$(basename $f)
@@ -30,3 +30,6 @@ for f in icons/*; do
     backup $HOME/.local/share/icons/$(basename $f)
     ln -fs "$(pwd)/$f" $HOME/.local/share/icons/
 done
+
+cd rocky-py-tools
+pip install -e . --force --break-system-packages
