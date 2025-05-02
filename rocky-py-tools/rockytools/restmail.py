@@ -60,7 +60,7 @@ class RofiMailFE:
                          '-p', 'Restmail', '-theme+inputbar+children', '[ prompt, entry ]')
 
     def listUser(self):
-        self.rofi.newMenu()
+        self.rofi.makeDmenu()
         for item in STOREAGE.iterdir():
             if item.is_dir():
                 self.rofi.addItem(item.name, 'user-mail')
@@ -84,7 +84,7 @@ class RofiMailFE:
         return self
 
     def listMail(self):
-        self.rofi.newMenu()
+        self.rofi.makeDmenu()
         for item in self.cursor.listLocalMails():
             self.rofi.addItem(item.name, "email")
         self.rofi.sortMenu()

@@ -43,7 +43,7 @@ class BtControl:
         return self.devices[dev].get(isConnected, False)
 
     def prettyRofiList(self):
-        self.rofi.newMenu()
+        self.rofi.makeDmenu()
         for name in self.devices.keys():
             icon = 'bt-connected' if self.isConnected(name) else 'bt-disconnected'
             self.rofi.addItem(name, icon)
@@ -57,7 +57,7 @@ class BtControl:
             if self.isConnected(dev):
                 return "disconnect"
             else:
-                self.rofi.newMenu()
+                self.rofi.makeDmenu()
                 self.rofi.addItem("connect", "bt-connected")
                 self.rofi.addItem("repair", "bt-re-pair")
             return self.rofi.run()

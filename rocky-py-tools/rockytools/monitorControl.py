@@ -54,6 +54,7 @@ class XRandR:
                 self.primaryDisplay = d
 
     def rofiList(self):
+        self.rofi.makeDmenu()
         for disp in self.displays:
             if disp.isConnected:
                 icon = "screen-active" if disp.isActive else "screen-inactive"

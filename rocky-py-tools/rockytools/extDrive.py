@@ -55,7 +55,7 @@ class Block:
 
     @property
     def rofiItem(self):
-        return f"{self.listname}{I}{self.icon}"
+        return self.listname, self.icon
 
     @property
     def tran(self):
@@ -107,13 +107,13 @@ class BlockManager:
         return blocks
 
     def rofiListBlock(self):
-        self.rofi.newMenu()
+        self.rofi.makeDmenu()
         maxWidth = len(NO_DRIVE)
         for block in self.getMountedBlocks() + self.getUnmountedBlock():
-            self.rofi.addItem(block.rofiItem)
+            self.rofi.addItem(*block.rofiItem)
             if len(block.listname) > maxWidth:
                 maxWidth = len(block.listname)
-        if self.rofi.isMenuEmpty:
+        if self.rofi.isMenuEmpty():
             self.rofi.addItem(NO_DRIVE, "shrug")
         self.rofi.addItem('-' * maxWidth, "zigzag")
         self.rofi.addItem(REFRESH_MMC, 'loading-arrow')

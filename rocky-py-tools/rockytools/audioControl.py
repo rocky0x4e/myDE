@@ -27,7 +27,7 @@ class AudioDevice:
     def sinkName(self):
         return self.data["name"]
 
-    def nameAndIcon(self, defaultSink):
+    def rofiItem(self, defaultSink):
         icon = "sink-enabled" if self.sinkName in defaultSink else "sink-disabled"
         return self.desc, icon
 
@@ -50,9 +50,9 @@ class AudioDevMan:
                 return dev
 
     def rofiListDev(self):
-        self.rofi.newMenu()
+        self.rofi.makeDmenu()
         for dev in self.devcies:
-            self.rofi.addItem(*dev.nameAndIcon(self.defaultSink))
+            self.rofi.addItem(*dev.rofiItem(self.defaultSink))
 
         self.rofi.addItem(PAVUCTL, "audio-control")
         self.rofi.addItem(REFRESH, "refresh")

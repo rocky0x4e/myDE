@@ -34,6 +34,7 @@ class NetworkMan:
         return r
 
     def rofiShowConnections(self):
+        self.rofi.makeDmenu()
         select = ''
         for con in self.connections:
             if con['type'] != 'loopback' and con['type'] != 'bridge':
@@ -60,12 +61,12 @@ class NetworkMan:
         if len(cons) == 1:
             sp.run(["nmcli", "connection", TOGGLE[cons[0]['dev'] != ""], cons[0]['uuid']])
         else:  # more than 1 connection with same name
-            menu = []
+            self.rofi.makeDmenu()
             toggle = {}
             for con in cons:
                 toggle[con['uuid']] = TOGGLE[con['dev'] != ""]
                 self.rofi.addItem(f"{con['name']} | {con['uuid']}", ICONS[con['type']][con["dev"] != ""])
-            select = self._rofi(menu)
+            select = self.rofi.run()
             uuid = select.split("|")[1].strip()
             sp.run(["nmcli", "connection", toggle[uuid], uuid])
 

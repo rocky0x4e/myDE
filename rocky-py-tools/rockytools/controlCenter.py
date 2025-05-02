@@ -91,7 +91,7 @@ class ControlCenter:
     ]
 
     def makeRofi(self):
-        rf.newMenu()
+        rf.makeDmenu()
         for item in ControlCenter.CONTROLERS:
             rf.addItem(item['name'], item['icon'])
 

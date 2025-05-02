@@ -1,15 +1,14 @@
 import subprocess as sp
-import json
 
 
 class rofi:
     def __init__(self, *args):
         self.args = list(args)
         self.items = []
-        self.defaultArgs = ["-dmenu", "-icon-theme", "rofi", "-i"]
 
-    def newMenu(self):
+    def makeDmenu(self):
         self.items = []
+        self.args.extend(["-dmenu", "-icon-theme", "rofi", "-i"])
         return self
 
     def sortMenu(self, reverse=False):
@@ -26,6 +25,7 @@ class rofi:
         return self
 
     def makeTable(self, numOfCol):
+        self.args.extend(["-dmenu", "-icon-theme", "rofi", "-i"])
         self.items = [[] for i in range(numOfCol)]
         return self
 
@@ -54,9 +54,6 @@ class rofi:
         echo = sp.Popen(["echo", "-en", menu], stdout=sp.PIPE, stderr=sp.PIPE)
         if not args:
             args = self.args
-        for arg in self.defaultArgs:
-            if arg not in args:
-                args.append(arg)
         try:
             return sp.check_output(["rofi", *args, *addArgs], stdin=echo.stdout).decode().strip()
         except sp.CalledProcessError:
@@ -65,10 +62,10 @@ class rofi:
     def rofiIcon(self, iconName):
         return f"\\x00icon\\x1f{iconName}" if iconName else ""
 
-    def yesNo(self, msg):
-        self.newMenu()
-        args = ['-dmenu', '-theme', "overlays/center-yes-no", '-icon-theme', 'rofi', '-p', "Are you sure?"]
-        return self.addItem("Yes", "yes").addItem("No", "no").run(args)
+    def yesNo(self, msg="Are you sure?"):
+        rofiYesNo = rofi('-theme', "overlays/center-yes-no", '-p', msg)
+        rofiYesNo.makeDmenu()
+        return rofiYesNo.addItem("Yes", "yes").addItem("No", "no").run()
 
-    def isMenuEmpty():
+    def isMenuEmpty(self):
         return len(self.items) == 0
