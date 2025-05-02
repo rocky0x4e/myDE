@@ -31,7 +31,7 @@ function memUsage {
         if [[ $used -gt $c ]]; then color=${myColors[$c]}; break; fi
     done
 
-    echo -e "%{A1:rofi-show-ram.py:}%{F$color}%{F-} %{T$font}${used}%%{T-}%{A}"
+    echo -e "%{A1:showRamStat:}%{F$color}%{F-} %{T$font}${used}%%{T-}%{A}"
 }
 
 function thermal {

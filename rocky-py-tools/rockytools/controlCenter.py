@@ -1,15 +1,14 @@
-#!/usr/bin/env python3
-
 import subprocess as sp
 from pathlib import Path
+from rockytools import rofi
 
 import psutil
 
-PROMPT = "System Control"
-I = '\\x00icon\\x1f'
 W = ""
-SEP = f"--------------------------------{I}zigzag"
+SEP = "--------------------------------"
 H = Path.home()
+rf = rofi('-dmenu', '-i', '-theme', "overlays/thin-side-bar",
+          '-icon-theme', 'rofi', '-p', "System Control", '-select', 'Suspend')
 
 
 def isProcRunning(procName):
@@ -19,15 +18,18 @@ def isProcRunning(procName):
             return True
     return False
 
+
 def listAppImg():
     appPath = Path.home() / "programs"
     return [{"name": item.name, "cmd": [str(item.absolute())], "icon": "app"}
             for item in appPath.iterdir() if item.name.endswith('.AppImage')]
 
+
 def listAvds():
     avds = sp.check_output(["emulator", "-list-avds",]).decode().strip().splitlines()
-    return [{"name": avd, "icon": "smartphone", 
+    return [{"name": avd, "icon": "smartphone",
              "cmd": ["emulator", f"@{avd}", "-feature", "-Vulkan", "-id", avd, "-restart-when-stalled"]} for avd in avds]
+
 
 class ControlCenter:
     CONTROLERS = [
@@ -43,17 +45,17 @@ class ControlCenter:
          "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "locker"]},
         {
             True: {"name": "XAutolock: ON", "icon": "secure", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]},
-            False:{"name": "XAutolock: OFF", "icon": "unprotected", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]}
+            False: {"name": "XAutolock: OFF", "icon": "unprotected", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]}
         }[isProcRunning("xautolock")],
         {
-            True:  {'name':"Auto sleep: ON", "icon":"auto-sleep-on", "cmd":["systemctl", "--user", "stop", "Idle.timer"]},
-            False: {'name':"Auto sleep: OFF", "icon":"green-tea", "cmd":["systemctl", "--user", "start", "Idle.timer"]}
+            True:  {'name': "Auto sleep: ON", "icon": "auto-sleep-on", "cmd": ["systemctl", "--user", "stop", "Idle.timer"]},
+            False: {'name': "Auto sleep: OFF", "icon": "green-tea", "cmd": ["systemctl", "--user", "start", "Idle.timer"]}
         }[sp.run(["systemctl", "--user", "is-active", "Idle.timer"]).returncode == 0],
-        {"name": "Cinnamon settings", "icon":"gnome-settings",
-         "cmd":['cinnamon-settings']},
-        {"name": "Theme settings", "icon":"cinnamon-preferences-color",
-         "cmd":['cinnamon-settings', 'themes']},
-        {"name": SEP, 'icon': 'zig-zag'},
+        {"name": "Cinnamon settings", "icon": "gnome-settings",
+         "cmd": ['cinnamon-settings']},
+        {"name": "Theme settings", "icon": "cinnamon-preferences-color",
+         "cmd": ['cinnamon-settings', 'themes']},
+        {"name": SEP, 'icon': 'zigzag'},
         {"name": "HF builds", "icon": "apk-64",
          "cmd": ['rofi-apkInstaller.sh', f'{H}/HF-data/builds']},
         {"name": "Restmail", "icon": "email",
@@ -63,18 +65,18 @@ class ControlCenter:
          "cmd": ["bash", "-c", r"""if ! i3-msg '[class="AWS VPN Client"]' focus; then
                         dex /usr/share/applications/awsvpnclient.desktop; fi """]},
         {
-            True:  {"name": "Stop MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "stop", "mitmweb"]},
-            False: {"name": "Start MITM", "icon": "hacker-activity","cmd": ["tmuxControl.sh", "start", "mitmweb"]}
+            True:  {"name": "Stop MITM", "icon": "hacker-activity", "cmd": ["tmuxControl.sh", "stop", "mitmweb"]},
+            False: {"name": "Start MITM", "icon": "hacker-activity", "cmd": ["tmuxControl.sh", "start", "mitmweb"]}
         }[sp.run(["tmuxControl.sh", "check", "mitmweb"]).returncode == 0],
         {
             True:  {"name": "Stop Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "stop", "appium"]},
             False: {"name": "Start Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "start", "appium"]}
         }[sp.run(["tmuxControl.sh", "check", "appium"]).returncode == 0],
         {
-            True:  {"name": "Stop UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
-            False: {"name": "Start UxPlay", "icon": "airplay","cmd": ["tmuxControl.sh", "start", "uxplay -a -nc -reg -nohold -reset 1"]}
+            True:  {"name": "Stop UxPlay", "icon": "airplay", "cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
+            False: {"name": "Start UxPlay", "icon": "airplay", "cmd": ["tmuxControl.sh", "start", "uxplay -a -nc -reg -nohold -reset 1"]}
         }[sp.run(["tmuxControl.sh", "check", "uxplay"]).returncode == 0],
-        {"name": SEP, 'icon': 'zig-zag'},
+        {"name": SEP, 'icon': 'zigzag'},
         {"name": "Screen recorder", "icon": "recording",
          "cmd": ["dex", "/usr/share/applications/simplescreenrecorder.desktop"]},
         {"name": "Window inspector", "icon": "inspection",
@@ -84,25 +86,20 @@ class ControlCenter:
             --width=1000 --height=300 \
             --wrap --center --button=Close:1 --editable=false <<< "$output" ''']},
         {"name": "External monitor", "icon": 'display-settings',
-         "cmd": ["rofi-monitor.py"]},
+         "cmd": ["monitorControl"]},
         *listAppImg()
     ]
 
     def makeRofi(self):
-        menu = []
+        rf.newMenu()
         for item in ControlCenter.CONTROLERS:
-            menu.append(f"{item['name']}{I}{item['icon']}")
+            rf.addItem(item['name'], item['icon'])
 
-        echo = sp.Popen(["echo", "-en", '\n'.join(menu)], stdout=sp.PIPE, stderr=sp.PIPE)
-        selected = sp.check_output(['rofi', '-dmenu', '-i', '-theme', "overlays/thin-side-bar",
-                                    '-icon-theme', 'rofi', '-p', PROMPT, '-select', 'Suspend'],
-                                   stdin=echo.stdout).decode().strip()
+        selected = rf.run()
         if selected.startswith(W):
-            echo = sp.Popen(["echo", "-en", f"Yes{I}yes\nNo{I}no"], stdout=sp.PIPE, stderr=sp.PIPE)
-            confirm = sp.check_output(['rofi', '-dmenu', '-theme', "overlays/center-yes-no",
-                                       '-icon-theme', 'rofi', '-p', "Are you sure?"],
-                                      stdin=echo.stdout).decode().strip()
-            if confirm == 'No': exit(0)
+            confirm = rf.yesNo()
+            if confirm == 'No':
+                exit(0)
         return selected
 
     def find(self, name):
@@ -117,7 +114,7 @@ class ControlCenter:
             sp.Popen(cmd)
 
 
-if __name__ == "__main__":
+def main():
     cc = ControlCenter()
     select = cc.makeRofi()
     cc.run(select)
