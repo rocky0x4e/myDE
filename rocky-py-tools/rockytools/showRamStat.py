@@ -1,5 +1,5 @@
 import subprocess as sp
-from rockytools import rofi
+from lib.rofi import rofi
 
 
 CC = "Clear mem cache"
@@ -32,7 +32,8 @@ def main():
                     used = f"{n:.2f}"
                     break
                 elif n == 0:
-                    used = f"{n}{I}null"
+                    used = n
+                    k = "null"
                     break
             usedPercent = f"{memKb[-1] * 100 / memKb[0]:.2f}".rstrip('0').rstrip(".").rjust(5)
             rf.addTableItem(memType, "memory", 0)

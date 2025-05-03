@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="rockytools",
     version="0.1.0",
-    description="A simple example Python package",
+    description="Set of utilities with Rofi as front end",
     author="Rocky",
     author_email="rocky.0x4e@gmail.com",
     packages=find_packages(),

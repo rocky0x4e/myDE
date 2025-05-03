@@ -18,7 +18,7 @@ sudo apt install -y curl
 sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 sudo apt update
-sudo apt install -y brave-browser 
+sudo apt install -y brave-browser
 
 
 cat << 'EOF' > /usr/lib/udev/rules.d/90-brightnessctl.rules
@@ -28,28 +28,9 @@ ACTION=="add", SUBSYSTEM=="leds", RUN+="/bin/chgrp input /sys/class/leds/%k/brig
 ACTION=="add", SUBSYSTEM=="leds", RUN+="/bin/chmod g+w /sys/class/leds/%k/brightness"
 EOF
 sudo usermod -aG video $USER
-sudo usermod -aG input $USER 
+sudo usermod -aG input $USER
 
 gio mime application/x-bittorrent rocky-torrent.desktop
 gio mime application/vnd.android.package-archive rofi-apkInstaller.desktop
-
-
-# install lock on wake service
-echo "[Unit]
-Description=Lock the screen after resume from suspend
-Before=suspend.target 
-
-[Service]
-User=rocky 
-Environment=DISPLAY=:0
-Type=oneshot
-ExecStart=i3lock -enfc 0E1621 -i home/rocky/.config/i3/img/i3-lock.png
-
-[Install]
-WantedBy=suspend.target
-" | sudo tee /etc/systemd/system/lock-on-wake.service2
-
-sudo systemctl daemon-reload
-sudo systemctl enable lock-on-wake.service
 
 ###############################################

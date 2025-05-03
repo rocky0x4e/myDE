@@ -33,3 +33,10 @@ done
 
 cd rocky-py-tools
 pip install -e . --force --break-system-packages
+
+echo -e '!!! Final step, need root access to install this mod,
+    Hit Ctrl + C to skip it but the clear ram script and the MMC refresh function will not work'
+
+sudo -k
+echo "$USER ALL=(ALL) NOPASSWD: /sbin/modprobe
+$USER ALL=(ALL) NOPASSWD: /usr/bin/tee /proc/sys/vm/drop_caches" | sudo tee /etc/sudoers.d/myDE

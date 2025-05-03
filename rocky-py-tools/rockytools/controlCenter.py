@@ -1,6 +1,6 @@
 import subprocess as sp
 from pathlib import Path
-from rockytools import rofi
+from lib.rofi import rofi
 
 import psutil
 
@@ -59,7 +59,7 @@ class ControlCenter:
         {"name": "HF builds", "icon": "apk-64",
          "cmd": ['rofi-apkInstaller.sh', f'{H}/HF-data/builds']},
         {"name": "Restmail", "icon": "email",
-         "cmd": ["restmail.py"]},
+         "cmd": ["restmail"]},
         *listAvds(),
         {"name": "AWS VPN", "icon": "VPN",
          "cmd": ["bash", "-c", r"""if ! i3-msg '[class="AWS VPN Client"]' focus; then

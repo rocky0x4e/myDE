@@ -1,2 +1,0 @@
-rocky ALL=(ALL) NOPASSWD: /sbin/modprobe
-rocky ALL=(ALL) NOPASSWD: /usr/bin/sudo /usr/bin/tee /proc/sys/vm/drop_caches

@@ -9,12 +9,13 @@ function installApk {
             -p "Patch for MITM snooping or just install?" -theme+inputbar+children '[ prompt ]') || exit 0
         if [[ $select =~ "Patch" ]]; then
             local pid=$(notify-send -pet 0 "Patching, wait..." "$(basename $file) for MITM snooping")
-            apk-mitm "$file"
+            apk-mitm $file 2>&1 | tee ~/tmp/debug.log
+            if [[ $? != 0 ]]; then notify-send -er $pid -t 2000 "Fail to patch" ; exit 1; fi
             notify-send -er $pid -t 3000 "Pathching" "$(basename $file) Done"
+            file=${file//.apk/-patched.apk}
         fi
         if ! [[ $select =~ "Install" ]]; then return; fi
     fi
-
     adb start-server > /dev/null 2>&1
     devices=()
     while IFS=$'\n' read -r line; do
@@ -35,9 +36,8 @@ function installApk {
         IFS=$'\n' read -r -d '' -a selects <<< "$selects"
     fi
     for s in "${selects[@]}"; do
-        echo -$s-
         r=$(adb -s "$s" install -d "$file" 2>&1)
-        notify-send -e -a "APK installer" "Installing..." "$r"
+        notify-send -e -a "APK installer" "Installing ..." "$(basename $file) -> $s\n$r"
     done
 }
 

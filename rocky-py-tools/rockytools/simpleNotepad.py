@@ -2,9 +2,8 @@ from gi.repository import Gtk, GtkSource, Gdk
 import gi
 import sys
 import os
-import subprocess as sp
 from pathlib import Path
-from rockytools import rofi
+from lib.rofi import rofi
 
 gi.require_version("Gtk", "3.0")
 gi.require_version("GtkSource", "4")

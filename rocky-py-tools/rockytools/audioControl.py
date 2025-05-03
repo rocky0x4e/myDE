@@ -1,6 +1,5 @@
-import subprocess as sp
-import json
-from rockytools import rofi
+from lib import pactl
+from lib.rofi import rofi
 
 PAVUCTL = 'Open Pavu Control'
 REFRESH = "Reload"
@@ -35,12 +34,12 @@ class AudioDevice:
 class AudioDevMan:
     def __init__(self):
         self.devcies = []
-        self.defaultSink = sp.check_output(["pactl", "get-default-sink"]).decode("utf-8")
+        self.defaultSink = pactl.getDefaultSink()
         self.rofi = rofi('-dmenu', '-theme', 'overlays/center-dialog', '-icon-theme', 'rofi',
                          '-p', 'Audio Control', '-theme+inputbar+children', '[ prompt ]')
 
     def get_devices(self):
-        data = json.loads(sp.check_output(["pactl", "-f", "json", "list", "sinks"]).decode("utf-8"))
+        data = pactl.listSinksJson()
         self.devcies = [AudioDevice(data) for data in data]
         return self
 
@@ -60,8 +59,7 @@ class AudioDevMan:
 
     def setDefaultSink(self, sinkDesc):
         sink = self.findDev(sinkDesc)
-        print(sink)
-        r = sp.check_output(["pactl", "set-default-sink", sink.sinkName]).decode("utf-8").strip()
+        pactl.setDefaultSink(sink.sinkName)
 
 
 def main():
@@ -72,7 +70,7 @@ def main():
         if select == REFRESH:
             continue
         if select == PAVUCTL:
-            sp.Popen(["pavucontrol"])
+            pactl.openPulseVolumeControl()
         else:
             man.setDefaultSink(select)
         break
