@@ -32,12 +32,12 @@ class BtControl:
     def rofiActionOnDev(self, dev):
         try:
             if self.isConnected(dev):
-                return "disconnect"
-            else:
                 self.rofi.makeDmenu()
-                self.rofi.addItem("connect", "bt-connected")
-                self.rofi.addItem("repair", "bt-re-pair")
-            return self.rofi.run()
+                self.rofi.addItem("disconnect", "bt-disconnected")
+                self.rofi.addItem("reconnect", "bt-re-pair")
+                return self.rofi.run()
+            else:
+                return "connect"
         except:
             return
 
@@ -51,6 +51,14 @@ class BtControl:
             timeout -= 1
         return self
 
+    def connect(self, name):
+        btctl.actOnDev(self.devices[name]["addr"], "connect")
+        return self
+
+    def disconnect(self, name):
+        btctl.actOnDev(self.devices[name]["addr"], "disconnect")
+        return self
+
     def toggle(self, name):
         action = "disconnect" if self.isConnected(name) else "connect"
         btctl.actOnDev(self.devices[name]["addr"], action)
@@ -62,9 +70,9 @@ class BtControl:
             return self.toggle(dev)
 
         if action == 'reconnect':
-            self.toggle(dev)
+            self.disconnect(dev)
             self.waitStateChange(dev)
-            self.toggle(dev)
+            self.connect(dev)
             return self
         if dev == blueMan:
             btctl.openBlueMan()

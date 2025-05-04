@@ -49,7 +49,7 @@ select=${select//|/}
 case "$select" in
     "Window") maimMode='-i $(xdotool selectwindow)' ;;
     "Selection") maimMode='-s' ;;
-    "Whole screen") maimMode='' ;;
+    "Whole screen") maimMode='' ; sleep 0.3 ;;
 esac
 
 eval "maim $maimMode $saveMode" 

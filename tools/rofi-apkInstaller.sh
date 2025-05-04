@@ -12,7 +12,7 @@ function installApk {
             apk-mitm $file 2>&1 | tee ~/tmp/debug.log
             if [[ $? != 0 ]]; then notify-send -er $pid -t 2000 "Fail to patch" ; exit 1; fi
             notify-send -er $pid -t 3000 "Pathching" "$(basename $file) Done"
-            file=${file//.apk/-patched.apk}
+            file=${file/%.apk/-patched.apk}
         fi
         if ! [[ $select =~ "Install" ]]; then return; fi
     fi
