@@ -10,22 +10,27 @@ gi.require_version("Gtk", "3.0")
 gi.require_version("GtkSource", "4")
 
 NOTE_PATH = Path.home() / "Notes"
+APPNAME = "Simple notepad"
 
 
 class Notepad(Gtk.Window):
     def __init__(self, filename=None):
-        super().__init__(title=filename.split("/")[-1])
-        self.set_wmclass("Rofi-note", "Rofi-note")
+        super().__init__(title=APPNAME)
+        self.set_wmclass(APPNAME, APPNAME)
         self.set_default_size(800, 600)
         self.set_border_width(6)
 
         self.filePath = Path(filename)
-        self.fileContent = self.filePath.read_text() if self.filePath.exists() else ""
-        self.notify = NotifySend().setAppName("Simple Notepad").setAppName("notepad").setTransient()
+        try:
+            self.fileContent = self.filePath.read_text()
+        except:
+            self.fileContent = ""
+
+        self.notify = NotifySend().setAppName(APPNAME).setAppName("notepad").setTransient()
 
         # Apply dark theme
         settings = Gtk.Settings.get_default()
-        settings.set_property("gtk-application-prefer-dark-theme", True)
+        settings.set_property("gtk-application-prefer-dark-theme", False)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.add(vbox)
 
@@ -34,7 +39,6 @@ class Notepad(Gtk.Window):
         self.filename_entry.set_text(self.windowTitle)
         self.filename_entry.set_placeholder_text("Enter filename here")
         self.filename_entry.set_alignment(0.5)  # 1.0 = right, 0.0 = left, 0.5 = center
-        self.filename_entry.connect("changed", self.on_filename_changed)
         vbox.pack_start(self.filename_entry, False, False, 0)
 
         # Text buffer and view
@@ -114,11 +118,23 @@ class Notepad(Gtk.Window):
             return
 
         self.filePath = Path(fileName) if "/" in fileName else NOTE_PATH / fileName
+        if self.filePath.is_dir():
+            dialog = Gtk.MessageDialog(
+                transient_for=self,
+                flags=0,
+                message_type=Gtk.MessageType.ERROR,
+                buttons=Gtk.ButtonsType.OK,
+                text="Saved path is a directory, not a file",
+            )
+            dialog.format_secondary_text("Please enter a valid filename before saving.")
+            dialog.run()
+            dialog.destroy()
+            return
+
         if self.filePath.name:
             text = self.get_current_content()
             self.filePath.write_text(text)
             self.notify.setTitle("Saved").setMessage(self.filePath).flash()
-            self.set_title(self.filePath.name)
         Gtk.main_quit()
 
     def cancel(self, _widget=None):
@@ -221,6 +237,7 @@ def main():
     path = sys.argv[1] if len(sys.argv) > 1 else None
     if not path:
         path = rofiSelectNote()
+
     if not (Path(path).exists() and Path(path).parent.exists()):
         path = str(NOTE_PATH / path)
     win = Notepad(filename=path)
