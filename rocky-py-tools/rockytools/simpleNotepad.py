@@ -1,4 +1,5 @@
-from gi.repository import Gtk, GtkSource, Gdk, GLib
+from gi.repository import Gtk, GtkSource, Gdk, GLib, WebKit2
+import markdown
 import gi
 import sys
 import os
@@ -16,17 +17,44 @@ APPNAME = "Simple notepad"
 class Notepad(Gtk.Window):
     def __init__(self, filename=None):
         super().__init__(title=APPNAME)
+        GLib.idle_add(self.show_preview_by_default)
         self.set_wmclass(APPNAME, APPNAME)
         self.set_default_size(800, 600)
         self.set_border_width(6)
+        hint = Gtk.Label(label=("💾 Ctrl+S: Save  |  💾 Ctrl+Shift+S: Save -> quit\n"
+                                "❌ ESC: Quit  |   Ctrl+Del: Delete & quit"))
+        hint.set_xalign(0.5)  # Align left (optional)
+        hint.set_justify(Gtk.Justification.CENTER)
+        icon = Gtk.Image.new_from_icon_name("dialog-information", Gtk.IconSize.DIALOG)
+        hint_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        hint_box.set_halign(Gtk.Align.CENTER)
+        hint_box.pack_start(icon, False, False, 0)
+        hint_box.pack_start(hint, False, False, 0)
+
+        separator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
+        separator.set_name("thick-separator")
+        css = b"""
+        #thick-separator {
+            min-height: 2px;
+            background-color: #555;  /* Optional: give it a visible color */
+        }
+        """
+        style_provider = Gtk.CssProvider()
+        style_provider.load_from_data(css)
+
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            style_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+        self.notify = NotifySend().setAppName(APPNAME).setAppName("notepad").setTransient()
 
         self.filePath = Path(filename)
         try:
             self.fileContent = self.filePath.read_text()
-        except:
+        except Exception as e:
+            self.notify.setTitle("Error").setMessage(str(e)).flash()
             self.fileContent = ""
-
-        self.notify = NotifySend().setAppName(APPNAME).setAppName("notepad").setTransient()
 
         # Apply dark theme
         settings = Gtk.Settings.get_default()
@@ -50,31 +78,57 @@ class Notepad(Gtk.Window):
         self.view.set_wrap_mode(Gtk.WrapMode.WORD)
         self.view.set_show_line_numbers(True)
         self.view.set_monospace(True)
+
+        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.view.set_show_line_numbers(True)
+        self.view.set_monospace(True)
         self.buffer.set_text(self.fileContent)
 
-        # Scrolled window
-        scroll = Gtk.ScrolledWindow()
-        scroll.set_hexpand(True)
-        scroll.set_vexpand(True)
-        scroll.add(self.view)
+        # markdown support
+        self.webview = WebKit2.WebView()
+        self.webview.set_visible(False)
+        self.stack = Gtk.Stack()
+        self.stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
+        self.stack.set_transition_duration(200)
+        # Preview
+        preview_scroll = Gtk.ScrolledWindow()
+        preview_scroll.set_hexpand(True)
+        preview_scroll.set_vexpand(True)
+        preview_scroll.add(self.webview)
+        self.stack.add_named(preview_scroll, "preview")
+        self.stack.set_visible_child_name("preview")
+        self.preview_toggle = Gtk.ToggleButton(label=" Edit")
+        self.preview_toggle.connect("toggled", self.toggle_preview)
+
+        # Editor
+        editor_scroll = Gtk.ScrolledWindow()
+        editor_scroll.set_hexpand(True)
+        editor_scroll.set_vexpand(True)
+        editor_scroll.add(self.view)
+        self.stack.add_named(editor_scroll, "editor")
 
         # Buttons
         save_btn = Gtk.Button(label="💾 Save")
         save_btn.connect("clicked", self.save)
+        saveas_btn = Gtk.Button(label="💾 Save as")
+        saveas_btn.connect("clicked", self.save_as)
 
         cancel_btn = Gtk.Button(label="❌ Cancel")
         cancel_btn.connect("clicked", self.cancel)
-
-        del_btn = Gtk.Button(label="❌ Delete")
+        del_btn = Gtk.Button(label=" Delete")
         del_btn.connect("clicked", self.delete_file)
 
         btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         btn_box.pack_start(save_btn, False, False, 0)
+        btn_box.pack_start(saveas_btn, False, False, 0)
         btn_box.pack_start(cancel_btn, False, False, 0)
         btn_box.pack_end(del_btn, False, False, 1)
+        btn_box.pack_end(self.preview_toggle, False, False, 0)
 
         # Layout
-        vbox.pack_start(scroll, True, True, 0)
+        vbox.pack_start(self.stack, True, True, 0)
+        vbox.pack_start(hint_box, False, False, 0)
+        vbox.pack_start(separator, False, True, 6)
         vbox.pack_start(btn_box, False, False, 0)
 
         self.add(vbox)
@@ -88,6 +142,26 @@ class Notepad(Gtk.Window):
     @property
     def windowTitle(self):
         return self.filePath.name if str(NOTE_PATH) in str(self.filePath) else str(self.filePath)
+
+    def show_preview_by_default(self):
+        self.stack.set_visible_child_name("preview")
+        self.update_preview()
+        return False  # Stop repeating the idle function
+
+    def toggle_preview(self, button):
+        if button.get_active():
+            self.stack.set_visible_child_name("editor")
+            self.preview_toggle.set_label("Done")
+        else:
+            self.update_preview()
+            self.stack.set_visible_child_name("preview")
+            self.preview_toggle.set_label(" Edit")
+
+    def update_preview(self):
+        start, end = self.buffer.get_bounds()
+        markdown_text = self.buffer.get_text(start, end, True)
+        html = markdown.markdown(markdown_text)
+        self.webview.load_html(html, "file:///")
 
     def get_current_content(self):
         start, end = self.buffer.get_bounds()
@@ -134,14 +208,17 @@ class Notepad(Gtk.Window):
         if self.filePath.name:
             text = self.get_current_content()
             self.filePath.write_text(text)
+            self.fileContent = text
             self.notify.setTitle("Saved").setMessage(self.filePath).flash()
-        Gtk.main_quit()
 
     def cancel(self, _widget=None):
-        print("Edit cancelled.")
         Gtk.main_quit()
 
-    def save_as(self):
+    def save_and_quit(self, _widget=None):
+        self.save()
+        self.cancel()
+
+    def save_as(self, _widget=None):
         dialog = Gtk.FileChooserDialog(
             title="Save As",
             parent=self,
@@ -152,10 +229,11 @@ class Notepad(Gtk.Window):
         dialog.set_do_overwrite_confirmation(True)
 
         if dialog.run() == Gtk.ResponseType.OK:
-            filePath = Path(dialog.get_filename())
+            self.filePath = Path(dialog.get_filename())
             text = self.get_current_content()
-            filePath.write_text(text)
-            self.notify.setTitle("Saved").setMessage(filePath).flash()
+            self.filePath.write_text(text)
+            self.fileContent = text
+            self.notify.setTitle("Saved").setMessage(self.filePath).flash()
         dialog.destroy()
 
     def delete_file(self, _widget=None):
@@ -190,8 +268,10 @@ class Notepad(Gtk.Window):
 
         if keyval == Gdk.KEY_Escape:
             self.close()
-        elif ctrl and shift and keyval == Gdk.KEY_S:
-            self.save_as()
+        elif ctrl and not shift and keyval in [Gdk.KEY_s, Gdk.KEY_S]:
+            self.save()
+        elif ctrl and shift and keyval in [Gdk.KEY_s, Gdk.KEY_S]:
+            self.save_and_quit()
         elif ctrl and keyval == Gdk.KEY_Delete:
             self.delete_file()
 
