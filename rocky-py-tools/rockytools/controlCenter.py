@@ -69,8 +69,8 @@ class ControlCenter:
             False: {"name": "Start MITM", "icon": "hacker-activity", "cmd": ["tmuxControl.sh", "start", "mitmweb"]}
         }[sp.run(["tmuxControl.sh", "check", "mitmweb"]).returncode == 0],
         {
-            True:  {"name": "Stop Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "stop", "appium"]},
-            False: {"name": "Start Apppium", "icon": "appium", "cmd": ["tmuxControl.sh", "start", "appium"]}
+            True:  {"name": "Stop Appium", "icon": "appium", "cmd": ["tmuxControl.sh", "stop", "appium"]},
+            False: {"name": "Start Appium", "icon": "appium", "cmd": ["tmuxControl.sh", "start", "appium"]}
         }[sp.run(["tmuxControl.sh", "check", "appium"]).returncode == 0],
         {
             True:  {"name": "Stop UxPlay", "icon": "airplay", "cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
