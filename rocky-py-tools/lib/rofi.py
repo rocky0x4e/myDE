@@ -51,17 +51,16 @@ class rofi:
             lineNum = str(max([len(x) for x in self.items]))
             addArgs.extend(['-theme+listview+columns', colNum, '-theme+listview+lines', lineNum,])
 
-        echo = sp.Popen(["echo", "-en", menu], stdout=sp.PIPE, stderr=sp.PIPE)
         if not args:
             args = self.args
         try:
             print("debug\n", ["rofi", *args, *addArgs])
-            return sp.check_output(["rofi", *args, *addArgs], stdin=echo.stdout).decode().strip()
+            return sp.check_output(["rofi", *args, *addArgs], input=menu.encode()).decode().strip()
         except sp.CalledProcessError:
             exit(0)
 
     def rofiIcon(self, iconName):
-        return f"\\x00icon\\x1f{iconName}" if iconName else ""
+        return f"\x00icon\x1f{iconName}" if iconName else ""
 
     def yesNo(self, msg="Are you sure?"):
         rofiYesNo = rofi('-theme', "overlays/center-yes-no", '-p', msg)
