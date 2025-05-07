@@ -74,15 +74,16 @@ class Notepad(Gtk.Window):
         self.buffer = GtkSource.Buffer()
         self.buffer.set_language(lm.get_language("bash"))
 
-        self.view = GtkSource.View.new_with_buffer(self.buffer)
-        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.view.set_show_line_numbers(True)
-        self.view.set_monospace(True)
+        self.textView = GtkSource.View.new_with_buffer(self.buffer)
+        self.textView.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.textView.set_show_line_numbers(True)
+        self.textView.set_monospace(True)
 
-        self.view.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.view.set_show_line_numbers(True)
-        self.view.set_monospace(True)
+        self.textView.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.textView.set_show_line_numbers(True)
+        self.textView.set_monospace(True)
         self.buffer.set_text(self.fileContent)
+        self.buffer.connect("changed", self.on_content_changed)
 
         # markdown support
         self.webview = WebKit2.WebView()
@@ -97,33 +98,30 @@ class Notepad(Gtk.Window):
         preview_scroll.add(self.webview)
         self.stack.add_named(preview_scroll, "preview")
         self.stack.set_visible_child_name("preview")
-        self.preview_toggle = Gtk.ToggleButton(label=" Edit")
-        self.preview_toggle.connect("toggled", self.toggle_preview)
 
         # Editor
         editor_scroll = Gtk.ScrolledWindow()
         editor_scroll.set_hexpand(True)
         editor_scroll.set_vexpand(True)
-        editor_scroll.add(self.view)
+        editor_scroll.add(self.textView)
         self.stack.add_named(editor_scroll, "editor")
 
         # Buttons
-        save_btn = Gtk.Button(label="💾 Save")
-        save_btn.connect("clicked", self.save)
-        saveas_btn = Gtk.Button(label="💾 Save as")
-        saveas_btn.connect("clicked", self.save_as)
+        self.btnSave = Gtk.ToggleButton(label=" Edit")
+        self.btnSave.connect("toggled", self.toggle_preview)
+        self.btnSaveAs = Gtk.Button(label="💾 Save as")
+        self.btnSaveAs.connect("clicked", self.save_as)
 
-        cancel_btn = Gtk.Button(label="❌ Cancel")
-        cancel_btn.connect("clicked", self.cancel)
-        del_btn = Gtk.Button(label=" Delete")
-        del_btn.connect("clicked", self.delete_file)
+        btnCancel = Gtk.Button(label="❌ Cancel")
+        btnCancel.connect("clicked", self.cancel)
+        btnDel = Gtk.Button(label=" Delete")
+        btnDel.connect("clicked", self.delete_file)
 
         btn_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-        btn_box.pack_start(save_btn, False, False, 0)
-        btn_box.pack_start(saveas_btn, False, False, 0)
-        btn_box.pack_start(cancel_btn, False, False, 0)
-        btn_box.pack_end(del_btn, False, False, 1)
-        btn_box.pack_end(self.preview_toggle, False, False, 0)
+        btn_box.pack_start(self.btnSave, False, False, 0)
+        btn_box.pack_start(btnCancel, False, False, 0)
+        btn_box.pack_end(btnDel, False, False, 1)
+        btn_box.pack_end(self.btnSaveAs, False, False, 0)
 
         # Layout
         vbox.pack_start(self.stack, True, True, 0)
@@ -137,7 +135,9 @@ class Notepad(Gtk.Window):
         self.connect("key-press-event", self.on_key_press)
 
         GLib.idle_add(self.filename_entry.set_position, -1)
-        GLib.idle_add(self.view.grab_focus)
+        GLib.idle_add(self.textView.grab_focus)
+        self.show_all()
+        # self.saveas_btn.hide()
 
     @property
     def windowTitle(self):
@@ -151,11 +151,12 @@ class Notepad(Gtk.Window):
     def toggle_preview(self, button):
         if button.get_active():
             self.stack.set_visible_child_name("editor")
-            self.preview_toggle.set_label("Done")
+            button.set_label("Done")
         else:
             self.update_preview()
+            self.save() if "Save" in self.btnSave.get_label() else None
             self.stack.set_visible_child_name("preview")
-            self.preview_toggle.set_label(" Edit")
+            button.set_label(" Edit")
 
     def update_preview(self):
         start, end = self.buffer.get_bounds()
@@ -175,6 +176,14 @@ class Notepad(Gtk.Window):
         self.filePath = Path(fileName) if "/" in fileName else NOTE_PATH / fileName
         if self.filePath.name:
             self.set_title(os.path.basename(self.filePath))
+
+    def on_content_changed(self, entry):
+        if self.is_content_changed():
+            # self.saveas_btn.show()
+            self.btnSave.set_label("💾 Save")
+        else:
+            # self.saveas_btn.hide()
+            self.btnSave.set_label("Done")
 
     def save(self, _widget=None):
         fileName = self.filename_entry.get_text().strip()
@@ -321,5 +330,4 @@ def main():
     if not (Path(path).exists() and Path(path).parent.exists()):
         path = str(NOTE_PATH / path)
     win = Notepad(filename=path)
-    win.show_all()
     Gtk.main()
