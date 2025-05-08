@@ -132,7 +132,8 @@ class Notepad(Gtk.Window):
         self.add(vbox)
         self.connect("destroy", Gtk.main_quit)
         self.connect("delete-event", self.on_delete_event)
-        self.connect("key-press-event", self.on_key_press)
+        id = self.connect("key-press-event", self.on_key_press)
+        self.webview.disconnect(id)
 
         GLib.idle_add(self.filename_entry.set_position, -1)
         GLib.idle_add(self.textView.grab_focus)
@@ -171,18 +172,10 @@ class Notepad(Gtk.Window):
     def is_content_changed(self):
         return self.fileContent != self.get_current_content()
 
-    def on_filename_changed(self, entry):
-        fileName = entry.get_text()
-        self.filePath = Path(fileName) if "/" in fileName else NOTE_PATH / fileName
-        if self.filePath.name:
-            self.set_title(os.path.basename(self.filePath))
-
     def on_content_changed(self, entry):
         if self.is_content_changed():
-            # self.saveas_btn.show()
             self.btnSave.set_label("💾 Save")
         else:
-            # self.saveas_btn.hide()
             self.btnSave.set_label("Done")
 
     def save(self, _widget=None):
@@ -271,7 +264,6 @@ class Notepad(Gtk.Window):
     def on_key_press(self, widget, event):
         keyval = event.keyval
         state = event.state
-
         ctrl = state & Gdk.ModifierType.CONTROL_MASK
         shift = state & Gdk.ModifierType.SHIFT_MASK
 
