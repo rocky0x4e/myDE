@@ -69,3 +69,7 @@ class rofi:
 
     def isMenuEmpty(self):
         return len(self.items) == 0
+
+    @staticmethod
+    def separator(length=40):
+        return ("-"*length, "zigzag")

@@ -33,8 +33,7 @@ def backup(folder: Path):
 
 def installResources():
     while True:
-        os.system('clear')
-        installPrompt = "0 : All below\n"
+        installPrompt = f"{"="*80}\n0 : All below\n"
         for i in range(len(INSTALL)):
             msg = INSTALL[i]['msg']
             installPrompt += f"{i+1} : {msg}\n"
@@ -67,6 +66,7 @@ def installResources():
 
 
 def installBinary():
+    print("Installing the cli commands")
     sp.check_call(
         [sys.executable, "-m", "pip", "install", "-e", ".", "--force", "--break-system-packages",],
         cwd="rocky-py-tools"  # 👈 this sets the working directory
@@ -74,7 +74,7 @@ def installBinary():
 
 
 def installSudoerMod():
-    input("!!! Final step, need root access to install this mod, Enter to continue.\n"
+    input("!!! Installing sudoer mods, need root access to install, Enter to continue.\n"
           "Hit Ctrl + C to skip it but the clear ram script and the MMC refresh function won't work:\n")
     sudoerConf = (f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /sbin/modprobe\n"
                   f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/tee /proc/sys/vm/drop_caches\n")

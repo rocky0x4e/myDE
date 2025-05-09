@@ -4,7 +4,7 @@ I="\x00icon\x1f"
 DELMODE="Delete"
 function installApk {
     local file=$1
-    if [[ ! $file =~ patched.apk && ! -f ${file//.apk/}-patched.apk ]]; then
+    if [[ ! $file =~ patched.apk && ! -f ${file//.apk/}-patched.apk && ! $file =~ test ]]; then
         select=$(echo -en "Patch${I}bandage\nPatch and Install${I}bandage\nInstall${I}download" | rofi -dmenu -icon-theme rofi -theme overlays/center-dialog \
             -p "Patch for MITM snooping or just install?" -theme+inputbar+children '[ prompt ]') || exit 0
         if [[ $select =~ "Patch" ]]; then

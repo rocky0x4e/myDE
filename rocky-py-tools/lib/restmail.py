@@ -49,3 +49,8 @@ class RestMailClient:
     def makeStorage(self):
         self.storage.mkdir()
         return self
+
+    def deleteAllLocalMails(self):
+        for f in self.storage.iterdir():
+            f.unlink()
+        return self

@@ -4,6 +4,8 @@ from pathlib import Path
 from lib.restmail import RestMailClient
 
 STOREAGE = Path.home() / "restmail"
+DEL_USER = "Delete this user"
+DEL_ALL_MAIL = "Delete all local emails"
 
 
 class RofiMailFE:
@@ -42,15 +44,20 @@ class RofiMailFE:
             self.rofi.addItem(item.name, "email")
         self.rofi.sortMenu()
         self.rofi.addItem('Fetch', 'download')
-        self.rofi.addItem('Delete this user', 'del-user')
+        self.rofi.addItem(DEL_ALL_MAIL, 'delete')
+        self.rofi.addItem(DEL_USER, 'del-user')
         self.rofi.addItem('Back', 'back')
         select = self.rofi.run()
         if select == "Back":
             self.listUser().listMail()
             return self
-        if select == "Delete this user":
+        if select == DEL_USER:
             self.cursor.deleteThisUser()
             self.listUser().listMail()
+            return self
+        if select == DEL_ALL_MAIL:
+            self.cursor.deleteAllLocalMails()
+            self.listMail()
             return self
         if select == "Fetch":
             self.cursor.fectchMail()

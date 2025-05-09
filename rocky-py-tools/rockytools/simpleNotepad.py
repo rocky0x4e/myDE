@@ -21,7 +21,7 @@ class Notepad(Gtk.Window):
         self.set_wmclass(APPNAME, APPNAME)
         self.set_default_size(800, 600)
         self.set_border_width(6)
-        hint = Gtk.Label(label=("💾 Ctrl+S: Save  |  💾 Ctrl+Shift+S: Save -> quit\n"
+        hint = Gtk.Label(label=("💾 Ctrl+S: Edit/Save  |  💾 Ctrl+Shift+S: Save -> quit\n"
                                 "❌ ESC: Quit  |   Ctrl+Del: Delete & quit"))
         hint.set_xalign(0.5)  # Align left (optional)
         hint.set_justify(Gtk.Justification.CENTER)
@@ -270,7 +270,8 @@ class Notepad(Gtk.Window):
         if keyval == Gdk.KEY_Escape:
             self.close()
         elif ctrl and not shift and keyval in [Gdk.KEY_s, Gdk.KEY_S]:
-            self.save()
+            # self.save()
+            self.btnSave.emit("clicked")
         elif ctrl and shift and keyval in [Gdk.KEY_s, Gdk.KEY_S]:
             self.save_and_quit()
         elif ctrl and keyval == Gdk.KEY_Delete:
@@ -307,7 +308,7 @@ class Notepad(Gtk.Window):
 
 
 def rofiSelectNote():
-    rf = rofi('-theme', 'overlays/center-dialog').makeDmenu()
+    rf = rofi('-theme', 'overlays/center-dialog', '-p', 'Notes').makeDmenu()
     for item in NOTE_PATH.iterdir():
         rf.addItem(item.name, "note")
     rf.addItem("New", "note-add")
