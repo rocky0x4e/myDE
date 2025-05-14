@@ -77,7 +77,10 @@ def installSudoerMod():
     input("!!! Installing sudoer mods, need root access to install, Enter to continue.\n"
           "Hit Ctrl + C to skip it but the clear ram script and the MMC refresh function won't work:\n")
     sudoerConf = (f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /sbin/modprobe\n"
-                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/tee /proc/sys/vm/drop_caches\n")
+                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/tee /proc/sys/vm/drop_caches\n"
+                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/resolvectl dnsovertls *\n"
+                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/resolvectl dnssec *\n")
+
     sp.run(
         ['sudo', 'tee', '/etc/sudoers.d/myDE'],
         input=sudoerConf.encode()

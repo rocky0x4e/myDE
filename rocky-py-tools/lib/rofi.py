@@ -71,5 +71,13 @@ class rofi:
         return len(self.items) == 0
 
     @staticmethod
-    def separator(length=40):
-        return ("-"*length, "zigzag")
+    def separator(length=40, text='', dash='-'):
+        if text:
+            l = len(text)
+            odd = l % 2 == 1
+            dashCount = int((length - l)/2 - 1)
+            dashesLeft = f"{dash * dashCount}"
+            dashesRight = dashesLeft + dash if odd else dashesLeft
+            print(f"\n{text}:{odd}\n{dashesLeft}\n{dashesRight}")
+            return (f"{dashesLeft} {text} {dashesRight}", "zigzag")
+        return dash * length, "zigzag"

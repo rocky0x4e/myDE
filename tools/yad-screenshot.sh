@@ -52,7 +52,8 @@ case "$select" in
     "Whole screen") maimMode='' ; sleep 0.3 ;;
 esac
 
-eval "maim $maimMode $saveMode" 
-
-notify-send -t 3000 -ea $appName "Screenshot taken" "Saved to $saveTo"
+if [[ -n $maimMode ]] && [[ -n $saveMode ]]; then
+    set -o pipefail
+    if eval "maim $maimMode $saveMode" ; then notify-send -t 3000 -ea $appName "Screenshot taken" "Saved to $saveTo"; fi
+fi
 

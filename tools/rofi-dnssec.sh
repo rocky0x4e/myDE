@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 interfaces=($(ip -o link show | awk -F': ' '{print $2}'))
-IC="\\0icon\\x1f"
+IC="\\00icon\\x1f"
 icSttYes="${IC}secure"
 icStt_No="${IC}unprotected"
 
@@ -34,7 +34,6 @@ selected=$(echo -en "${menuInterFaces}" | rofi \
 if [[ -z $selected ]]; then exit 0; fi
 if [[ -z ${TOGGLE[$selected]} ]]; then exit 0; fi
 
-pkexec bash -c \
-"resolvectl dnsovertls $selected ${TOGGLE[$selected]};
-resolvectl dnssec $selected ${TOGGLE[$selected]};
-resolvectl flush-caches"
+sudo resolvectl dnsovertls $selected ${TOGGLE[$selected]}
+sudo resolvectl dnssec $selected ${TOGGLE[$selected]}
+resolvectl flush-caches

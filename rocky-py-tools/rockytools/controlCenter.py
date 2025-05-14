@@ -1,18 +1,20 @@
-import subprocess as sp
-from pathlib import Path
-from lib.rofi import rofi
-
+import types
 import psutil
+from lib.notifysend import NotifySend
+from lib.rofi import rofi
+from pathlib import Path
+import subprocess as sp
+
 
 W = ""
-SEP = "--------------------------------"
 H = Path.home()
 rf = rofi('-dmenu', '-i', '-theme', "overlays/thin-side-bar",
           '-icon-theme', 'rofi', '-p', "System Control", '-select', 'Suspend')
+notify = NotifySend().setAppName("System control").setTransient()
+SEP = rf.separator(32)
 
 
 def isProcRunning(procName):
-    autolockStt = False
     for item in psutil.process_iter(['name']):
         if item.info['name'] == procName:
             return True
@@ -29,6 +31,11 @@ def listAvds():
     avds = sp.check_output(["emulator", "-list-avds",]).decode().strip().splitlines()
     return [{"name": avd, "icon": "smartphone",
              "cmd": ["emulator", f"@{avd}", "-feature", "-Vulkan", "-id", avd, "-restart-when-stalled"]} for avd in avds]
+
+
+def idleTimerControl(action, icon):
+    notify.setTitle("Auto-sleep").setMessage(f"{action}ing auto-sleep").setRofiImage(icon).flash()
+    sp.Popen(["systemctl", "--user", action, "Idle.timer"])
 
 
 class ControlCenter:
@@ -48,14 +55,14 @@ class ControlCenter:
             False: {"name": "XAutolock: OFF", "icon": "unprotected", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]}
         }[isProcRunning("xautolock")],
         {
-            True:  {'name': "Auto sleep: ON", "icon": "auto-sleep-on", "cmd": ["systemctl", "--user", "stop", "Idle.timer"]},
-            False: {'name': "Auto sleep: OFF", "icon": "green-tea", "cmd": ["systemctl", "--user", "start", "Idle.timer"]}
+            True:  {'name': "Auto sleep: ON", "icon": "auto-sleep-on", "cmd": [idleTimerControl, "stop", "green-tea"]},
+            False: {'name': "Auto sleep: OFF", "icon": "green-tea", "cmd": [idleTimerControl, "start", "auto-sleep-on"]}
         }[sp.run(["systemctl", "--user", "is-active", "Idle.timer"]).returncode == 0],
         {"name": "Cinnamon settings", "icon": "gnome-settings",
          "cmd": ['cinnamon-settings']},
         {"name": "Theme settings", "icon": "cinnamon-preferences-color",
          "cmd": ['cinnamon-settings', 'themes']},
-        {"name": SEP, 'icon': 'zigzag'},
+        {"name": SEP[0], 'icon': SEP[1]},
         {"name": "HF builds", "icon": "apk-64",
          "cmd": ['rofi-apkInstaller.sh', f'{H}/HF-data/builds']},
         {"name": "Restmail", "icon": "email",
@@ -76,7 +83,7 @@ class ControlCenter:
             True:  {"name": "Stop UxPlay", "icon": "airplay", "cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
             False: {"name": "Start UxPlay", "icon": "airplay", "cmd": ["tmuxControl.sh", "start", "uxplay -a -nc -reg -nohold -reset 1"]}
         }[sp.run(["tmuxControl.sh", "check", "uxplay"]).returncode == 0],
-        {"name": SEP, 'icon': 'zigzag'},
+        {"name": SEP[0], 'icon': SEP[1]},
         {"name": "Screen recorder", "icon": "recording",
          "cmd": ["dex", "/usr/share/applications/simplescreenrecorder.desktop"]},
         {"name": "Window inspector", "icon": "inspection",
@@ -110,7 +117,11 @@ class ControlCenter:
 
     def run(self, name):
         cmd = self.find(name).get('cmd')
-        if cmd:
+        if not cmd:
+            return
+        if isinstance(cmd[0], types.FunctionType):
+            cmd[0](*cmd[1:])
+        else:
             sp.Popen(cmd)
 
 

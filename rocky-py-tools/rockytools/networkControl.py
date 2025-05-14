@@ -1,6 +1,6 @@
 import subprocess as sp
 from lib.rofi import rofi
-from lib.networkctl import NetworkCtl
+from lib.network import NetworkCtl, ResolveCtl
 from lib.notifysend import NotifySend
 
 ICONS = {
@@ -11,21 +11,28 @@ ICONS = {
 }
 SHOW_ALL = "Show more"
 NET_MAN = "Open Network Manager"
-DNS_SEC = "Private DNS setting"
 TOGGLE = {True: "down", False: "up"}
+notify = NotifySend().setAppName("Network manager").setTransient()
 
 
 def main():
     netMan = NetworkCtl()
+    resolveCtl = ResolveCtl()
+    resolveCtlManagedInt = resolveCtl.getManagedInterfaces()
     rf = rofi('-theme', 'overlays/thin-side-bar', '-p', 'Network').makeDmenu()
     rfAll = rofi('-theme', 'overlays/thin-side-bar', '-p', 'Network').makeDmenu()
-    rf.addItem(DNS_SEC, "dns")
     rf.addItem(NET_MAN, "manager")
     rf.addItem(SHOW_ALL, "ethernet")
-    rf.addItem(*rofi.separator(30))
-    rfAll.addItem(DNS_SEC, "dns")
+    rf.addItem(*rofi.separator(30, "Private DNS settings"))
     rfAll.addItem(NET_MAN, "manager")
-    rfAll.addItem(*rofi.separator(30))
+    rfAll.addItem(*rofi.separator(30, "Private DNS settings"))
+    for i in resolveCtlManagedInt:
+        icon = "secure" if resolveCtl.isPrivateDns(i) else "unprotected"
+        rf.addItem(i, icon)
+        rfAll.addItem(i, icon)
+
+    rf.addItem(*rofi.separator(30, "Connections"))
+    rfAll.addItem(*rofi.separator(30, "Connections"))
 
     select = ''
     for con in netMan.connections:
@@ -37,14 +44,10 @@ def main():
         select = rfAll.run()
     if select == NET_MAN:
         sp.Popen(["cinnamon-settings", "network"])
-        exit(0)
-    if select == DNS_SEC:
-        sp.Popen(["rofi-dnssec.sh"])
-        exit(0)
-
+        return
+    if select in resolveCtlManagedInt:
+        r = resolveCtl.togglePrivateDNS(select)
+        notify.setTitle("Private DNS settings").setMessage(f"{select} : {r}").flash()
+        return
     r = netMan.toggleConnection(select)
-    NotifySend().setAppName("Network manager")\
-        .setTransient()\
-        .setTitle(select)\
-        .setMessage(r)\
-        .flash()
+    notify.setTitle("Connection status").setMessage(r).flash()

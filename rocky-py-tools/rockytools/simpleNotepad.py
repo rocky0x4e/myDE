@@ -72,7 +72,7 @@ class Notepad(Gtk.Window):
         # Text buffer and view
         lm = GtkSource.LanguageManager()
         self.buffer = GtkSource.Buffer()
-        self.buffer.set_language(lm.get_language("bash"))
+        self.buffer.set_language(lm.get_language("markdown"))
 
         self.textView = GtkSource.View.new_with_buffer(self.buffer)
         self.textView.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -88,6 +88,8 @@ class Notepad(Gtk.Window):
         # markdown support
         self.webview = WebKit2.WebView()
         self.webview.set_visible(False)
+        self.webview.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+        self.webview.connect("button-press-event", self.on_webview_click)
         self.stack = Gtk.Stack()
         self.stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE)
         self.stack.set_transition_duration(200)
@@ -177,6 +179,10 @@ class Notepad(Gtk.Window):
             self.btnSave.set_label("💾 Save")
         else:
             self.btnSave.set_label("Done")
+
+    def on_webview_click(self, widget, event):
+        if event.type == Gdk.EventType._2BUTTON_PRESS and event.button == 1:
+            self.btnSave.emit("clicked")
 
     def save(self, _widget=None):
         fileName = self.filename_entry.get_text().strip()
@@ -268,7 +274,12 @@ class Notepad(Gtk.Window):
         shift = state & Gdk.ModifierType.SHIFT_MASK
 
         if keyval == Gdk.KEY_Escape:
-            self.close()
+            child = self.stack.get_visible_child_name()
+            if child == 'editor':
+                self.btnSave.emit("clicked")
+            else:
+                self.close()
+
         elif ctrl and not shift and keyval in [Gdk.KEY_s, Gdk.KEY_S]:
             # self.save()
             self.btnSave.emit("clicked")
