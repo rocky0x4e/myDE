@@ -11,8 +11,8 @@ DEL_ALL_MAIL = "Delete all local emails"
 class RofiMailFE:
     def __init__(self):
         self.cursor = STOREAGE
-        self.rofi = rofi('-dmenu', '-theme', 'overlays/thin-side-bar', '-icon-theme', 'rofi',
-                         '-p', 'Restmail', '-theme+inputbar+children', '[ prompt, entry ]')
+        self.rofi = rofi('-theme+inputbar+children', '[ prompt, entry ]')\
+            .makeDmenu().setTheme('overlays/thin-side-bar').setPrompt("Restmail")
 
     def listUser(self):
         self.rofi.makeDmenu()
@@ -20,7 +20,7 @@ class RofiMailFE:
             if item.is_dir():
                 self.rofi.addItem(item.name, 'user-mail')
 
-        self.rofi.sortMenu().addItem('Add user', 'add-user', 0)
+        self.rofi.sortDmenu().addItem('Add user', 'add-user', 0)
         selected = self.rofi.run()
 
         if selected == "Add user":
@@ -42,7 +42,7 @@ class RofiMailFE:
         self.rofi.makeDmenu()
         for item in self.cursor.listLocalMails():
             self.rofi.addItem(item.name, "email")
-        self.rofi.sortMenu()
+        self.rofi.sortDmenu()
         self.rofi.addItem('Fetch', 'download')
         self.rofi.addItem(DEL_ALL_MAIL, 'delete')
         self.rofi.addItem(DEL_USER, 'del-user')

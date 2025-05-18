@@ -12,7 +12,7 @@ def _getRofiImage(name):
 
 class NotifySend:
     def __init__(self):
-        self.args = []
+        self.args = ['-p']
         self.kwargs = {
             "-t": "5000",
             "-u": "normal",
@@ -22,6 +22,7 @@ class NotifySend:
         }
         self.title = ""
         self.message = ""
+        self.prevId = ""
 
     def setTitle(self, title):
         self.title = title
@@ -75,9 +76,11 @@ class NotifySend:
         self.kwargs["-a"] = appName
         return self
 
-    def flash(self):
+    def flash(self, replace=False):
         args = self.args
+        if replace:
+            args.extend(["-r", self.prevId])
         for k, v in self.kwargs.items():
             args.extend([k, v]) if v else None
-        sp.check_output(["notify-send", *args,
-                         self.title, self.message]).decode().strip()
+        self.prevId = sp.check_output(["notify-send", *args,
+                                       self.title, self.message]).decode().strip()

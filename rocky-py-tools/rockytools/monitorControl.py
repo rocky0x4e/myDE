@@ -5,7 +5,7 @@ from lib.randr import RandR
 def main():
     randr = RandR()
 
-    rf = rofi('-theme', 'overlays/thin-side-bar', '-p', 'Display settings').makeDmenu()
+    rf = rofi().makeDmenu().setTheme('overlays/thin-side-bar').setPrompt('Display settings')
     for disp in randr.displays:
         if disp.isConnected:
             icon = "screen-active" if disp.isActive else "screen-inactive"

@@ -319,7 +319,7 @@ class Notepad(Gtk.Window):
 
 
 def rofiSelectNote():
-    rf = rofi('-theme', 'overlays/center-dialog', '-p', 'Notes').makeDmenu()
+    rf = rofi('-theme+listview+columns', '1').makeDmenu().setTheme('overlays/center-dialog').setPrompt("Notes")
     for item in NOTE_PATH.iterdir():
         rf.addItem(item.name, "note")
     rf.addItem("New", "note-add")

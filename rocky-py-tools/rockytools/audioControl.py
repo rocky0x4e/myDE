@@ -1,6 +1,6 @@
 from lib import pactl
 from lib.rofi import rofi
-
+from time import sleep
 PAVUCTL = 'Open Pavu Control'
 REFRESH = "Reload"
 
@@ -68,6 +68,7 @@ def main():
         man.get_devices()
         select = man.rofiListDev()
         if select == REFRESH:
+            sleep(0.3)
             continue
         if select == PAVUCTL:
             pactl.openPulseVolumeControl()

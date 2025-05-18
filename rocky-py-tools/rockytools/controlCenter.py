@@ -4,20 +4,59 @@ from lib.notifysend import NotifySend
 from lib.rofi import rofi
 from pathlib import Path
 import subprocess as sp
-
+import libtmux
 
 W = ""
 H = Path.home()
-rf = rofi('-dmenu', '-i', '-theme', "overlays/thin-side-bar",
-          '-icon-theme', 'rofi', '-p', "System Control", '-select', 'Suspend')
+rf = rofi('-i', '-select', 'Suspend').setTheme("overlays/thin-side-bar").setPrompt("System Control")
 notify = NotifySend().setAppName("System control").setTransient()
 SEP = rf.separator(32)
+tmuxServer = libtmux.Server()
+tmuxSession = "tmuxControl"
+
+
+def tmuxHelper(action, command):
+    appName = Path(command.split(' ')[0]).name
+    try:
+        session = tmuxServer.sessions.get(session_name=tmuxSession)
+    except:
+        session = tmuxServer.new_session(session_name=tmuxSession)
+    try:
+        window = session.windows.get(window_name=appName)
+    except:
+        window = session.new_window(window_name=appName)
+    pane = window.panes.get()
+    match action:
+        case "start":
+            pane.send_keys(command)
+            notify.setTitle("Tmux app control").setMessage(f"{appName} started in {window}").flash()
+        case "stop":
+            pane.send_keys("C-c")
+            window.kill()
+            notify.setTitle("Tmux app control").setMessage(f"{appName} stopped").flash()
+        case "choose":
+            trf = rofi('-theme+window+width', '25ch', '-theme+inputbar+children',
+                       '[ prompt ]').setPrompt(appName).setTheme('overlays/center-dialog').makeDmenu()
+            trf.addItem("Stop", 'no')
+            trf.addItem("Restart", "refresh")
+            select = trf.run()
+            match select:
+                case "Stop":
+                    tmuxHelper('stop', command)
+                case "Restart":
+                    tmuxHelper('stop', command)
+                    tmuxHelper('start', command)
 
 
 def isProcRunning(procName):
-    for item in psutil.process_iter(['name']):
+    for item in psutil.process_iter(['name', 'cmdline']):
         if item.info['name'] == procName:
             return True
+        try:
+            if item.info["cmdline"][1].split('/')[-1] == procName:
+                return True
+        except (IndexError, TypeError):
+            pass
     return False
 
 
@@ -72,17 +111,17 @@ class ControlCenter:
          "cmd": ["bash", "-c", r"""if ! i3-msg '[class="AWS VPN Client"]' focus; then
                         dex /usr/share/applications/awsvpnclient.desktop; fi """]},
         {
-            True:  {"name": "Stop MITM", "icon": "hacker-activity", "cmd": ["tmuxControl.sh", "stop", "mitmweb"]},
-            False: {"name": "Start MITM", "icon": "hacker-activity", "cmd": ["tmuxControl.sh", "start", "mitmweb"]}
-        }[sp.run(["tmuxControl.sh", "check", "mitmweb"]).returncode == 0],
+            True:  {"name": "Stop MITM", "icon": "hacker-activity", "cmd": [tmuxHelper, "stop", "mitmweb"]},
+            False: {"name": "Start MITM", "icon": "hacker-activity", "cmd": [tmuxHelper, "start", "mitmweb"]}
+        }[isProcRunning('mitmweb')],
         {
-            True:  {"name": "Stop Appium", "icon": "appium", "cmd": ["tmuxControl.sh", "stop", "appium"]},
-            False: {"name": "Start Appium", "icon": "appium", "cmd": ["tmuxControl.sh", "start", "appium"]}
-        }[sp.run(["tmuxControl.sh", "check", "appium"]).returncode == 0],
+            True:  {"name": "Stop Appium", "icon": "appium", "cmd": [tmuxHelper, "stop", "appium"]},
+            False: {"name": "Start Appium", "icon": "appium", "cmd": [tmuxHelper, "start", "appium"]}
+        }[isProcRunning('appium')],
         {
-            True:  {"name": "Stop UxPlay", "icon": "airplay", "cmd": ["tmuxControl.sh", "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
-            False: {"name": "Start UxPlay", "icon": "airplay", "cmd": ["tmuxControl.sh", "start", "uxplay -a -nc -reg -nohold -reset 1"]}
-        }[sp.run(["tmuxControl.sh", "check", "uxplay"]).returncode == 0],
+            True:  {"name": "Stop UxPlay", "icon": "airplay", "cmd": [tmuxHelper, "choose", "uxplay -a -nc -reg -nohold -reset 1"]},
+            False: {"name": "Start UxPlay", "icon": "airplay", "cmd": [tmuxHelper, "start", "uxplay -a -nc -reg -nohold -reset 1"]}
+        }[isProcRunning('uxplay')],
         {"name": SEP[0], 'icon': SEP[1]},
         {"name": "Screen recorder", "icon": "recording",
          "cmd": ["dex", "/usr/share/applications/simplescreenrecorder.desktop"]},

@@ -1,6 +1,6 @@
 import subprocess as sp
 from lib.rofi import rofi
-
+from lib.notifysend import NotifySend
 
 CC = "Clear mem cache"
 memInfo = []
@@ -13,6 +13,8 @@ unit = {
     "MB4": 1024,
     "KB2": 1,
 }
+
+notify = NotifySend().setAppName("Memory stats").setTransient()
 
 
 def main():
@@ -46,4 +48,7 @@ def main():
     select = rf.run()
 
     if select == CC:
-        sp.Popen(["clearRamCache.sh"])
+        notify.setTitle("Memory clean up").setMessage("Clearing pagecache, dentries, and inodes...").flash()
+        sp.call(['sync'])
+        sp.run(["sudo", "tee", "/proc/sys/vm/drop_caches"], input="3".encode())
+        notify.setMessage("Memory cache cleared").flash(replace=True)

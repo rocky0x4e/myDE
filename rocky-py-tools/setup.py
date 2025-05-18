@@ -23,10 +23,12 @@ setup(
             'networkControl = rockytools.networkControl:main',
             'showRamStat = rockytools.showRamStat:main',
             'simpleNotepad = rockytools.simpleNotepad:main',
+            'screenshot = rockytools.screenshot:main',
         ],
     },
     install_requires=[
         'requests',
-        'psutil'
+        'psutil',
+        'libtmux'
     ],
 )

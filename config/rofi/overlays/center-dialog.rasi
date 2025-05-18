@@ -11,6 +11,7 @@ window {
 listview {
     scrollbar: false;
     padding: 0;
+    lines: 20;
 }
 
 element-text {

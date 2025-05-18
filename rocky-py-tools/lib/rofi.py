@@ -11,7 +11,19 @@ class rofi:
         self.args.extend(["-dmenu", "-icon-theme", "rofi", "-i"])
         return self
 
-    def sortMenu(self, reverse=False):
+    def setTheme(self, theme):
+        self.args.extend(["-theme", theme])
+        return self
+
+    def setIconTheme(self, iconTheme):
+        self.args.extend(["-icon-theme", iconTheme])
+        return self
+
+    def setPrompt(self, prompt):
+        self.args.extend(["-p", prompt])
+        return self
+
+    def sortDmenu(self, reverse=False):
         self.items = sorted(self.items, reverse=reverse)
         return self
 
@@ -63,8 +75,7 @@ class rofi:
         return f"\x00icon\x1f{iconName}" if iconName else ""
 
     def yesNo(self, msg="Are you sure?"):
-        rofiYesNo = rofi('-theme', "overlays/center-yes-no", '-p', msg)
-        rofiYesNo.makeDmenu()
+        rofiYesNo = rofi().makeDmenu().setTheme("overlays/center-yes-no").setPrompt(msg)
         return rofiYesNo.addItem("Yes", "yes").addItem("No", "no").run()
 
     def isMenuEmpty(self):
