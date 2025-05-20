@@ -11,7 +11,7 @@ DEL_ALL_MAIL = "Delete all local emails"
 class RofiMailFE:
     def __init__(self):
         self.cursor = STOREAGE
-        self.rofi = rofi('-theme+inputbar+children', '[ prompt, entry ]')\
+        self.rofi = rofi().setInputBarChildren('[ prompt, entry ]')\
             .makeDmenu().setTheme('overlays/thin-side-bar').setPrompt("Restmail")
 
     def listUser(self):

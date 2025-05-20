@@ -8,7 +8,7 @@ import libtmux
 
 W = ""
 H = Path.home()
-rf = rofi('-i', '-select', 'Suspend').setTheme("overlays/thin-side-bar").setPrompt("System Control")
+rf = rofi({'-i': '', '-select': 'Suspend'}).setTheme("overlays/thin-side-bar").setPrompt("System Control")
 notify = NotifySend().setAppName("System control").setTransient()
 SEP = rf.separator(32)
 tmuxServer = libtmux.Server()
@@ -35,8 +35,9 @@ def tmuxHelper(action, command):
             window.kill()
             notify.setTitle("Tmux app control").setMessage(f"{appName} stopped").flash()
         case "choose":
-            trf = rofi('-theme+window+width', '25ch', '-theme+inputbar+children',
-                       '[ prompt ]').setPrompt(appName).setTheme('overlays/center-dialog').makeDmenu()
+            trf = rofi().makeDmenu().setInputBarChildren('[ prompt ]')\
+                .setPrompt(appName).setTheme('overlays/center-dialog') \
+                .setWindowWidth('25ch')
             trf.addItem("Stop", 'no')
             trf.addItem("Restart", "refresh")
             select = trf.run()

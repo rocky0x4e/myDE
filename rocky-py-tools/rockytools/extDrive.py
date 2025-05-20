@@ -30,7 +30,7 @@ def unmountBlock(self, block):
 
 def main():
     bm = StorageBlockCtl()
-    rf = rofi("-theme", "overlays/center-dialog", '-p', 'Drive manager').makeDmenu()
+    rf = rofi().makeDmenu().setTheme("overlays/center-dialog").setPrompt('Drive manager')
     maxWidth = len(NO_DRIVE)
     for block in bm.getMountedBlocks() + bm.getUnmountedBlock():
         rf.addItem(block.listname, block.icon)
@@ -45,7 +45,7 @@ def main():
     if bm.countMounted():
         rf.addItem(EJECT_ALL, "eject-red")
 
-    selected = rf.run(addArgs=['-theme+window+width', f'{maxWidth+10}ch'])
+    selected = rf.setWindowWidth(f'{maxWidth+10}ch').run()
     if selected == EJECT_ALL:
         for block in bm.blocks:
             if block.mount:

@@ -35,8 +35,8 @@ class AudioDevMan:
     def __init__(self):
         self.devcies = []
         self.defaultSink = pactl.getDefaultSink()
-        self.rofi = rofi('-dmenu', '-theme', 'overlays/center-dialog', '-icon-theme', 'rofi',
-                         '-p', 'Audio Control', '-theme+inputbar+children', '[ prompt ]')
+        self.rofi = rofi().setInputBarChildren('[ prompt ]')\
+            .makeDmenu().setPrompt('Audio Control').setTheme("overlays/center-dialog")
 
     def get_devices(self):
         data = pactl.listSinksJson()
@@ -49,7 +49,6 @@ class AudioDevMan:
                 return dev
 
     def rofiListDev(self):
-        self.rofi.makeDmenu()
         for dev in self.devcies:
             self.rofi.addItem(*dev.rofiItem(self.defaultSink))
 

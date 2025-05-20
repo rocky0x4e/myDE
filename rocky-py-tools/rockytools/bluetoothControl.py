@@ -11,7 +11,7 @@ bt_On = 'Turn on Bluetooth'
 class BtControl:
     def __init__(self):
         self.devices = btctl.listDevices()
-        self.rofi = rofi('-dmenu', '-p', 'Bluetooth', '-icon-theme', 'rofi', '-theme', 'overlays/center-dialog')
+        self.rofi = rofi().makeDmenu().setPrompt('Bluetooth').setTheme('overlays/center-dialog')
 
     def isBtOn(self):
         pass
@@ -20,7 +20,6 @@ class BtControl:
         return self.devices[dev].get('isConnected', False)
 
     def prettyRofiList(self):
-        self.rofi.makeDmenu()
         for name in self.devices.keys():
             icon = 'bt-connected' if self.isConnected(name) else 'bt-disconnected'
             self.rofi.addItem(name, icon)

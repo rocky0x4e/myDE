@@ -9,7 +9,9 @@ outputDevName=$(pactl -f json list sinks | jq -r '
 ')
 vol=$(pactl get-sink-volume "$sink" | awk -F '/' '{print $2}' | head -n1 | tr -d ' %')
 vol=$(($vol / $arg * $arg $arg))
-if [[ $vol -gt $MAX_VOL ]]; then vol=$MAX_VOL; fi
+if [[ $vol -gt $MAX_VOL ]]; then vol=$MAX_VOL;
+elif [[ $vol -lt 0 ]]; then vol=0; fi
+
 
 function flash {
     t=/tmp/volume.sh.tmp
@@ -23,17 +25,14 @@ function flash {
     rid=$(cat $t 2> /dev/null) || reutrn 0
     if [[ ! -z $rid ]]; then replace="-r $rid" ;fi
     if [[ "$2" == "yes" ]]; then icon="file:/$HOME/.local/share/icons/rofi/512x512/apps/audio-volume-muted.png"; fi
-    nid=$(notify-send -t 2000 -ep $replace -a "" "${outputDevName}" "${1}%" \
+    nid=$(notify-send -t 2000 -ep $replace -a "" "${1}%" "${outputDevName}" \
             --hint=int:value:$1 \
             --hint=string:image-path:$icon )
     echo $nid > $t
 }
 
 case "$arg" in
-    +[0-9]*)
-        pactl set-sink-volume "$sink" "$vol%"
-        ;;
-    -[0-9]*)
+    [-+][0-9]*)
         pactl set-sink-volume "$sink" "$vol%"
         ;;
     toggle)
@@ -46,4 +45,3 @@ case "$arg" in
 esac
 stt=$(pactl get-sink-mute "$sink" | cut -d " " -f2)
 flash $vol $stt
-

@@ -25,11 +25,7 @@ class NetworkCtl:
             self.connections.append({"uuid": uuid, "name": name, "type": _type, "dev": device})
 
     def find_connections(self, name):
-        r = []
-        for con in self.connections:
-            if con["name"] == name:
-                r.append(con)
-        return r
+        return [con for con in self.connections if con['name'] == name]
 
     def toggleConnection(self, name):
         cons = self.find_connections(name)
@@ -57,7 +53,7 @@ class ResolveCtl:
             result = {}
             for line in cliOutput:
                 k, v = line.split(":")
-                match = re.match(r"Link \d \((.*)\)", k)
+                match = re.match(r"Link \d+ \((.*)\)", k)
                 if match:
                     k = match.group(1)
                 result[k] = True if v == " yes" else False

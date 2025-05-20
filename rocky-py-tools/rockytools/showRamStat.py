@@ -18,10 +18,8 @@ notify = NotifySend().setAppName("Memory stats").setTransient()
 
 
 def main():
-    rf = rofi('-theme', 'overlays/center-dialog',
-              '-theme+window+width', f'70ch',
-              '-p', 'Memory usage', '-theme+inputbar+children', '[ prompt ]')
-    rf.makeTable(3)
+    rf = rofi().makeTable(3).setInputBarChildren('[ prompt ]').setPrompt(
+        'Memory usage').setTheme('overlays/center-dialog').setWindowWidth('70ch')
     with open("/proc/meminfo", "r") as f:
         for i in range(6):
             line = f.readline().strip()
