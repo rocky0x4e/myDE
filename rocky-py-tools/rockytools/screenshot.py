@@ -21,36 +21,6 @@ APP_NAME = "R.Screenshot"
 NOTIFY = NotifySend().setAppName(APP_NAME).setTransient().setTimeout(3000).setTitle("Screenshot taken")
 
 
-def do_screenshot():
-    if not SETTINGS["saveMode"]:
-        return
-    notifyMsg = "Saved to: "
-    cmd = ['maim']
-    if SETTINGS['grabMode'] == MODE_WINDOW["text"]:
-        wid = sp.check_output(["xdotool", "selectwindow"]).decode().strip()
-        cmd.extend(['-i', wid])
-    if SETTINGS['grabMode'] == MODE_AREA["text"]:
-        cmd.append("-s")
-    if SETTINGS["grabMode"] == MODE_WHOLE["text"]:
-        time.sleep(0.3)
-
-    if SETTINGS['saveMode'] == SAVE_FILE:
-        now = datetime.now()
-        folder = Path.home() / "Pictures" / "screenshots"
-        file = folder / f"{now.strftime("%Y%m%d-%H%M%S")}.png"
-        notifyMsg += str(folder.absolute())
-        cmd.append(str(file.absolute()))
-
-    time.sleep(SETTINGS["delay"]) if SETTINGS['delay'] else 0
-    maimRun = sp.Popen(cmd, stderr=sp.PIPE, stdout=sp.PIPE)
-    if SETTINGS["saveMode"] == SAVE_CLIP:
-        notifyMsg += "Clipboard"
-        sp.call(["xclip", "-selection", "clipboard", "-t", "image/png"], stdin=maimRun.stdout)
-    else:
-        maimRun.communicate()
-    NOTIFY.setMessage(notifyMsg).flash()
-
-
 class ScreenGrabber(Gtk.Window):
     def __init__(self):
 
@@ -151,14 +121,18 @@ class ScreenGrabber(Gtk.Window):
         if ctrl:
             if keyval == Gdk.KEY_Return:
                 self.btnSaveFile.emit("clicked")
+            elif keyval == Gdk.KEY_Right:
+                self.spin.spin(Gtk.SpinType.STEP_FORWARD, 5)
+            elif keyval == Gdk.KEY_Left:
+                self.spin.spin(Gtk.SpinType.STEP_BACKWARD, 5)
         else:
             if keyval == Gdk.KEY_Escape:
                 Gtk.main_quit()
-            if keyval == Gdk.KEY_Return:
+            elif keyval == Gdk.KEY_Return:
                 self.btnSaveClip.emit('clicked')
-            if keyval == Gdk.KEY_Right:
+            elif keyval == Gdk.KEY_Right:
                 self.spin.spin(Gtk.SpinType.STEP_FORWARD, 1)
-            if keyval == Gdk.KEY_Left:
+            elif keyval == Gdk.KEY_Left:
                 self.spin.spin(Gtk.SpinType.STEP_BACKWARD, 1)
 
     def onBtnClick(self, widget):
@@ -171,4 +145,31 @@ def main():
     win = ScreenGrabber()
     win.show_all()
     Gtk.main()
-    do_screenshot()
+    if not SETTINGS["saveMode"]:
+        return
+    notifyMsg = "Saved to: "
+    cmd = ['maim']
+    if SETTINGS['grabMode'] == MODE_WINDOW["text"]:
+        wid = sp.check_output(["xdotool", "selectwindow"]).decode().strip()
+        cmd.extend(['-i', wid])
+    if SETTINGS['grabMode'] == MODE_AREA["text"]:
+        cmd.append("-s")
+    if SETTINGS["grabMode"] == MODE_WHOLE["text"]:
+        time.sleep(0.3)
+
+    if SETTINGS['saveMode'] == SAVE_FILE:
+        now = datetime.now()
+        folder = Path.home() / "Pictures" / "screenshots"
+        file = folder / f"{now.strftime("%Y%m%d-%H%M%S")}.png"
+        notifyMsg += str(folder.absolute())
+        cmd.append(str(file.absolute()))
+
+    time.sleep(SETTINGS["delay"]) if SETTINGS['delay'] else 0
+    maimRun = sp.Popen(cmd, stderr=sp.PIPE, stdout=sp.PIPE)
+    if SETTINGS["saveMode"] == SAVE_CLIP:
+        notifyMsg += "Clipboard"
+        error = sp.check_output(["xclip", "-selection", "clipboard", "-t", "image/png"], stdin=maimRun.stdout)
+    else:
+        _, error = maimRun.communicate()
+
+    NOTIFY.setMessage(notifyMsg).flash() if not error else None
