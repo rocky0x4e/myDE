@@ -248,6 +248,7 @@ notification:
 
   - match:
       app-name: "R.Screenshot"
+      body: "Saved to: File"
     modify:
       actions:
         - open-folder

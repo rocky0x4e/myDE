@@ -29,15 +29,19 @@ class NotifySend:
         return self
 
     def setMessage(self, message):
-        self.message = message
+        self.message = str(message)
         return self
 
     def setTimeout(self, ms):
         self.kwargs['-t'] = str(ms)
         return self
 
-    def setTransient(self):
-        self.args.append("-e")
+    def setTransient(self, state=True):
+        self.args.append("-e") if state else self.args.remove("-e")
+        return self
+
+    def setWait(self, state=True):
+        self.args.append("-w") if state else self.args.remove("-w")
         return self
 
     def printId(self):
@@ -76,11 +80,24 @@ class NotifySend:
         self.kwargs["-a"] = appName
         return self
 
-    def flash(self, replace=False):
-        args = self.args
-        if replace:
-            args.extend(["-r", self.prevId])
+    def flash(self, **kwargs):
+        args = [*self.args]
         for k, v in self.kwargs.items():
             args.extend([k, v]) if v else None
+
+        replace = kwargs.get("replace", False)
+        wait = kwargs.get("wait", False)
+        timeout = kwargs.get("timeout", None)
+        if replace:
+            args.extend(["-r", self.prevId]) if self.prevId else None
+        if wait:
+            args.extend(["-w"])
+        if timeout:
+            timeout = str(int(timeout * 1000))
+            try:
+                tIndex = args.index("-t")
+                args[tIndex+1] = timeout
+            except ValueError:
+                args.extend(["-t", timeout])
         self.prevId = sp.check_output(["notify-send", *args,
                                        self.title, self.message]).decode().strip()

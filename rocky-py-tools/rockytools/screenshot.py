@@ -18,7 +18,7 @@ SAVE_CLIP = "Save to clipboard (Enter)"
 SETTINGS = {'saveMode': "", 'grabMode': "", "delay": 0}
 APP_NAME = "R.Screenshot"
 
-NOTIFY = NotifySend().setAppName(APP_NAME).setTransient().setTimeout(3000).setTitle("Screenshot taken")
+NOTIFY = NotifySend().setAppName(APP_NAME).setTransient().setTimeout(3000)
 
 
 class ScreenGrabber(Gtk.Window):
@@ -149,8 +149,14 @@ def main():
         return
     notifyMsg = "Saved to: "
     cmd = ['maim']
+    NOTIFY.setTitle("Counting down")
+    for i in range(SETTINGS["delay"], 0, -1):
+        NOTIFY.setMessage(i).flash(replace=True, wait=True, timeout=1)
     if SETTINGS['grabMode'] == MODE_WINDOW["text"]:
-        wid = sp.check_output(["xdotool", "selectwindow"]).decode().strip()
+        try:
+            wid = sp.check_output(["xdotool", "selectwindow"]).decode().strip()
+        except sp.CalledProcessError:
+            return
         cmd.extend(['-i', wid])
     if SETTINGS['grabMode'] == MODE_AREA["text"]:
         cmd.append("-s")
@@ -161,15 +167,14 @@ def main():
         now = datetime.now()
         folder = Path.home() / "Pictures" / "screenshots"
         file = folder / f"{now.strftime("%Y%m%d-%H%M%S")}.png"
-        notifyMsg += str(folder.absolute())
+        notifyMsg += "File"
         cmd.append(str(file.absolute()))
 
-    time.sleep(SETTINGS["delay"]) if SETTINGS['delay'] else 0
-    maimRun = sp.Popen(cmd, stderr=sp.PIPE, stdout=sp.PIPE)
+    maimProc = sp.Popen(cmd, stderr=sp.PIPE, stdout=sp.PIPE)
+    imageData, _ = maimProc.communicate()
     if SETTINGS["saveMode"] == SAVE_CLIP:
         notifyMsg += "Clipboard"
-        error = sp.check_output(["xclip", "-selection", "clipboard", "-t", "image/png"], stdin=maimRun.stdout)
-    else:
-        _, error = maimRun.communicate()
+        xclip = sp.Popen(["xclip", "-selection", "clipboard", "-t", "image/png"], stdin=sp.PIPE)
+        xclip.communicate(input=imageData)
 
-    NOTIFY.setMessage(notifyMsg).flash() if not error else None
+    NOTIFY.setTitle("Screenshot taken").setMessage(notifyMsg).flash() if maimProc.returncode == 0 else None
