@@ -82,11 +82,13 @@ class ScreenGrabber(Gtk.Window):
         column_text = Gtk.TreeViewColumn("", renderer_text, text=1)
         self.treeview.append_column(column_text)
 
+        self.treeview.connect("key-press-event", self.block_treeview_keys)
+
         # Horizontal box for label + spin button
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
 
         # Label
-        label = Gtk.Label(label="Delay (s):")
+        label = Gtk.Label(label="Delay seconds (Arrow < > to change ):")
         hbox.pack_start(label, False, False, 0)
 
         # SpinButton with adjustment
@@ -127,6 +129,11 @@ class ScreenGrabber(Gtk.Window):
 
         self.add(vbox)
 
+    def block_treeview_keys(self, widget, event):
+        if event.keyval in [Gdk.KEY_Left, Gdk.KEY_Right]:
+            return True  # Prevents the event from propagating
+        return False
+
     def getGrabOptions(self):
         selection = self.treeview.get_selection()
         model, treeiter = selection.get_selected()
@@ -149,6 +156,10 @@ class ScreenGrabber(Gtk.Window):
                 Gtk.main_quit()
             if keyval == Gdk.KEY_Return:
                 self.btnSaveClip.emit('clicked')
+            if keyval == Gdk.KEY_Right:
+                self.spin.spin(Gtk.SpinType.STEP_FORWARD, 1)
+            if keyval == Gdk.KEY_Left:
+                self.spin.spin(Gtk.SpinType.STEP_BACKWARD, 1)
 
     def onBtnClick(self, widget):
         SETTINGS['saveMode'] = widget.get_child().get_children()[1].get_label()
