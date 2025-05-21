@@ -32,8 +32,8 @@ class NotifySend:
         self.message = message
         return self
 
-    def setTimeout(self, timeout):
-        self.kwargs['-t'] = str(timeout)
+    def setTimeout(self, ms):
+        self.kwargs['-t'] = str(ms)
         return self
 
     def setTransient(self):
