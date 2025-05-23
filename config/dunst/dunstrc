@@ -50,6 +50,10 @@
     history = ctrl+shift+h
     context = ctrl+shift+period
 
+[transient_ignore]
+    transient = true
+    history_ignore = yes
+
 [urgency_low]
     timeout = 4
     background = "#eee9e5"

@@ -62,12 +62,15 @@ class rofi:
         self.items[-1][-1] += self.rofiIcon(icon)
 
     def fmtPseudoTable(self):
-        colWidth = [max([len(item) for item in col]) for col in self.items]
+        try:
+            colWidth = [max([len(item) for item in col]) for col in self.items]
+        except ValueError:
+            return self
         newItemList = []
         for lineIndex in range(len(self.items[0])):
             item = ''
             for colIndex in range(len(self.items)):
-                item += self.items[colIndex][lineIndex].ljust(colWidth[colIndex]) + " | "
+                item += self.items[colIndex][lineIndex].ljust(colWidth[colIndex]) + " |  "
             newItemList.append(item.strip(" | "))
         self.items = newItemList
         return self
@@ -108,7 +111,7 @@ class rofi:
         return f"\x00icon\x1f{iconName}" if iconName else ""
 
     def isMenuEmpty(self):
-        return len(self.items) == 0
+        return len(self.items) == 0 if type(self.items[0]) is not list else self.items[0] == []
 
     def addSeparator(self, length=40, text='', dash='-', icon="zigzag"):
         self.addItem(*rofi.separator(length, text, dash, icon))
