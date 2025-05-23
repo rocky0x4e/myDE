@@ -16,7 +16,7 @@ elif [[ $vol -lt 0 ]]; then vol=0; fi
 function flash {
     t=/tmp/volume.sh.tmp
     l=${t}.lock
-    icon=file:/$HOME/.local/share/icons/rofi/512x512/apps/audio-waves.png
+    icon=$HOME/.local/share/icons/rofi/512x512/apps/audio-waves.png
     exec 200>"$l" || return 1
     flock -n 200 || {
         echo "Another instance is running. skip notification."
@@ -24,10 +24,13 @@ function flash {
     }
     rid=$(cat $t 2> /dev/null) || reutrn 0
     if [[ ! -z $rid ]]; then replace="-r $rid" ;fi
-    if [[ "$2" == "yes" ]]; then icon="file:/$HOME/.local/share/icons/rofi/512x512/apps/audio-volume-muted.png"; fi
-    nid=$(notify-send -t 2000 -ep $replace -a "" "${1}%" "${outputDevName}" \
-            --hint=int:value:$1 \
-            --hint=string:image-path:$icon )
+    if [[ "$2" == "yes" ]]; then icon="$HOME/.local/share/icons/rofi/512x512/apps/audio-volume-muted.png"; fi
+    # nid=$(notify-send -t 2000 -ep $replace -a "" "${1}%" "${outputDevName}" \
+    #         --hint=int:value:$1 \
+    #         --hint=string:image-path:file:/$icon )
+    nid=$(dunstify -t 2000 -p $replace -a "" "${1}%" "${outputDevName}" \
+        --hints=int:value:$1 \
+        --hints=string:image-path:$icon )
     echo $nid > $t
 }
 

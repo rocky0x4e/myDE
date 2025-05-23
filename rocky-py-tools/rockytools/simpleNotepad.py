@@ -5,7 +5,7 @@ import sys
 import os
 from pathlib import Path
 from lib.rofi import rofi
-from lib.notifysend import NotifySend
+from lib.notification import DefautNotifier
 
 gi.require_version("Gtk", "3.0")
 gi.require_version("GtkSource", "4")
@@ -47,7 +47,7 @@ class Notepad(Gtk.Window):
             style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
-        self.notify = NotifySend().setAppName(APPNAME).setAppName("notepad").setTransient()
+        self.notify = DefautNotifier().setAppName(APPNAME).setAppName("notepad").setTransient()
 
         self.filePath = Path(filename)
         try:

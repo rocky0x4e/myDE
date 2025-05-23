@@ -1,0 +1,108 @@
+[global]
+    enable_posix_regex = yes
+    monitor = 0
+    follow = mouse
+    height = (0, 2000)
+    width = (500, 1000)
+    origin = top-right
+    offset = 10x40
+    shrink = yes
+    separator_height = 8
+    gap_size = 5
+    padding = 10
+    horizontal_padding = 10
+    frame_width = 6
+    sort = no
+    idle_threshold = 120
+    font = mono 10
+    line_height = 4
+    markup = full
+    alignment = left
+    show_age_threshold = -1
+    word_wrap = yes
+    ignore_newline = no
+    stack_duplicates = false
+    hide_duplicate_count = yes
+    show_indicators = yes
+    icon_position = left
+    enable_recursive_icon_lookup = yes
+    icon_theme = Mint-Y
+    min_icon_size = 48
+    max_icon_size = 48
+    sticky_history = yes
+    history_length = 50
+    browser = /usr/bin/sensible-browser -new-tab
+    always_run_script = true
+    icon_corner_radius = 3
+    transparency = 8
+    corner_radius = 0
+    separator_color = auto
+    title = Dunst
+    class = Dunst
+    mouse_left_click = do_action,open_url,close_current
+    mouse_right_click = close_all
+    dmenu = /usr/bin/rofi -dmenu
+    vertical_alignment = center
+
+[shortcuts]
+    close = ctrl+space
+    close_all = ctrl+shift+space
+    history = ctrl+shift+h
+    context = ctrl+shift+period
+
+[urgency_low]
+    timeout = 4
+    background = "#eee9e5"
+    frame_color = "#eee9e5"
+    format = "<span weight='bold' color='#3f3b37'>%s</span>\n<span color='#3f3b37'>%b</span>"
+
+[urgency_normal]
+    timeout = 8
+    background = "#efffcd"
+    frame_color = "#efffcd"
+    format = "<span weight='bold' color='#2fb45a'>%s</span>\n<span color='#3f3b37'>%b</span>"
+
+[urgency_critical]
+    timeout = 10
+    background = "#ff7043"
+    frame_color = "#ff7043"
+    format = "<span weight='bold' color='#3f3b37'>%s</span>\n<span color='#ffffff'>%b</span>"
+
+[no-title]
+    summary = ""
+    body = "^$"
+    format = "<span color='#3f3b37'>%s</span>"
+
+[copyq]
+    summary = "Text Copied"
+    history_ignore = yes
+
+[volume-0]
+    summary = "0\%"
+    appname = ""
+    history_ignore = yes
+    format = "<span weight='bold' color='#a7bcc9'>%s</span>\n<span color='#3f3b37'>%b</span>"
+
+[volume-low]
+    summary = "([1-9]|[1-7][0-9])\%"
+    appname = ""
+    history_ignore = yes
+    format = "<span weight='bold' color='#60b37e'>%s</span>\n<span color='#3f3b37'>%b</span>"
+
+[volume-mid]
+    summary = "[7-8][0-9]\%"
+    appname = ""
+    history_ignore = yes
+    format = "<span weight='bold' color='#f0c04c'>%s</span>\n<span color='#3f3b37'>%b</span>"
+
+[volume-high]
+    summary = "9[0-9]\%"
+    appname = ""
+    history_ignore = yes
+    format = "<span weight='bold' color='#ff7043'>%s</span>\n<span color='#3f3b37'>%b</span>"
+
+[volume-too-high]
+    summary = "[0-9]{3}\%"
+    appname = ""
+    history_ignore = yes
+    format = "<span weight='bold' color='#bb3030'>%s</span>\n<span color='#3f3b37'>%b</span>"

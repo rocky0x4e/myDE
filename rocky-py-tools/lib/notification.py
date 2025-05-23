@@ -10,7 +10,7 @@ def _getRofiImage(name):
             return str(item.absolute())
 
 
-class NotifySend:
+class Notifier:
     def __init__(self):
         self.args = ['-p']
         self.kwargs = {
@@ -23,6 +23,7 @@ class NotifySend:
         self.title = ""
         self.message = ""
         self.prevId = ""
+        self.notifier = ''
 
     def setTitle(self, title):
         self.title = title
@@ -34,18 +35,6 @@ class NotifySend:
 
     def setTimeout(self, ms):
         self.kwargs['-t'] = str(ms)
-        return self
-
-    def setTransient(self, state=True):
-        self.args.append("-e") if state else self.args.remove("-e")
-        return self
-
-    def setWait(self, state=True):
-        self.args.append("-w") if state else self.args.remove("-w")
-        return self
-
-    def printId(self):
-        self.args.append("-p")
         return self
 
     def setUrgencyLow(self):
@@ -65,19 +54,15 @@ class NotifySend:
         return self
 
     def addHint(self, hint):
-        self.args.extend(["--hint", hint])
-        return self
-
-    def setRofiImage(self, image):
-        self.addHint(f"string:image-path:file://{_getRofiImage(image)}")
-        return self
-
-    def setGtkImage(self, image):
-        self.addHint(f"string:image-path:{image}")
+        self.args.extend(["-h", hint])
         return self
 
     def setAppName(self, appName):
         self.kwargs["-a"] = appName
+        return self
+
+    def printId(self):
+        self.args.append("-p")
         return self
 
     def flash(self, **kwargs):
@@ -99,5 +84,55 @@ class NotifySend:
                 args[tIndex+1] = timeout
             except ValueError:
                 args.extend(["-t", timeout])
-        self.prevId = sp.check_output(["notify-send", *args,
-                                       self.title, self.message]).decode().strip()
+        result = sp.check_output([self.notifier, *args,
+                                  self.title, self.message]).decode().strip()
+        self.prevId = result.splitlines()[0]
+
+
+class NotifySend(Notifier):
+    def __init__(self):
+        super().__init__()
+        self.notifier = 'notify-send'
+
+    def setTransient(self, state=True):
+        self.args.append("-e") if state else self.args.remove("-e")
+        return self
+
+    def setWait(self, state=True):
+        self.args.append("-w") if state else self.args.remove("-w")
+        return self
+
+    def setRofiImage(self, image):
+        self.addHint(f"string:image-path:file://{_getRofiImage(image)}")
+        return self
+
+    def setGtkImage(self, image):
+        self.addHint(f"string:image-path:{image}")
+        return self
+
+    def setAction(self, *args):
+        return self
+
+
+class DunstCtl(Notifier):
+    def __init__(self):
+        super().__init__()
+        self.notifier = "dunstify"
+
+    def setRofiImage(self, image):
+        self.kwargs["-I"] = _getRofiImage(image)
+        return self
+
+    def setWait(self, state=True):
+        return self
+
+    def setTransient(self, state=True):
+        self.addHint('string:transient:true')
+        return self
+
+    def setAction(self, action, label):
+        self.kwargs["-A"] = f"{action},{label}"
+        return self
+
+
+DefautNotifier = DunstCtl

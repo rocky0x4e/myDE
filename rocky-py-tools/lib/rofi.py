@@ -11,6 +11,7 @@ class rofi:
         self.kwargs['-dmenu'] = ""
         self.kwargs["-icon-theme"] = "rofi"
         self.kwargs['-i'] = ""
+        self.kwargs['-markup'] = ""
         return self
 
     def setInputBarChildren(self, childrend):
@@ -57,6 +58,20 @@ class rofi:
         self.items[column].append(f"{item}{self.rofiIcon(icon)}")
         return self
 
+    def addPseudoTableIcon(self, icon):
+        self.items[-1][-1] += self.rofiIcon(icon)
+
+    def fmtPseudoTable(self):
+        colWidth = [max([len(item) for item in col]) for col in self.items]
+        newItemList = []
+        for lineIndex in range(len(self.items[0])):
+            item = ''
+            for colIndex in range(len(self.items)):
+                item += self.items[colIndex][lineIndex].ljust(colWidth[colIndex]) + " | "
+            newItemList.append(item.strip(" | "))
+        self.items = newItemList
+        return self
+
     def rJustifyCol(self, col):
         maxChar = max([len(x) for x in self.items[col]])
         self.items[col] = [x.rjust(maxChar) for x in self.items[col]]
@@ -83,7 +98,8 @@ class rofi:
             allArgs.append(v) if v else None
 
         try:
-            print("debug rofi run\n", ["rofi", *allArgs])
+            # print("debug rofi run\n", ["rofi", *allArgs])
+            # print("debug rofi menu\n", menu)
             return sp.check_output(["rofi", *allArgs], input=menu.encode()).decode().strip()
         except sp.CalledProcessError:
             exit(0)
@@ -96,6 +112,10 @@ class rofi:
 
     def addSeparator(self, length=40, text='', dash='-', icon="zigzag"):
         self.addItem(*rofi.separator(length, text, dash, icon))
+        return self
+
+    def addMesg(self, mesg):
+        self.kwargs['-mesg'] = mesg
         return self
 
     @staticmethod

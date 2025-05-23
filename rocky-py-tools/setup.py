@@ -24,6 +24,7 @@ setup(
             'showRamStat = rockytools.showRamStat:main',
             'simpleNotepad = rockytools.simpleNotepad:main',
             'screenshot = rockytools.screenshot:main',
+            'dunsthistory = rockytools.dunsthistory:main',
         ],
     },
     install_requires=[

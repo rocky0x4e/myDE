@@ -27,7 +27,7 @@ INSTALL = [
 def backup(folder: Path):
     if folder.is_symlink():
         folder.unlink()
-    else:
+    elif folder.exists():
         folder.rename(f"{folder.absolute()}.bk")
 
 

@@ -1,6 +1,6 @@
 import subprocess as sp
 from lib.rofi import rofi
-from lib.notifysend import NotifySend
+from lib.notification import DefautNotifier
 
 CC = "Clear mem cache"
 memInfo = []
@@ -14,7 +14,7 @@ unit = {
     "KB2": 1,
 }
 
-notify = NotifySend().setAppName("Memory stats").setTransient()
+notify = DefautNotifier().setAppName("Memory stats").setTransient()
 
 
 def main():

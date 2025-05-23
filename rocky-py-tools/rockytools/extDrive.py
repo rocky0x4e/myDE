@@ -1,6 +1,6 @@
 import subprocess as sp
 from lib.rofi import rofi
-from lib.notifysend import NotifySend
+from lib.notification import DefautNotifier
 from lib.lsblk import StorageBlockCtl
 
 EJECT_ALL = "Eject all"
@@ -8,7 +8,7 @@ MOUNT_ALL = "Mount all"
 REFRESH_MMC = "Refresh MMC slot"
 NO_DRIVE = "No external drive "
 
-notify = NotifySend().setAppName("Ext Disk Manager").setTimeout(3000).setTransient()
+notify = DefautNotifier().setAppName("Ext Disk Manager").setTimeout(3000).setTransient()
 
 
 def mountBlock(self, block):

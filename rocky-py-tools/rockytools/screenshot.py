@@ -4,7 +4,7 @@ from gi.repository import Gtk, GdkPixbuf, Gdk
 import gi
 import subprocess as sp
 from pathlib import Path
-from lib.notifysend import NotifySend
+from lib.notification import DefautNotifier
 gi.require_version("Gtk", "3.0")
 
 # Sample entries similar to "${entries[@]}" in your bash script
@@ -18,7 +18,7 @@ SAVE_CLIP = "Save to clipboard (Enter)"
 SETTINGS = {'saveMode': "", 'grabMode': "", "delay": 0}
 APP_NAME = "R.Screenshot"
 
-NOTIFY = NotifySend().setAppName(APP_NAME).setTransient().setTimeout(3000)
+NOTIFY = DefautNotifier().setAppName(APP_NAME).setTransient().setTimeout(3000)
 
 
 class ScreenGrabber(Gtk.Window):

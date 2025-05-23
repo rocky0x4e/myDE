@@ -1,6 +1,6 @@
 import types
 import psutil
-from lib.notifysend import NotifySend
+from lib.notification import DefautNotifier
 from lib.rofi import rofi
 from pathlib import Path
 import subprocess as sp
@@ -9,7 +9,7 @@ import libtmux
 W = ""
 H = Path.home()
 rf = rofi({'-i': '', '-select': 'Suspend'}).setTheme("overlays/thin-side-bar").setPrompt("System Control")
-notify = NotifySend().setAppName("System control").setTransient()
+notify = DefautNotifier().setAppName("System control").setTransient()
 SEP = rf.separator(32)
 tmuxServer = libtmux.Server()
 tmuxSession = "tmuxControl"

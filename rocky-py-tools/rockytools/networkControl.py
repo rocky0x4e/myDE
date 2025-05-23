@@ -1,7 +1,7 @@
 import subprocess as sp
 from lib.rofi import rofi
 from lib.network import NetworkCtl, ResolveCtl
-from lib.notifysend import NotifySend
+from lib.notification import DefautNotifier
 
 ICONS = {
     '802-11-wireless': {True: "wifi", False: "wifi-no"},
@@ -12,7 +12,7 @@ ICONS = {
 SHOW_ALL = "Show more"
 NET_MAN = "Open Network Manager"
 TOGGLE = {True: "down", False: "up"}
-notify = NotifySend().setAppName("Network manager").setTransient()
+notify = DefautNotifier().setAppName("Network manager").setTransient()
 
 
 def main():
