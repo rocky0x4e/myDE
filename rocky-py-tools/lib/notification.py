@@ -57,6 +57,21 @@ class Notifier:
         self.args.extend(["-h", hint])
         return self
 
+    def clearHint(self):
+        skipIndex = []
+        i = 0
+        while i < len(self.args):
+            if self.args[i] == "-h":
+                skipIndex.extend([i, i+1])
+                i += 1
+            i += 1
+        newArg = []
+        for i in range(len(self.args)):
+            if i in skipIndex:
+                continue
+            newArg.append(self.args[i])
+        self.args = newArg
+
     def setAppName(self, appName):
         self.kwargs["-a"] = appName
         return self

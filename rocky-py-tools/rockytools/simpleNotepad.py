@@ -1,4 +1,4 @@
-from gi.repository import Gtk, GtkSource, Gdk, GLib, WebKit2
+from gi.repository import Gtk, GtkSource, Gdk, GLib, WebKit2  # type: ignore
 import markdown
 import gi
 import sys

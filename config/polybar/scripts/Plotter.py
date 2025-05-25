@@ -1,70 +1,18 @@
 #!/usr/bin/env python3
 
 import sys
-import os
 import matplotlib.pyplot as plt
 from datetime import datetime
 import subprocess as sp
+import json
 
-class DataHelper:
-    DATA_DIR = f'{os.getenv("HOME")}/.config/polybar/data'
+from pathlib import Path
 
-    @staticmethod
-    def isFile(filename):
-        return os.path.isfile(f"{DataHelper.DATA_DIR}/{filename}")
-
-    @staticmethod
-    def list(folder=""):
-        return os.listdir(f"{DataHelper.DATA_DIR}/{folder}")
-
-    def getAbsPath(self):
-        return f"{self.__class__.DATA_DIR}/{self.fileName}"
-
-    def __init__(self, name, lock=False) -> None:
-        self.fileName = name
-        self.fileLock = f"{name}.lock"
-        self.fileFull = f"{self.__class__.DATA_DIR}/{self.fileName}"
-        self.lockFull = f"{self.fileFull}.lock"
-        self.needLock = lock
-
-    def readJsonFile(self):
-        self.getLock()
-        try:
-            with open(self.fileFull, "r") as f:
-                import json
-                data = json.load(f)
-        except:
-            data = {}
-        self.unlock()
-        return data
-
-    def writeJsonFile(self, data={}):
-        self.getLock()
-        with open(self.fileFull, "w+") as f:
-            import json
-            json.dump(data, f, indent=3)
-        self.unlock()
-
-    def getLock(self):
-        if not self.needLock:
-            return
-        if os.path.isfile(self.lockFull):
-            exit(0)
-        with open(self.lockFull, "w+"):
-            pass
-
-    def unlock(self):
-        if not self.needLock:
-            return
-        if os.path.isfile(self.lockFull):
-            os.remove(self.lockFull)
-
-    def remove(self):
-        os.remove(self.fileFull)
+DATA_DIR = Path.home() / ".config" / "polybar" / "data"
 
 
-def doPlot(fileName):
-    DATA = DataHelper(fileName).readJsonFile()["history"]
+def plotAFile(file: Path):
+    DATA = json.looads(file.read_text())["history"]
     hours = []
     percent = []
     fig, ax = plt.subplots(layout='constrained')
@@ -90,22 +38,37 @@ def doPlot(fileName):
             plt.close(event.canvas.figure)
 
     plt.gcf().canvas.mpl_connect("key_press_event", close_figure)
-    plt.title(fileName.split("/")[-1])
+    plt.title(file.name)
     plt.show()
 
 
 def plotFolder(folder):
-    files = DataHelper.list(folder)
-    zCheckList=[]
-    for f in files:
-        zCheckList.append("true")
-        zCheckList.append(f)
-    files = sp.check_output(["zenity", "--list", "--title", "Plotter", "--width=500", "--height=400",
-             "--checklist", "--text=Select data to plot", "--hide-header",
-             "--column=null", "--column=Files", *zCheckList]).decode().strip().split("|")
+    files = [f for f in folder.iterdir()]
+    names = [f.name for f in files]
+    zCheckList = []
+    for n in names:
+        zCheckList.append("false")
+        zCheckList.append(n)
+    while True:
+        selector = sp.Popen(["yad", "--list", "--title", "Plotter", "--width=500", "--height=400",
+                            "--checklist", "--text=Select data to plot", "--no-headers",
+                             "--column=null", "--column=Files",
+                             "--button=Select all:3", "--button=Select none:5", "--button=Cancel:1", "--button=OK:0",
+                             *zCheckList], stdout=sp.PIPE)
+        returnCode = selector.wait()
+        if returnCode == 0:
+            break
+        if returnCode in [1, 252]:
+            return
+        toggle = {3: 'true', 5: 'false'}
+        for i in range(len(zCheckList)):
+            zCheckList[i] = toggle[returnCode] if zCheckList[i] in ['true', 'false'] else zCheckList[i]
+    stdout, stderr = selector.communicate()
 
-    helpers = [DataHelper(f"{folder}/{file}") for file in files if file.endswith(".json")]
-    allData = {dh.fileName.split("/")[-1].rstrip(".json"): dh.readJsonFile().get("history",{}) for dh in helpers}
+    selectedFiles = stdout.decode().split("|")
+
+    selectedFiles = [f for f in files if f.name in selectedFiles]
+    allData = {f.name.rstrip(".json"): json.loads(f.read_text()).get("history", {}) for f in selectedFiles}
     eachMin = [min(d.keys()) for d in allData.values() if d.values()]
     minDate = min(eachMin)
     graphs = {}
@@ -157,7 +120,10 @@ def plotFolder(folder):
 
 
 if __name__ == "__main__":
-    if DataHelper.isFile(sys.argv[1]):
-        doPlot(sys.argv[1])
-    else:
-        plotFolder(sys.argv[1])
+    path = Path(sys.argv[1])
+    path = path if path.exists() else DATA_DIR / path
+
+    if path.is_file():
+        plotAFile(path)
+    elif path.is_dir():
+        plotFolder(path)

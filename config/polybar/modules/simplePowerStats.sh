@@ -225,7 +225,7 @@ function trimBattData {
                 toDel+=".history.${d}, "
             fi
         done
-        if [[ -z $toDel ]]; then return ; fi
+        if [[ -z $toDel ]]; then continue ; fi
         echo "$content" | jq 'del('"${toDel%', '}"')' > "$f"
     done
 }

@@ -1,6 +1,6 @@
 from datetime import datetime
 import time
-from gi.repository import Gtk, GdkPixbuf, Gdk
+from gi.repository import Gtk, GdkPixbuf, Gdk  # type: ignore
 import gi
 import subprocess as sp
 from pathlib import Path
