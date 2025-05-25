@@ -142,7 +142,7 @@ class DunstCtl(Notifier):
         return self
 
     def setTransient(self, state=True):
-        self.addHint('string:transient:true')
+        self.addHint('int:transient:1' if state else 'int:transient:0')
         return self
 
     def setAction(self, action, label):

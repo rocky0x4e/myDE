@@ -51,7 +51,7 @@
     context = ctrl+shift+period
 
 [transient_ignore]
-    transient = true
+    match_transient = true
     history_ignore = yes
 
 [urgency_low]
@@ -64,7 +64,7 @@
     timeout = 8
     background = "#efffcd"
     frame_color = "#efffcd"
-    format = "<span weight='bold' color='#2fb45a'>%s</span>\n<span color='#3f3b37'>%b</span>"
+    format = "<span weight='bold' color='#2fb45a'>%s</span>\n<span color='#3f3b37'>%b</span>\n<span color='#3f3b37'>%a</span>"
 
 [urgency_critical]
     timeout = 10
