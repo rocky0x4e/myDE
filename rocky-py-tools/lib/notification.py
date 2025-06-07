@@ -102,6 +102,7 @@ class Notifier:
         result = sp.check_output([self.notifier, *args,
                                   self.title, self.message]).decode().strip()
         self.prevId = result.splitlines()[0]
+        return result
 
 
 class NotifySend(Notifier):
@@ -133,6 +134,7 @@ class DunstCtl(Notifier):
     def __init__(self):
         super().__init__()
         self.notifier = "dunstify"
+        self.actionCallback = {}
 
     def setRofiImage(self, image):
         self.kwargs["-I"] = _getRofiImage(image)
@@ -145,9 +147,18 @@ class DunstCtl(Notifier):
         self.addHint('int:transient:1' if state else 'int:transient:0')
         return self
 
-    def setAction(self, action, label):
-        self.kwargs["-A"] = f"{action},{label}"
+    def addAction(self, action, label, callback=None):
+        self.args.extend(['-A', f"{action},{label}"])
+        self.actionCallback[action] = callback
         return self
+
+    def flash(self, **kwargs):
+        r = super().flash(**kwargs).splitlines()
+        try:
+            action = r[1]
+            self.actionCallback[action]()
+        except (IndexError, KeyError):
+            pass
 
 
 DefautNotifier = DunstCtl

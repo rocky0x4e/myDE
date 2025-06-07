@@ -119,4 +119,6 @@ configuration {
 /*	kb-custom-13: "Alt+number} */
 }
 
-@theme "rounded-purple.rasi"
+//@theme "rounded-purple.rasi"
+
+@theme "/home/rocky/.config/rofi/themes/rounded-green-dark.rasi"

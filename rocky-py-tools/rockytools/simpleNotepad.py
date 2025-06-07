@@ -12,6 +12,7 @@ gi.require_version("GtkSource", "4")
 
 NOTE_PATH = Path.home() / "Notes"
 APPNAME = "Simple notepad"
+NEW_NOTE_MENU = "New"
 
 
 class Notepad(Gtk.Window):
@@ -53,7 +54,7 @@ class Notepad(Gtk.Window):
         try:
             self.fileContent = self.filePath.read_text()
         except Exception as e:
-            self.notify.setTitle("Error").setMessage(str(e)).flash()
+            # self.notify.setTitle("Error").setMessage(e).flash()
             self.fileContent = ""
 
         # Apply dark theme
@@ -322,7 +323,7 @@ def rofiSelectNote():
     rf = rofi({'-theme+listview+columns': '1'}).makeDmenu().setTheme('overlays/center-dialog').setPrompt("Notes")
     for item in NOTE_PATH.iterdir():
         rf.addItem(item.name, "note")
-    rf.addItem("New", "note-add")
+    rf.addItem(NEW_NOTE_MENU, "note-add")
     return rf.run()
 
 

@@ -2,10 +2,10 @@
     enable_posix_regex = yes
     monitor = 0
     follow = mouse
-    height = (0, 2000)
-    width = (500, 1000)
+    height = (0, 500)
+    width = (500, 500)
     origin = top-right
-    offset = 10x40
+    offset = (10, 40)
     shrink = yes
     separator_height = 8
     gap_size = 5
@@ -23,10 +23,10 @@
     ignore_newline = no
     stack_duplicates = false
     hide_duplicate_count = yes
-    show_indicators = yes
-    icon_position = left
+    show_indicators = no
+    icon_position = right
     enable_recursive_icon_lookup = yes
-    icon_theme = Mint-Y
+    icon_theme = Mint-Y, rofi
     min_icon_size = 48
     max_icon_size = 48
     sticky_history = yes
@@ -39,16 +39,15 @@
     separator_color = auto
     title = Dunst
     class = Dunst
-    mouse_left_click = do_action,open_url,close_current
+    mouse_left_click = do_action,close_current
     mouse_right_click = close_all
-    dmenu = /usr/bin/rofi -dmenu
+    dmenu = rofi -dmenu -p Dunst -theme overlays/center-dialog
     vertical_alignment = center
-
-[shortcuts]
     close = ctrl+space
     close_all = ctrl+shift+space
     history = ctrl+shift+h
     context = ctrl+shift+period
+    format = "  %s\n  %b\n\n  %a"
 
 [transient_ignore]
     match_transient = true
@@ -56,57 +55,78 @@
 
 [urgency_low]
     timeout = 4
-    background = "#eee9e5"
-    frame_color = "#eee9e5"
-    format = "<span weight='bold' color='#3f3b37'>%s</span>\n<span color='#3f3b37'>%b</span>"
+    background = "#A0C878"
+    frame_color = "#A0C878"
+    format = "<span weight='bold' color='#4A102A'>  %s</span>\n<span color='#3f3b37'>  %b</span>\n<span color='#000'></span>\n<span color='#9a05df'>  %a</span>"
 
 [urgency_normal]
     timeout = 8
-    background = "#efffcd"
-    frame_color = "#efffcd"
-    format = "<span weight='bold' color='#2fb45a'>%s</span>\n<span color='#3f3b37'>%b</span>\n<span color='#3f3b37'>%a</span>"
+    background = "#FAFFCA"
+    frame_color = "#FAFFCA"
+    format = "<span weight='bold' color='#4A102A'>  %s</span>\n<span color='#3f3b37'>  %b</span>\n<span color='#000'></span>\n<span color='#9a05df'>  %a</span>"
 
 [urgency_critical]
     timeout = 10
     background = "#ff7043"
     frame_color = "#ff7043"
-    format = "<span weight='bold' color='#3f3b37'>%s</span>\n<span color='#ffffff'>%b</span>"
-
-[no-title]
-    summary = ""
-    body = "^$"
-    format = "<span color='#3f3b37'>%s</span>"
-
-[copyq]
-    summary = "Text Copied"
-    history_ignore = yes
+    format = "<span weight='bold' color='#4A102A'>  %s</span>\n<span color='#ffffff'>  %b</span>\n<span color='#000'></span>\n<span color='#fff9a4'>  %a</span>"
 
 [volume-0]
     summary = "0\%"
     appname = ""
     history_ignore = yes
-    format = "<span weight='bold' color='#a7bcc9'>%s</span>\n<span color='#3f3b37'>%b</span>"
+    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
 
 [volume-low]
     summary = "([1-9]|[1-7][0-9])\%"
     appname = ""
     history_ignore = yes
-    format = "<span weight='bold' color='#60b37e'>%s</span>\n<span color='#3f3b37'>%b</span>"
+    highlight = "#60b37e"
+    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
 
 [volume-mid]
     summary = "[7-8][0-9]\%"
     appname = ""
     history_ignore = yes
-    format = "<span weight='bold' color='#f0c04c'>%s</span>\n<span color='#3f3b37'>%b</span>"
+    highlight = "#f0c04c"
+    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
 
 [volume-high]
     summary = "9[0-9]\%"
     appname = ""
     history_ignore = yes
-    format = "<span weight='bold' color='#ff7043'>%s</span>\n<span color='#3f3b37'>%b</span>"
+    highlight = "#ff7043"
+    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
 
 [volume-too-high]
     summary = "[0-9]{3}\%"
     appname = ""
     history_ignore = yes
-    format = "<span weight='bold' color='#bb3030'>%s</span>\n<span color='#3f3b37'>%b</span>"
+    highlight = "#bb3030"
+    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
+
+[slack]
+    appname = "Slack"
+    markup = no
+    new_icon = "com.slack.Slack"
+
+[blueman]
+    appname = "blueman"
+    history_ignore = yes
+
+[copyq]
+    summary = "Text Copied"
+    history_ignore = yes
+
+[copyq2]
+    summary = "Data Copied"
+    appname = ""
+    body = "EMPTY"
+    history_ignore = yes
+    skip_display = yes
+
+[copyq_img]
+    summary = "CopyQ"
+    body = ""
+    history_ignore = yes
+    skip_display = yes

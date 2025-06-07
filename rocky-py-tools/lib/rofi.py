@@ -61,18 +61,19 @@ class rofi:
     def addPseudoTableIcon(self, icon):
         self.items[-1][-1] += self.rofiIcon(icon)
 
-    def fmtPseudoTable(self):
+    def fmtPseudoTable(self, colSeparator="〱"):
+        tableData = self.items
+        self.items = []
         try:
-            colWidth = [max([len(item) for item in col]) for col in self.items]
+            colWidth = [max([len(item) for item in col]) for col in tableData]
         except ValueError:
             return self
-        newItemList = []
-        for lineIndex in range(len(self.items[0])):
+        for lineIndex in range(len(tableData[0])):
             item = ''
-            for colIndex in range(len(self.items)):
-                item += self.items[colIndex][lineIndex].ljust(colWidth[colIndex]) + " |  "
-            newItemList.append(item.strip(" | "))
-        self.items = newItemList
+            for colIndex in range(len(tableData)):
+                item += tableData[colIndex][lineIndex].ljust(colWidth[colIndex]) + f" {colSeparator} "
+            self.items.append(item.rstrip(f" {colSeparator} "))
+
         return self
 
     def rJustifyCol(self, col):
@@ -84,7 +85,7 @@ class rofi:
         additionArgs = {} if additionArgs is None else additionArgs
         try:
             menu = "\n".join(self.items)
-        except TypeError:
+        except TypeError as e:
             items = []
             for col in self.items:
                 items.extend(col)
@@ -101,8 +102,6 @@ class rofi:
             allArgs.append(v) if v else None
 
         try:
-            # print("debug rofi run\n", ["rofi", *allArgs])
-            # print("debug rofi menu\n", menu)
             return sp.check_output(["rofi", *allArgs], input=menu.encode()).decode().strip()
         except sp.CalledProcessError:
             exit(0)
@@ -111,7 +110,7 @@ class rofi:
         return f"\x00icon\x1f{iconName}" if iconName else ""
 
     def isMenuEmpty(self):
-        return len(self.items) == 0 if type(self.items[0]) is not list else self.items[0] == []
+        return self.items == [] or self.items[0] == []
 
     def addSeparator(self, length=40, text='', dash='-', icon="zigzag"):
         self.addItem(*rofi.separator(length, text, dash, icon))

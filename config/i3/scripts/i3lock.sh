@@ -36,8 +36,8 @@ function isEnable {
 
 function locker {
     flashOff
-    xset dpms force off
-    sleep 3
+    # xset dpms force off
+    # sleep 3
     i3lock -enfc $lockColor -i $lockImg
     # -n: not fork, to prevent xautolock from keep calling the notifier and locker when a locker is already running
     # must turn off the screen first otherwise the lock with -n will hold the script forever
@@ -45,8 +45,8 @@ function locker {
 
 function lockerFork {
     i3lock -efc $lockColor -i $lockImg
-    sleep 5
-    xset dpms force off
+    # sleep 5
+    # xset dpms force off
 }
 
 function notifier {

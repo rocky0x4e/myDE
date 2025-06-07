@@ -10,7 +10,7 @@ function VCBRate {
         rateBuy=${rateBuy}
     else
         rateBuy=$(echo "$data" | xmllint --xpath '//*[@CurrencyCode="USD"]/@Buy' - \
-        | awk 'match($0, /\s+\w+="(.*)\.[0-9]{2}"/, ary) {print ary[1]}')
+        2> /dev/null | awk 'match($0, /\s+\w+="(.*)\.[0-9]{2}"/, ary) {print ary[1]}')
         echo "$data" > $VCB_TMP
     fi
     echo -e "%{T${font}}$rateBuy%{T-}"

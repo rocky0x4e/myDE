@@ -18,7 +18,7 @@ SAVE_CLIP = "Save to clipboard (Enter)"
 SETTINGS = {'saveMode': "", 'grabMode': "", "delay": 0}
 APP_NAME = "R.Screenshot"
 
-NOTIFY = DefautNotifier().setAppName(APP_NAME).setTransient().setTimeout(3000)
+NOTIFY = DefautNotifier().setAppName(APP_NAME).setTransient().setTimeout(5000)
 
 
 class ScreenGrabber(Gtk.Window):
@@ -169,6 +169,20 @@ def main():
         file = folder / f"{now.strftime("%Y%m%d-%H%M%S")}.png"
         notifyMsg += "File"
         cmd.append(str(file.absolute()))
+
+        def openPhotoCallback():
+            sp.call(["xdg-open", str(file.absolute())])
+
+        def openFolderCallback():
+            sp.call(["xdg-open", str(folder.absolute())])
+
+        def removePhotoCallback():
+            file.unlink()
+            DefautNotifier().setAppName(APP_NAME).setTitle("Removing screenshot").setMessage(file.name).flash()
+
+        NOTIFY.addAction("A1", "Open screenshot", openPhotoCallback)
+        NOTIFY.addAction("A2", "Open folder", openFolderCallback)
+        NOTIFY.addAction("A3", "Remove screenshot", removePhotoCallback)
 
     maimProc = sp.Popen(cmd, stderr=sp.PIPE, stdout=sp.PIPE)
     imageData, _ = maimProc.communicate()
