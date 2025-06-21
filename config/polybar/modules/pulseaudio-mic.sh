@@ -1,13 +1,5 @@
 #!/bin/bash
-# COLOR_MUTE="#db4437"
-# COLOR_UMUTE="#76FF03"
-COLOR_MUTE=""
-COLOR_UMUTE=""
-
 NPID=0
-lastTime=$(date +%s%3N)
-thisTime=$((lastTime+10))
-
 isMuted(){
     m=yes
     inputSOURCES=($(pactl list short sources | grep input | cut -f1))

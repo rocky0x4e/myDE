@@ -21,9 +21,9 @@
     show_age_threshold = -1
     word_wrap = yes
     ignore_newline = no
-    stack_duplicates = false
-    hide_duplicate_count = yes
-    show_indicators = no
+    stack_duplicates = yes
+    hide_duplicate_count = no
+    show_indicators = yes
     icon_position = right
     enable_recursive_icon_lookup = yes
     icon_theme = Mint-Y, rofi
@@ -48,6 +48,8 @@
     history = ctrl+shift+h
     context = ctrl+shift+period
     format = "  %s\n  %b\n\n  %a"
+    foreground = "#000000"
+    background = "#A0C878"
 
 [transient_ignore]
     match_transient = true

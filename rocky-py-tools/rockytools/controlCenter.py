@@ -103,14 +103,11 @@ class ControlCenter:
         {"name": "Theme settings", "icon": "cinnamon-preferences-color",
          "cmd": ['cinnamon-settings', 'themes']},
         {"name": SEP[0], 'icon': SEP[1]},
-        {"name": "HF builds", "icon": "apk-64",
-         "cmd": ['rofi-apkInstaller.sh', f'{H}/HF-data/builds']},
+        # {"name": "HF builds", "icon": "apk-64",
+        #  "cmd": ['rofi-apkInstaller.sh', f'{H}/HF-data/builds']},
         {"name": "Restmail", "icon": "email",
          "cmd": ["restmail"]},
         *listAvds(),
-        {"name": "AWS VPN", "icon": "VPN",
-         "cmd": ["bash", "-c", r"""if ! i3-msg '[class="AWS VPN Client"]' focus; then
-                        dex /usr/share/applications/awsvpnclient.desktop; fi """]},
         {
             True:  {"name": "Stop MITM", "icon": "hacker-activity", "cmd": [tmuxHelper, "stop", "mitmweb"]},
             False: {"name": "Start MITM", "icon": "hacker-activity", "cmd": [tmuxHelper, "start", "mitmweb"]}

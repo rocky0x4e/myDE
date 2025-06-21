@@ -2,7 +2,7 @@
 
 interval=45
 intervalCrit=5
-battCrit=30
+battCrit=20
 icSYS="\\0icon\\x1f"
 
 battDataDir=~/.config/polybar/data/upower
@@ -24,11 +24,11 @@ icPer[${icIdx[2]}]="\uf242"; icColor[${icIdx[2]}]="#FFFF33"
 icPer[${icIdx[3]}]="\uf243"; icColor[${icIdx[3]}]="#ff5555"
 icPer[${icIdx[4]}]="\uf244"; icColor[${icIdx[4]}]="#FF0000"
 
-batt=/sys/class/power_supply/BAT1
+mainBatt=/sys/class/power_supply/BAT1
 cord=/sys/class/power_supply/ADP1/online
 
-battStat=$batt/status
-battCap=$batt/capacity
+battStat=$mainBatt/status
+battCap=$mainBatt/capacity
 dateFormat="+%Y-%m-%dT%H:%M:%S"
 
 function detail {
@@ -165,12 +165,6 @@ function recordAllBatt {
         percent=${percent//%/}
         name=${vendor:-$model}_${serial:-$nPath}
 
-        ### Notify if batt cap is low
-        if [[ $percent -lt $battCrit ]]; then
-            notify-send -e -a "Battery stats" "Battery low!!!" \
-            "${name}'s battery is at ${percent}%, please charge!!!" -u critical
-        fi
-
         file="$battDataDir/$name"
         file="${file// /_}.json"
         key=$(date $dateFormat)
@@ -196,23 +190,36 @@ function recordAllBatt {
             fi
         fi
         echo -e "$newData" | jq > "$file"
+        ### Notify if batt cap is low
+        if [[ $percent -lt $battCrit ]]; then
+            notify-send -e -a "Battery stats" "Battery low!!!" \
+            "${name}'s battery is at ${percent}%, please charge!!!" -u critical
+        fi
     done
 }
 
 function trimBattData {
     zCheckList=()
     for f in $battDataDir/*.json; do
-        zCheckList+=(true $(basename $f))
+        if [[ -f $f ]]; then zCheckList+=(true $(basename $f)); fi
     done
-    select=$(zenity --list --title 'Trimming battery log' --width=600 --height=300 \
-    --checklist --text="Select files to trim" --hide-header --column null --column file \
+    select=$(yad --list --title 'Trimming battery log' --width=600 --height=300 \
+    --checklist --text="Select files to trim" --no-headers --column null --column file \
+    --button=Delete:2 --button=Cancel:1 --button=OK:0 \
     ${zCheckList[@]})
+    button=$?
     files=()
     while IFS='|' read -ra data; do
         for f in ${data[@]}; do
-            files+=("$f")
+            files+=("${f/TRUE/}")
         done
     done <<< "$select"
+    if [[ $button -eq 2 ]]; then
+        for f in ${files[@]}; do
+            rm $battDataDir/$f
+        done
+        return
+    fi
 
     for f in ${files[@]}; do
         f=$battDataDir/$f

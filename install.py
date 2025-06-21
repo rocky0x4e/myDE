@@ -5,43 +5,42 @@ import subprocess as sp
 import sys
 import os
 
-INSTALL = [
-    {
-        "msg": "Installing configs...",
-        "from": "config",
-        "to": ".config",
-    },
-    {
-        "msg": "Installing bash tools...",
-        "from": "tools",
-        "to": ".local/bin/",
-    },
-    {
-        "msg": "Installing icons...",
-        "from": "icons",
-        "to": ".local/share/icons/",
-    },
-]
-
-
-def backup(folder: Path):
-    if folder.is_symlink():
-        folder.unlink()
-    elif folder.exists():
-        folder.rename(f"{folder.absolute()}.bk")
-
 
 def installResources():
+    RESOURCES = [
+        {
+            "msg": "Installing configs...",
+            "from": "config",
+            "to": ".config",
+        },
+        {
+            "msg": "Installing bash tools...",
+            "from": "tools",
+            "to": ".local/bin/",
+        },
+        {
+            "msg": "Installing icons...",
+            "from": "icons",
+            "to": ".local/share/icons/",
+        },
+    ]
+
+    def backup(folder: Path):
+        if folder.is_symlink():
+            folder.unlink()
+        elif folder.exists():
+            folder.rename(f"{folder.absolute()}.bk")
+
     while True:
         installPrompt = f"{"="*80}\n0 : All below\n"
-        for i in range(len(INSTALL)):
-            msg = INSTALL[i]['msg']
+        for i in range(len(RESOURCES)):
+            msg = RESOURCES[i]['msg']
             installPrompt += f"{i+1} : {msg}\n"
         installPrompt += "Choose what to install, enter anything to exist: "
 
         select = input(installPrompt).strip()
         try:
-            if int(select) < 0 or int(select) > len(INSTALL):
+            if int(select) < 0 or int(select) > len(RESOURCES):
                 print("Quit !!!")
                 return
         except:
@@ -49,11 +48,11 @@ def installResources():
             return
 
         if select == "0":
-            installQ = range(len(INSTALL))
+            installQ = range(len(RESOURCES))
         else:
             installQ = [int(select)-1]
         for i in installQ:
-            D = INSTALL[i]
+            D = RESOURCES[i]
             print(D['msg'])
 
             fromPath = Path(D["from"])
@@ -87,6 +86,9 @@ def installSudoerMod():
     )
 
 
-installResources()
-installBinary()
-installSudoerMod()
+try:
+    globals()[sys.argv[1]]()
+except IndexError:
+    installResources()
+    installBinary()
+    installSudoerMod()
