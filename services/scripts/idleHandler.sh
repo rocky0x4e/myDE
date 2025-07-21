@@ -11,8 +11,7 @@ idle=$((idle / 1000))
 if [[ $idle -gt $IDLE_DURATION ]]; then
     dID=$(notify-send -pet $(( DELAY * 1000 )) -u critical "System!!!" "System suspend in a ${DELAY} seconds")
     curl -d "System suspend in ${DELAY} seconds" https://ntfy.sh/MSI-laptop-alerts
-
-    paplay ~/Music/sound/ding-36029.mp3 >/dev/null 2>&1 &
+    play_MarioTune.sh >/dev/null 2>&1 &
     sleep $DELAY
     if [[ ! -z $dID ]]; then notify-send -r $dID; fi
     idle2=$(xprintidle)

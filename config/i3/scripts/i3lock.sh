@@ -52,7 +52,7 @@ function lockerFork {
 function notifier {
     flash --hint string:image-path:file:///$iconEnabled "Autolock" "Screen lock in ${warnSecond}s."
     curl -d "Screen lock in ${warnSecond} seconds" https://ntfy.sh/MSI-laptop-alerts
-    paplay ~/Music/sound/ding-36029.mp3
+    play_MarioTune.sh
 }
 
 function launcher {

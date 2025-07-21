@@ -13,8 +13,6 @@ icPlgChg="\uf376";   colorPlgChg=${panel[2]:-#000000}
 icPlgNoC="\ue55e";   colorPlgNoC=${panel[1]:-#000000}
 ic____NA="\uf1e6";   color____NA=${panel[0]:-#000000}
 
-sound=~/Music/sound/ding-36029.mp3
-
 
 icIdx=(70 50 25 10 0)
 declare -A icPer icColor devInfoByName devIconByName
@@ -104,7 +102,7 @@ function monitor {
         battPercent=$(cat $battCap)
         powCord=$(cat $cord) # value: 0/1
         if [[ $battPercent -lt $battCrit && $powCord -eq 0 ]]; then
-            paplay $sound
+            play_MarioTune.sh
             notify-send -e -a "Battery stats" "Battery low!!!" "Battery is at ${battPercent}%, please charge!!!" -u critical
             time=$intervalCrit
         else time=$interval; fi
