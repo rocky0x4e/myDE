@@ -31,6 +31,7 @@ status() {
 
     echo $pbIcon
     activeWindowId=$(xprop -root _NET_ACTIVE_WINDOW | cut -d " " -f 5)
+    if [[ -z $activeWindowId ]]; then return; fi
     if [[ $activeWindowId != "0x0" ]]; then
         isFullScreen=$(xprop -id "$activeWindowId" | grep _NET_WM_STATE_FULLSCREEN)
     fi

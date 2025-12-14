@@ -1,5 +1,6 @@
 import subprocess as sp
 import re
+import time
 
 ICONS = {
     '802-11-wireless': {True: "wifi", False: "wifi-no"},
@@ -10,6 +11,7 @@ SHOW_ALL = "Show more"
 NET_MAN = "Open Network Manager"
 DNS_SEC = "Private DNS setting"
 TOGGLE = {True: "down", False: "up"}
+GLOBAL_DNS = 'Global'
 
 
 class NetworkCtl:
@@ -32,14 +34,15 @@ class NetworkCtl:
         if len(cons) == 1:
             return sp.check_output(["nmcli", "connection", TOGGLE[cons[0]['dev'] != ""], cons[0]['uuid']]).decode().strip()
         else:  # more than 1 connection with same name
-            self.rofi.makeDmenu()
-            toggle = {}
-            for con in cons:
-                toggle[con['uuid']] = TOGGLE[con['dev'] != ""]
-                self.rofi.addItem(f"{con['name']} | {con['uuid']}", ICONS[con['type']][con["dev"] != ""])
-            select = self.rofi.run()
-            uuid = select.split("|")[1].strip()
-            return sp.check_output(["nmcli", "connection", toggle[uuid], uuid]).decode().strip()
+            pass
+            # self.rofi.makeDmenu()
+            # toggle = {}
+            # for con in cons:
+            #     toggle[con['uuid']] = TOGGLE[con['dev'] != ""]
+            #     self.rofi.addItem(f"{con['name']} | {con['uuid']}", ICONS[con['type']][con["dev"] != ""])
+            # select = self.rofi.run()
+            # uuid = select.split("|")[1].strip()
+            # return sp.check_output(["nmcli", "connection", toggle[uuid], uuid]).decode().strip()
 
 
 class ResolveCtl:
@@ -65,20 +68,32 @@ class ResolveCtl:
         self.DNSTLS = parseDNSSetting(dnstlsOutput)
         return self
 
-    def isPrivateDns(self, interface='Global'):
+    def isPrivateDns(self, interface=GLOBAL_DNS):
         return self.DNSSEC[interface] and self.DNSTLS[interface]
 
-    def enablePrivateDNS(self, interface):
+    def enablePrivateDNS(self, interface=GLOBAL_DNS):
+        if interface == GLOBAL_DNS:
+            sp.Popen(["sudo", "sed", "-i", "-E", "s/DNSSEC=no/DNSSEC=yes/", "/etc/systemd/resolved.conf"])
+            time.sleep(0.5)
+            sp.Popen(["sudo", "sed", "-i", "-E", "s/DNSOverTLS=no/DNSOverTLS=yes/", "/etc/systemd/resolved.conf"])
+            self.restartResolved()
+            return self
         sp.Popen(["sudo", "resolvectl", "dnssec", interface, 'yes'])
         sp.Popen(["sudo", "resolvectl", "dnsovertls", interface, 'yes'])
         return self
 
-    def disablePrivateDNS(self, interface):
+    def disablePrivateDNS(self, interface=GLOBAL_DNS):
+        if interface == GLOBAL_DNS:
+            sp.Popen(["sudo", "sed", "-i", "-E", "s/DNSSEC=yes/DNSSEC=no/", "/etc/systemd/resolved.conf"])
+            time.sleep(0.5)
+            sp.Popen(["sudo", "sed", "-i", "-E", "s/DNSOverTLS=yes/DNSOverTLS=no/", "/etc/systemd/resolved.conf"])
+            self.restartResolved()
+            return self
         sp.Popen(["sudo", "resolvectl", "dnssec", interface, 'no'])
         sp.Popen(["sudo", "resolvectl", "dnsovertls", interface, 'no'])
         return self
 
-    def togglePrivateDNS(self, interface):
+    def togglePrivateDNS(self, interface=GLOBAL_DNS):
         if self.isPrivateDns(interface):
             self.disablePrivateDNS(interface)
             return "disabled"
@@ -88,5 +103,8 @@ class ResolveCtl:
 
     def getManagedInterfaces(self):
         interfaces = list(self.DNSSEC.keys())
-        interfaces.remove('Global')
         return interfaces
+
+    def restartResolved(self):
+        sp.Popen(["sudo", "systemctl", "restart", "systemd-resolved.service"])
+        return self

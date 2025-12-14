@@ -78,7 +78,11 @@ def installSudoerMod():
     sudoerConf = (f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /sbin/modprobe\n"
                   f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/tee /proc/sys/vm/drop_caches\n"
                   f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/resolvectl dnsovertls *\n"
-                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/resolvectl dnssec *\n")
+                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/resolvectl dnssec *\n"
+                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/sed -i -E s/DNSOverTLS*\n"
+                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/sed -i -E s/DNSSEC*\n"
+                  f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart systemd-resolved.service\n"
+                  )
 
     sp.run(
         ['sudo', 'tee', '/etc/sudoers.d/myDE'],

@@ -37,6 +37,9 @@ function rofiShowRates {
 
     # currencies=$(echo "$data" | xmllint --xpath '//*/@CurrencyCode' - | cut -d "=" -f2 | sed 's:\"::g')
     # for c in "${currencies[@]}"; do
+    dt=$(echo "$data" | xmllint --xpath '//DateTime' - )
+    dt=${dt//<DateTime>/}
+    dt=${dt//<\/DateTime>/}
     for c in CAD USD; do
         ((l++))
         curCol="${curCol}\n${c}"
@@ -56,7 +59,7 @@ function rofiShowRates {
     selCol="${selCol}\n-"
     traCol="${traCol}\n-"
 
-    select=$(echo -e "${curCol}\n${buyCol}\n${selCol}\n${traCol}" | rofi -monitor -3 -markup-rows -dmenu -no-custom -p "USD Rate" \
+    select=$(echo -e "${curCol}\n${buyCol}\n${selCol}\n${traCol}" | rofi -monitor -3 -markup-rows -dmenu -no-custom -p "$dt GMT+7:" \
             -theme overlays/context-menu-right \
             -theme+window+width 70ch \
             -theme+listview+lines $l \

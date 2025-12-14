@@ -21,13 +21,15 @@ function flash {
     if [[ ! -z $rid ]]; then replace="-r $rid" ;fi
     stt=$(pactl get-sink-mute "$sink" | cut -d " " -f2)
     if [[ "$stt" == "yes" ]]; then icon="$HOME/.local/share/icons/rofi/512x512/apps/audio-volume-muted.png"; fi
-    # nid=$(notify-send -t 2000 -ep $replace -a "" "${1}%" "${outputDevName}" \
-    #         --hint=int:value:$1 \
-    #         --hint=string:image-path:file:/$icon )
+
     nid=$(dunstify -t 2000 -p $replace -a "" "${vol}%" "${outputDevName}" \
         --hints=int:value:$vol \
         --hints=string:image-path:$icon )
     echo $nid > $t
+}
+
+function getVol {
+    echo -n $(pactl get-sink-volume "$sink" | awk -F '/' '{print $2}' | head -n1 | tr -d ' %')
 }
 
 case "$arg" in
@@ -36,23 +38,23 @@ case "$arg" in
         pactl set-sink-volume "$sink" "$vol%"
         ;;
     [-+][0-9]*)
-        vol=$(pactl get-sink-volume "$sink" | awk -F '/' '{print $2}' | head -n1 | tr -d ' %')
+        vol=$(getVol)
         vol=$(($vol / $arg * $arg $arg))
         if [[ $vol -gt $MAX_VOL ]]; then vol=$MAX_VOL;
         elif [[ $vol -lt 0 ]]; then vol=0; fi
         pactl set-sink-volume "$sink" "$vol%"
         ;;
     toggle)
-        vol=$(pactl get-sink-volume "$sink" | awk -F '/' '{print $2}' | head -n1 | tr -d ' %')
+        vol=$(getVol)
         pactl set-sink-mute "$sink" toggle
         ;;
     get)
-        echo -n $(pactl get-sink-volume "$sink" | awk -F '/' '{print $2}' | head -n1 | tr -d ' %')
+        echo -n $(getVol)
         exit 1
         ;;
     *)
-        echo "Usage: $0 [+N|-N|toggle]"
+        echo "Usage: $0 +N|-N|N|toggle|get (N: percentage)"
         exit 1
         ;;
 esac
-flash $vol
+flash
