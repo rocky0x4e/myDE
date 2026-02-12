@@ -16,9 +16,12 @@ if [[ $idle -gt $IDLE_DURATION ]]; then
     if [[ ! -z $dID ]]; then notify-send -r $dID; fi
     idle2=$(xprintidle)
     idle2=$((idle2 / 1000))
+    idleMinute=$(( idle2 / 60 ))
+    echo "Idled for $idle seconds (~ $idleMinute minutes)!!!"
     if [[ $idle2 -gt $IDLE_DURATION ]]; then
-        idleMinute=$(( idle2 / 60 ))
-        echo "Idled for $idle seconds (~ $idleMinute minutes)!!!"
+        echo "Suspend now!!!"
         systemctl suspend
     fi
+else
+  echo "Idled for only ${idle}s, too short!!!"
 fi

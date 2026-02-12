@@ -9,30 +9,35 @@ ICONS = {
     'bridge': {True: "bridge", False: "bridge"},
     'tun': {True: "tunnel", False: "tunnel"}
 }
-SHOW_MORE = "Show more"
-SHOW_LESS = "Show less"
-NET_MAN = "Open Network Manager"
+
+
+class MenuItem:
+    SHOW_MORE = "Show more"
+    SHOW_LESS = "Show less"
+    NET_MAN = "Open Network Manager"
+
+
 TOGGLE = {True: "down", False: "up"}
 notify = DefautNotifier().setAppName("Network manager").setTransient()
 netMan = NetworkCtl()
 
 
 def showMenu(context, menuType):
-    if menuType == SHOW_LESS:
+    if menuType == MenuItem.SHOW_LESS:
         rf = rofi().makeDmenu().setTheme('overlays/thin-side-bar').setPrompt("Network")
-        rf.addItem(NET_MAN, "manager")
+        rf.addItem(MenuItem.NET_MAN, "manager")
         rf.addItem(f"Private DNS: {context['status']}", context['icon'])
-        rf.addItem(SHOW_MORE, "down-chevron")
+        rf.addItem(MenuItem.SHOW_MORE, "down-chevron")
         rf.addItem(*rofi.separator(30, "Connections"))
         for con in netMan.connections:
             if "802" in con['type']:
                 rf.addItem(con['name'], ICONS[con['type']][con["dev"] != ""])
         return rf.run()
-    if menuType == SHOW_MORE:
+    if menuType == MenuItem.SHOW_MORE:
         rfAll = rofi().makeDmenu().setTheme('overlays/thin-side-bar').setPrompt("Network")
-        rfAll.addItem(NET_MAN, "manager")
+        rfAll.addItem(MenuItem.NET_MAN, "manager")
         rfAll.addItem(f"Private DNS: {context['status']}", context['icon'])
-        rfAll.addItem(SHOW_LESS, "up-chevron")
+        rfAll.addItem(MenuItem.SHOW_LESS, "up-chevron")
         rfAll.addItem(*rofi.separator(30, "Connections"))
         for con in netMan.connections:
             rfAll.addItem(con['name'], ICONS[con['type']][con["dev"] != ""])
@@ -47,11 +52,11 @@ def main():
                    "status": {True: "On", False: "OFF"}[isPrivateDns],
                    "icon": {True: "secure", False: "unprotected"}[isPrivateDns]}
 
-    select = showMenu(dnsSettings, SHOW_LESS)
-    while select in (SHOW_LESS, SHOW_MORE):
+    select = showMenu(dnsSettings, MenuItem.SHOW_LESS)
+    while select in (MenuItem.SHOW_LESS, MenuItem.SHOW_MORE):
         select = showMenu(dnsSettings, select)
 
-    if select == NET_MAN:
+    if select == MenuItem.NET_MAN:
         sp.Popen(["cinnamon-settings", "network"])
         return
     if "Private DNS: " in select:

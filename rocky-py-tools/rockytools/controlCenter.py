@@ -64,7 +64,7 @@ def isProcRunning(procName):
 def listAppImg():
     appPath = Path.home() / "programs"
     return [{"name": item.name, "cmd": [str(item.absolute())], "icon": "app"}
-            for item in appPath.iterdir() if item.name.endswith('.AppImage')]
+            for item in appPath.iterdir() if item.name.lower().endswith('.appimage')]
 
 
 def listAvds():

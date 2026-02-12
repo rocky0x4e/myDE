@@ -2,10 +2,12 @@ from time import sleep
 from lib.rofi import rofi
 from lib import bluetoothctl as btctl
 
-blueMan = 'Open Blueman'
-reload = 'Reload'
-btOff = 'Turn off Bluetooth'
-bt_On = 'Turn on Bluetooth'
+
+class MenuItem:
+    blueMan = 'Open Blueman'
+    reload = 'Reload'
+    btOff = 'Turn off Bluetooth'
+    bt_On = 'Turn on Bluetooth'
 
 
 class BtControl:
@@ -24,8 +26,8 @@ class BtControl:
             icon = 'bt-connected' if self.isConnected(name) else 'bt-disconnected'
             self.rofi.addItem(name, icon)
 
-        self.rofi.addItem(blueMan, "bt-app")
-        self.rofi.addItem(reload, "refresh")
+        self.rofi.addItem(MenuItem.blueMan, "bt-app")
+        self.rofi.addItem(MenuItem.reload, "refresh")
         return self.rofi.run()
 
     def rofiActionOnDev(self, dev):
@@ -73,7 +75,7 @@ class BtControl:
             self.waitStateChange(dev)
             self.connect(dev)
             return self
-        if dev == blueMan:
+        if dev == MenuItem.blueMan:
             btctl.openBlueMan()
             return self
 
@@ -84,7 +86,7 @@ def main():
     while True:
         bman = BtControl()
         selected = bman.prettyRofiList()
-        if selected == reload:
+        if selected == MenuItem.reload:
             continue
         action = bman.rofiActionOnDev(selected)
         bman.handleActionOnDev(action, selected)
