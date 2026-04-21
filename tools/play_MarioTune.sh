@@ -1,6 +1,7 @@
 #!/bin/bash
 v=$(volume.sh get)
 volume.sh 35
+sleep 0.5
 play -qn \
     synth 0.125 square 659.25   : \
     synth 0.125 square 659.25   : \

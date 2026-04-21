@@ -143,7 +143,7 @@ function showIcon {
             ic=$ic____NA; color=$color____NA;
             ;;
     esac
-    echo -e "%{F#000}%{B$color} $ic %{B-}%{F-} "
+    echo -e "%{F#000}%{B$color} $ic %{B-}%{F-}"
 }
 
 function recordAllBatt {

@@ -1,34 +1,8 @@
-from lib import pactl
+from lib.pactl import AudioDevice, PACTL as pactl
 from lib.rofi import rofi
 from time import sleep
 PAVUCTL = 'Open Pavu Control'
 REFRESH = "Reload"
-
-
-class AudioDevice:
-    def __init__(self, data):
-        self.data = data
-
-    @property
-    def _properties(self):
-        return self.data["properties"]
-
-    @property
-    def state(self):
-        return self.data["state"]
-
-    @property
-    def desc(self):
-        return self.data["description"]
-        # return self._properties["device.description"]
-
-    @property
-    def sinkName(self):
-        return self.data["name"]
-
-    def rofiItem(self, defaultSink):
-        icon = "sink-enabled" if self.sinkName in defaultSink else "sink-disabled"
-        return self.desc, icon
 
 
 class AudioDevMan:
@@ -39,18 +13,22 @@ class AudioDevMan:
             .makeDmenu().setPrompt('Audio Control').setTheme("overlays/center-dialog")
 
     def get_devices(self):
-        data = pactl.listSinksJson()
-        self.devcies = [AudioDevice(data) for data in data]
+        self.devcies = pactl.get_devices()
         return self
 
-    def findDev(self, desc):
+    def findDev(self, desc) -> AudioDevice:
         for dev in self.devcies:
             if dev.desc == desc:
                 return dev
+        return AudioDevice()
+
+    def makeRofiItem(self, dev, defaultSink):
+        icon = "sink-enabled" if dev.sinkName in defaultSink else "sink-disabled"
+        return dev.desc, icon
 
     def rofiListDev(self):
         for dev in self.devcies:
-            self.rofi.addItem(*dev.rofiItem(self.defaultSink))
+            self.rofi.addItem(*self.makeRofiItem(dev, self.defaultSink))
 
         self.rofi.addItem(PAVUCTL, "audio-control")
         self.rofi.addItem(REFRESH, "refresh")
