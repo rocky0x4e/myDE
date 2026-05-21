@@ -4,11 +4,13 @@ from lib.network import NetworkCtl, ResolveCtl
 from lib.notification import DefautNotifier
 
 ICONS = {
-    '802-11-wireless': {True: "wifi", False: "wifi-no"},
-    'loopback': {True: "loop-arrow", False: "loop-arrow"},
-    'bridge': {True: "bridge", False: "bridge"},
-    'tun': {True: "tunnel", False: "tunnel"}
+    '802-11-wireless': {"activated": "wifi", "no": "wifi-no"},
+    'loopback': {"activated": "loop-arrow", "no": "loop-arrow"},
+    'bridge': {"activated": "bridge", "no": "bridge"},
+    'tun': {"activated": "tunnel", "no": "tunnel"}
 }
+for k, v in ICONS.items():
+    ICONS[k]["activating"] = "loading-arrow"
 
 
 class MenuItem:
@@ -30,8 +32,9 @@ def showMenu(context, menuType):
         rf.addItem(MenuItem.SHOW_MORE, "down-chevron")
         rf.addItem(*rofi.separator(30, "Connections"))
         for con in netMan.connections:
-            if "802" in con['type']:
-                rf.addItem(con['name'], ICONS[con['type']][con["dev"] != ""])
+            if "802" in con.type:
+                rf.addItem(con.name + " connecting..." if con.state ==
+                           "activating" else con.name, ICONS[con.type][con.state])
         return rf.run()
     if menuType == MenuItem.SHOW_MORE:
         rfAll = rofi().makeDmenu().setTheme('overlays/thin-side-bar').setPrompt("Network")
@@ -40,7 +43,8 @@ def showMenu(context, menuType):
         rfAll.addItem(MenuItem.SHOW_LESS, "up-chevron")
         rfAll.addItem(*rofi.separator(30, "Connections"))
         for con in netMan.connections:
-            rfAll.addItem(con['name'], ICONS[con['type']][con["dev"] != ""])
+            rfAll.addItem(con.name + " connecting..." if con.state ==
+                          "activating" else con.name, ICONS[con.type][con.state])
         return rfAll.run()
     return ""
 
