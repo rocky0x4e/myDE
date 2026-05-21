@@ -30,7 +30,8 @@ EOF
 sudo usermod -aG video $USER
 sudo usermod -aG input $USER
 
-gio mime application/x-bittorrent rocky-torrent.desktop
+gio mime application/x-bittorrent qbt-add.desktop
+gio mime x-scheme-handler/magnet qbt-add.desktop
 gio mime application/vnd.android.package-archive rofi-apkInstaller.desktop
 
 ###############################################
