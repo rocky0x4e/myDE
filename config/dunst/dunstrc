@@ -4,14 +4,14 @@
     follow = mouse
     height = (0, 500)
     width = (500, 500)
-    origin = top-right
+    origin = bottom-right
     offset = (10, 40)
     shrink = yes
     separator_height = 8
     gap_size = 5
     padding = 10
     horizontal_padding = 10
-    frame_width = 6
+    frame_width = 0
     sort = no
     idle_threshold = 120
     font = mono 10
@@ -34,8 +34,8 @@
     browser = /usr/bin/sensible-browser -new-tab
     always_run_script = true
     icon_corner_radius = 3
-    transparency = 8
-    corner_radius = 0
+    transparency = 0
+    corner_radius = 10
     separator_color = auto
     title = Dunst
     class = Dunst
@@ -48,8 +48,8 @@
     history = ctrl+shift+h
     context = ctrl+shift+period
     format = "  %s\n  %b\n\n  %a"
-    foreground = "#000000"
-    background = "#A0C878"
+    background = "#222121"
+    foreground = "#fff"
 
 [transient_ignore]
     match_transient = true
@@ -57,55 +57,49 @@
 
 [urgency_low]
     timeout = 4
-    background = "#A0C878"
-    frame_color = "#A0C878"
-    format = "<span weight='bold' color='#4A102A'>  %s</span>\n<span color='#3f3b37'>  %b</span>\n<span color='#000'></span>\n<span color='#9a05df'>  %a</span>"
+    format = "<span weight='bold' color='#0fbb09'>  %s</span>\n  %b\n\n  %a"
 
 [urgency_normal]
     timeout = 8
-    background = "#FAFFCA"
-    frame_color = "#FAFFCA"
-    format = "<span weight='bold' color='#4A102A'>  %s</span>\n<span color='#3f3b37'>  %b</span>\n<span color='#000'></span>\n<span color='#9a05df'>  %a</span>"
+    format = "<span weight='bold' color='#ebc621'>  %s</span>\n  %b\n\n  %a"
 
 [urgency_critical]
     timeout = 10
-    background = "#ff7043"
-    frame_color = "#ff7043"
-    format = "<span weight='bold' color='#4A102A'>  %s</span>\n<span color='#ffffff'>  %b</span>\n<span color='#000'></span>\n<span color='#fff9a4'>  %a</span>"
+    format = "<span weight='bold' color='#dd6119'>  %s</span>\n  %b\n\n  %a"
 
 [volume-0]
     summary = "0\%"
     appname = ""
     history_ignore = yes
-    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
+    format = %b\n%p
 
 [volume-low]
     summary = "([1-9]|[1-7][0-9])\%"
     appname = ""
     history_ignore = yes
-    highlight = "#60b37e"
-    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
+    highlight = "#0fbb09"
+    format = %b\n%p
 
 [volume-mid]
     summary = "[7-8][0-9]\%"
     appname = ""
     history_ignore = yes
-    highlight = "#f0c04c"
-    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
+    highlight = "#ebc621"
+    format = %b\n%p
 
 [volume-high]
     summary = "9[0-9]\%"
     appname = ""
     history_ignore = yes
-    highlight = "#ff7043"
-    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
+    highlight = "#dd6119"
+    format = %b\n%p
 
 [volume-too-high]
     summary = "[0-9]{3}\%"
     appname = ""
     history_ignore = yes
     highlight = "#bb3030"
-    format = "<span weight='bold' color='#3f3b37'>%b\n%p</span>"
+    format = %b\n%p
 
 [slack]
     appname = "Slack"
