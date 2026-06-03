@@ -8,7 +8,7 @@ echo "options mt7921e disable_aspm=1" | sudo tee /etc/modprobe.d/mt7921e.conf
 sudo apt update && sudo apt upgrade -y
 
 # install others
-sudo apt install -y acpi sysstat htop geany zsh fonts-powerline fonts-font-awesome xclip nitrogen fcitx-unikey maim xautolock simplescreenrecorder jq transmission-cli ffmpeg mpv python3-tk brightnessctl copyq xprintidle
+sudo apt install -y xss-lock acpi sysstat htop geany zsh fonts-powerline fonts-font-awesome xclip nitrogen fcitx-unikey maim xautolock simplescreenrecorder jq transmission-cli ffmpeg mpv python3-tk brightnessctl copyq xprintidle
 
 # use zsh
 chsh -s $(which zsh)
