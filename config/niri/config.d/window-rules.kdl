@@ -1,0 +1,34 @@
+// kitty dropdown setup
+workspace "kitty-scratch"
+window-rule {
+    match app-id="^kitty-dropdown$"
+    open-on-workspace "kitty-scratch"
+    open-floating true
+    default-column-width { proportion 1.0; }
+    default-window-height { proportion 0.45; }
+}
+
+// Window rules let you adjust behavior for individual windows.
+// Find more information on the wiki:
+// https://niri-wm.github.io/niri/Configuration:-Window-Rules
+
+
+
+// Open the Firefox picture-in-picture player as floating by default.
+window-rule {
+    // This app-id regular expression will work for both:
+    // - host Firefox (app-id is "firefox")
+    // - Flatpak Firefox (app-id is "org.mozilla.firefox")
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
+window-rule {
+    match app-id=r#"com.github.hluk.copyq|blueman-manager|localsend_app|pavucontrol|org.gnome.Calendar"#
+    open-floating true
+}

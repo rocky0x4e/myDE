@@ -1,0 +1,113 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "spacing": 0,
+    // Module Placement
+    "modules-left": [
+        // "wlr/taskbar",
+        "tray",
+        "custom/left"
+    ],
+    "modules-center": [
+        "clock",
+        "custom/micstat"
+    ],
+    "modules-right": [
+        "custom/right",
+        "group/syshealth",
+        // "network",
+        "pulseaudio"
+    ],
+    // Module Definitions
+    "wlr/taskbar": {
+        "format": "{icon}",
+        "icon-size": 18,
+        "tooltip-format": "{title}",
+        "on-click": "activate",
+        "on-click-middle": "close"
+    },
+    "clock": {
+        "format": "{:%a, %b %d | <span size='x-large'> %H:%M </span>}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "format": {
+                "today": "<span color='#75f1fa'><b>{}</b></span>"
+            }
+        }
+    },
+    "cpu": {
+        "format": "<span size='x-large'></span> {usage}%",
+        "interval": 5,
+        "tooltip": true
+    },
+    "memory": {
+        "format": "<span size='x-large'></span> {}%",
+        "interval": 15
+    },
+    "network": {
+        "format-wifi": " {essid}",
+        "format-ethernet": "󰈀 {ipaddr}",
+        "format-disconnected": "󰖪 Disconnected",
+        "tooltip-format": "{ifname} via {gwaddr}"
+    },
+    "pulseaudio": {
+        "format": "<span size='x-large'>{icon}</span> {volume}%",
+        "format-muted": "󰝟 Muted",
+        "format-icons": {
+            "default": [
+                "",
+                "",
+                ""
+            ]
+        },
+        "on-click": "pavucontrol"
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󱐋 {capacity}%",
+        "format-icons": [
+            "󰁺",
+            "󰁼",
+            "󰁾",
+            "󰂀",
+            "󰁹"
+        ]
+    },
+    "tray": {
+        "icon-size": 24, // Adjust icon size to fit your bar height
+        "spacing": 10 // Pixels of space between each icon
+    },
+    "custom/micstat": {
+        "exec": "/home/rocky/.config/waybar/scripts/pulseaudio-mic.sh listen",
+        "return-type": "text",
+        "restart-interval": 5,
+        "tooltip": false
+    },
+    "custom/right": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/left": {
+        "format": "",
+        "tooltip": false
+    },
+    "group/syshealth": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "syshc",
+            "transition-left-to-right": true
+        },
+        "modules": [
+            "cpu",
+            "battery",
+            "memory"
+        ]
+    }
+}
