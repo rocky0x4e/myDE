@@ -3,7 +3,7 @@
 // https://niri-wm.github.io/niri/Configuration:-Animations
 
 animations {
- window-open {
+    window-open {
         duration-ms 250
         curve "ease-out-expo"
     }
@@ -11,6 +11,20 @@ animations {
     window-close {
         duration-ms 250
         curve "ease-out-quad"
+    }
+
+    window-movement {
+        // Snappy default spring
+        spring stiffness=800 damping-ratio=1.0 epsilon=0.01
+
+        // Alternatively, use a traditional duration curve if you prefer linear timing:
+        // curve type="ease-out-cubic" duration-ms=200
+    }
+
+    // Note: The camera tracking that follows the window as it moves 
+    // is still handled by this block:
+    horizontal-view-movement {
+        spring stiffness=400 damping-ratio=1.0 epsilon=0.0009
     }
 
 }

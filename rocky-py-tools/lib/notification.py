@@ -1,11 +1,11 @@
 import subprocess as sp
 from pathlib import Path
 
-ROFI_ICO_PATH = Path.home() / ".local/share/icons/rofi/512x512/apps"
+ICO_PATH = Path.home() / ".local/share/icons/wmicons/512x512/apps"
 
 
-def _getRofiImage(name):
-    for item in ROFI_ICO_PATH.iterdir():
+def _getIconPath(name):
+    for item in ICO_PATH.iterdir():
         if name in item.name:
             return str(item.absolute())
 
@@ -76,6 +76,10 @@ class Notifier:
         self.kwargs["-a"] = appName
         return self
 
+    def setTransient(self):
+        # for compatibility, should be implemented in sub class
+        return self
+
     def printId(self):
         self.args.append("-p")
         return self
@@ -118,8 +122,8 @@ class NotifySend(Notifier):
         self.args.append("-w") if state else self.args.remove("-w")
         return self
 
-    def setRofiImage(self, image):
-        self.addHint(f"string:image-path:file://{_getRofiImage(image)}")
+    def setImage(self, image):
+        self.addHint(f"string:image-path:file://{_getIconPath(image)}")
         return self
 
     def setGtkImage(self, image):
@@ -136,8 +140,8 @@ class DunstCtl(Notifier):
         self.notifier = "dunstify"
         self.actionCallback = {}
 
-    def setRofiImage(self, image):
-        self.kwargs["-I"] = _getRofiImage(image)
+    def setImage(self, image):
+        self.kwargs["-I"] = _getIconPath(image)
         return self
 
     def setWait(self, state=True):
@@ -161,4 +165,8 @@ class DunstCtl(Notifier):
             pass
 
 
-DefautNotifier = DunstCtl
+class MakoCtl(Notifier):
+    pass
+
+
+DefautNotifier = MakoCtl

@@ -1,0 +1,95 @@
+{
+    "custom/micstat": {
+        "exec": "/home/rocky/.config/waybar/scripts/pulseaudio-mic.sh listen",
+        "return-type": "json",
+        "restart-interval": 5,
+        "tooltip": false,
+        "on-click": "pa-mic-toggle.sh"
+    },
+    "custom/right": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/left": {
+        "format": "",
+        "tooltip": false
+    },
+    "custom/sep1": {
+        // 〱┆   ╱   ⎮ ┃ ⛏ ⭐ ꔷ ꠶       
+        "format": "〱",
+        "tooltip": false
+    },
+    "custom/sep2": {
+        "format": "┃",
+        "tooltip": false
+    },
+    "custom/simpleNote": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "OPTIONS='-a top-right' simpleNotepad"
+    },
+    "custom/tux": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "fuzzel -a top-right",
+        "on-click-right": "OPTIONS='-a top-right' controlCenter",
+        "on-double-click": "pkill -SIGUSR2 waybar"
+    },
+    "custom/notification": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "makoHistory",
+        "on-double-click": "makoctl reload"
+    },
+    "custom/extDrive": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "OPTIONS='-a top-right' extDrive"
+    },
+    // "custom/browsers": {
+    //     "format": "{icon} {text}",
+    //     "exec": "/home/rocky/.config/waybar/scripts/browser.py",
+    //     "return-type": "json",
+    //     "interval": 5,
+    //     "tooltip": false,
+    //     "icon-size": 24
+    // },
+    "group/syshealth": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "syshc",
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "cpu",
+            "battery",
+            "memory"
+        ]
+    },
+    "group/systray": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "systc",
+            "transition-left-to-right": true
+        },
+        "modules": [
+            "tray",
+            "custom/sep1",
+            "wlr/taskbar"
+        ]
+    },
+    "group/datetime": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "systray",
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "clock",
+            "clock#date"
+        ]
+    }
+}

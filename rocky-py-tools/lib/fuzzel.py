@@ -1,25 +1,68 @@
 import subprocess as sp
+import os
 
 
 class fuzzel:
     def __init__(self, kwargs=None):
-        self.kwargs = kwargs if kwargs else {}
+        self.kwargs = kwargs or {}
         self.items = []
+        self.table = []
+        self.isTable = False
+        self.tableLine = 0
+        self.tableColumn = 0
+        self.tableColumnWidth = {}
+        self.maxLines = 30
+
+    def configMaxLines(self, lineNum):
+        self.maxLines = lineNum
+        return self
+
+    def setOutputLines(self, lineNum):
+        self.kwargs['--lines'] = f'{lineNum}'
+        return self
+
+    def setAnchor(self, position):
+        self.kwargs['--anchor'] = position
+        return self
 
     def makeDmenu(self):
         self.items = []
         self.kwargs['--dmenu'] = ""
-        self.kwargs["--icon-theme"] = "rofi"
-        self.kwargs['-i'] = ""
-        self.kwargs['--markup'] = ""
+        self.kwargs["--icon-theme"] = "wmicons"
         return self
 
-    def setInputBarChildren(self, childrend):
-        self.kwargs["-theme+inputbar+children"] = childrend
+    def unsetIconTheme(self):
+        try:
+            del (self.kwargs["--icon-theme"])
+        except KeyError:
+            pass
         return self
 
-    def setTheme(self, theme):
-        self.kwargs["-theme"] = theme
+    def makeTable(self):
+        self.makeDmenu()
+        self.isTable = True
+        return self
+
+    def addTableLine(self, **kwargs):
+        if not self.isTable:
+            raise RuntimeError(
+                "Object does not support table format, "
+                "use 'makeTabke' method first to create a table menu")
+        line = kwargs['line'] = [f'{c}' for c in kwargs.get('line', [])]
+        self.table.append(kwargs)
+        self.tableLine += 1
+        self.tableColumn = len(line) if len(line) > self.tableColumn else self.tableColumn
+        for i in range(len(line)):
+            if len(line[i]) > self.tableColumnWidth.get(i, 0):
+                self.tableColumnWidth[i] = len(line[i])
+
+        return self
+
+    def fmtTable(self, colSeparator="〱"):
+        for item in self.table:
+            line, icon = item['line'], item.get('icon', '')
+            fmtLine = [line[i].ljust(self.tableColumnWidth[i]) for i in range(len(line))]
+            self.items.append(colSeparator.join(fmtLine) + f"\x00icon\x1f{icon}")
         return self
 
     def setIconTheme(self, iconTheme):
@@ -30,8 +73,21 @@ class fuzzel:
         self.kwargs["-p"] = prompt
         return self
 
+    def hidePrompt(self):
+        self.kwargs['--hide-prompt'] = ''
+        return self
+
+    def onlyPrompt(self):
+        self.kwargs['--prompt-only'] = ''
+        return self
+
+    def setMesg(self, mesg):
+        self.kwargs['--mesg'] = mesg
+        return self
+
     def setWindowWidth(self, windowWidth):
-        self.kwargs["-theme+window+width"] = windowWidth
+        windowWidth = str(windowWidth)
+        self.kwargs["-w"] = windowWidth + "ch" if not windowWidth.endswith('ch') else windowWidth
         return self
 
     def sortDmenu(self, reverse=False):
@@ -40,87 +96,33 @@ class fuzzel:
 
     def addItem(self, item, icon=None, index=-1):
         if icon:
-            item = f"{item}{self.makeIcon(icon)}"
+            item = f"{item}\x00icon\x1f{icon}" if icon else item
         if index == -1:
-            self.items.append(item)
+            self.items.append(item)  # type: ignore
             return self
-        self.items.insert(index, item)
-        return self
-
-    def makeTable(self, numOfCol):
-        self.kwargs['--dmenu'] = ""
-        self.kwargs["--icon-theme"] = "rofi"
-        self.kwargs['-i'] = ""
-        self.items = [[] for i in range(numOfCol)]
-        return self
-
-    def addTableItem(self, item, icon=None, column=0):
-        self.items[column].append(f"{item}{self.makeIcon(icon)}")
-        return self
-
-    def addPseudoTableIcon(self, icon):
-        self.items[-1][-1] += self.makeIcon(icon)
-
-    def fmtPseudoTable(self, colSeparator="〱"):
-        tableData = self.items
-        self.items = []
-        try:
-            colWidth = [max([len(item) for item in col]) for col in tableData]
-        except ValueError:
-            return self
-        for lineIndex in range(len(tableData[0])):
-            item = ''
-            for colIndex in range(len(tableData)):
-                item += tableData[colIndex][lineIndex].ljust(colWidth[colIndex]) + f" {colSeparator} "
-            self.items.append(item.rstrip(f" {colSeparator} "))
-
-        return self
-
-    def rJustifyCol(self, col):
-        maxChar = max([len(x) for x in self.items[col]])
-        self.items[col] = [x.rjust(maxChar) for x in self.items[col]]
+        self.items.insert(index, item)  # type: ignore
         return self
 
     def run(self, additionArgs=None):
         additionArgs = {} if additionArgs is None else additionArgs
-        try:
-            menu = "\n".join(self.items)
-        except TypeError as e:
-            items = []
-            for col in self.items:
-                items.extend(col)
-            menu = "\n".join(items)
-            colNum = str(len(self.items))
-            lineNum = str(max([len(x) for x in self.items]))
-            self.kwargs['-theme+listview+columns'] = colNum
-            self.kwargs['-theme+listview+lines'] = lineNum
+        lineCount = min(len(self.items), self.maxLines)
 
-        allKwArgs = {**self.kwargs, **additionArgs}
+        menu = "\n".join(self.items)  # type: ignore
+
+        allKwArgs = {"--lines": str(lineCount), **self.kwargs, **additionArgs}
         allArgs = []
-        for k, v in allKwArgs.items():
-            allArgs.append(k)
-            allArgs.append(v) if v else None
-
+        allArgs = [item for pair in allKwArgs.items() for item in pair if item] + os.getenv("OPTIONS", "").split(' ')
         try:
-            print(1)
             return sp.check_output(["fuzzel", *allArgs], input=menu.encode()).decode().strip()
         except sp.CalledProcessError as e:
-            print(e)
-            print(menu, "|", " ".join(["fuzzel", *allArgs]))
+            print(":::::: ERROR :::::\n", e)
             exit(0)
-
-    def makeIcon(self, iconName):
-        return f"\x00icon\x1f{iconName}" if iconName else ""
 
     def isMenuEmpty(self):
         return self.items == [] or self.items[0] == []
 
     def addSeparator(self, length=40, text='', dash='-', icon="zigzag"):
         self.addItem(*fuzzel.separator(length, text, dash, icon))
-        return self
-
-    def addMesg(self, mesg):
-        self.kwargs['-mesg'] = mesg
         return self
 
     @staticmethod
@@ -131,11 +133,11 @@ class fuzzel:
             dashCount = int((length - l)/2 - 1)
             dashesLeft = f"{dash * dashCount}"
             dashesRight = dashesLeft + dash if odd else dashesLeft
-            print(f"\n{text}:{odd}\n{dashesLeft}\n{dashesRight}")
             return (f"{dashesLeft} {text} {dashesRight}", "zigzag")
         return dash * length, icon
 
     @staticmethod
-    def yesNo(msg="Are you sure?"):
-        yesNo = fuzzel().makeDmenu().setTheme("overlays/center-yes-no").setPrompt(msg)
-        return yesNo.addItem("Yes", "yes").addItem("No", "no").run()
+    def yesNo(msg="Are you sure? "):
+        return fuzzel().makeDmenu().setMesg(msg).hidePrompt().setOutputLines(3)\
+            .addItem("Yes", "yes")\
+            .addItem("No", "no").run()

@@ -1,5 +1,5 @@
 from time import sleep
-from lib.rofi import rofi
+from lib.fuzzel import fuzzel
 from lib import bluetoothctl as btctl
 
 
@@ -13,7 +13,7 @@ class MenuItem:
 class BtControl:
     def __init__(self):
         self.devices = btctl.listDevices()
-        self.rofi = rofi().makeDmenu().setPrompt('Bluetooth').setTheme('overlays/center-dialog')
+        self.fz = fuzzel().makeDmenu().setPrompt('Bluetooth ').setOutputLines(10).setAnchor("center")
 
     def isBtOn(self):
         pass
@@ -21,22 +21,22 @@ class BtControl:
     def isConnected(self, dev):
         return self.devices[dev].get('isConnected', False)
 
-    def prettyRofiList(self):
+    def prettyDmenu(self):
         for name in self.devices.keys():
             icon = 'bt-connected' if self.isConnected(name) else 'bt-disconnected'
-            self.rofi.addItem(name, icon)
+            self.fz.addItem(name, icon)
 
-        self.rofi.addItem(MenuItem.blueMan, "bt-app")
-        self.rofi.addItem(MenuItem.reload, "refresh")
-        return self.rofi.run()
+        self.fz.addItem(MenuItem.blueMan, "bt-app")
+        self.fz.addItem(MenuItem.reload, "refresh")
+        return self.fz.run()
 
-    def rofiActionOnDev(self, dev):
+    def dmenuActionOnDev(self, dev):
         try:
             if self.isConnected(dev):
-                self.rofi.makeDmenu()
-                self.rofi.addItem("disconnect", "bt-disconnected")
-                self.rofi.addItem("reconnect", "bt-re-pair")
-                return self.rofi.run()
+                self.fz.makeDmenu()
+                self.fz.addItem("disconnect", "bt-disconnected")
+                self.fz.addItem("reconnect", "bt-re-pair")
+                return self.fz.run()
             else:
                 return "connect"
         except:
@@ -85,9 +85,9 @@ class BtControl:
 def main():
     while True:
         bman = BtControl()
-        selected = bman.prettyRofiList()
+        selected = bman.prettyDmenu()
         if selected == MenuItem.reload:
             continue
-        action = bman.rofiActionOnDev(selected)
+        action = bman.dmenuActionOnDev(selected)
         bman.handleActionOnDev(action, selected)
         break

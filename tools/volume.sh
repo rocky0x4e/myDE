@@ -11,7 +11,7 @@ outputDevName=$(pactl -f json list sinks | jq -r '
 function flash {
     t=/tmp/volume.sh.tmp
     l=${t}.lock
-    icon=$HOME/.local/share/icons/rofi/512x512/apps/audio-waves.png
+    icon=$HOME/.local/share/icons/wmicons/512x512/apps/audio-waves.png
     exec 200>"$l" || return 1
     flock -n 200 || {
         echo "Another instance is running. skip notification."
@@ -20,11 +20,11 @@ function flash {
     rid=$(cat $t 2> /dev/null) || reutrn 0
     if [[ ! -z $rid ]]; then replace="-r $rid" ;fi
     stt=$(pactl get-sink-mute "$sink" | cut -d " " -f2)
-    if [[ "$stt" == "yes" ]]; then icon="$HOME/.local/share/icons/rofi/512x512/apps/audio-volume-muted.png"; fi
+    if [[ "$stt" == "yes" ]]; then icon="$HOME/.local/share/icons/wmicons/512x512/apps/audio-volume-muted.png"; fi
 
-    nid=$(dunstify -t 2000 -p $replace -a "" "${vol}%" "${outputDevName}" \
-        --hints=int:value:$vol \
-        --hints=string:image-path:$icon )
+    nid=$(notify-send -t 2000 -p $replace -a "" "${vol}%" "${outputDevName}" \
+        --hint=int:value:$vol \
+        --hint=string:image-path:$icon )
     echo $nid > $t
 }
 

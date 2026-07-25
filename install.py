@@ -73,7 +73,7 @@ def installBinary():
 
 
 def installSudoerMod():
-    input("!!! Installing sudoer mods, need root access to install, Enter to continue.\n"
+    input("!!! Installing sudoer mods, root access is required, Enter to continue.\n"
           "Hit Ctrl + C to skip it but the clear ram script and the MMC refresh function won't work:\n")
     sudoerConf = (f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /sbin/modprobe\n"
                   f"{os.environ["USER"]} ALL=(ALL) NOPASSWD: /usr/bin/tee /proc/sys/vm/drop_caches\n"

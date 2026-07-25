@@ -6,21 +6,21 @@ DEFAULT_ROW_ICON = 'notification'
 
 
 def main():
-    rawHistory = sp.check_output(["dunstctl", "history"]).decode()
-    history = json.loads(rawHistory)['data'].pop()
-    fz = fuzzel().makeTable().setPrompt("Dunst history ").setAnchor("bottom").setWindowWidth("150ch")
+    rawHistory = sp.check_output(["makoctl", "history", "-j"]).decode()
+    history = json.loads(rawHistory)
+    fz = fuzzel().makeTable().setPrompt("Mako history ").setAnchor("bottom").setWindowWidth("150ch")
     for item in history:
-        summary = item['summary']['data']
-        body = item['body']['data'].splitlines()
+        summary = item['summary']
+        body = str(item['body']).splitlines()
         body = '|'.join(body)
         if not (summary or body):
             continue
-        appname = item['appname']['data']
-        id = item["id"]["data"]
-        icon = item['icon_path']['data'] or DEFAULT_ROW_ICON
+        appname = item['app_name']
+        id = item["id"]
+        icon = item['app_icon'] or DEFAULT_ROW_ICON
         fz.addTableLine(line=[id, appname, summary, body], icon=icon)
-
     fz.fmtTable(" | ")
+    fz.addItem("Reload config", "refresh")
     if fz.isMenuEmpty():
         fz.setMesg("No history").hidePrompt()
     else:
@@ -28,10 +28,12 @@ def main():
     fz.addItem("Generate test history", 'zip-line')
     select = fz.run()
     if select == "Clear history":
-        sp.run(['dunstctl', 'history-clear'])
+        sp.run(['pkill', 'mako'])
+    elif select == "Reload config":
+        sp.run(['makoctl', 'reload'])
     elif select == "Generate test history":
-        from lib.notification import DunstCtl
-        d = DunstCtl().setTimeout(10000)
+        from lib.notification import NotifySend
+        d = NotifySend().setTimeout(10000)
         d.setTitle("test 1 title").setMessage("test 1 message, not transient, no appname").flash()
         d.setAppName("test app").setTitle("test 2 low urgency")\
             .setMessage("test 2 message, not transient")\

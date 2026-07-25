@@ -1,15 +1,16 @@
 import subprocess as sp
+import os
 
 
 class rofi:
     def __init__(self, kwargs=None):
-        self.kwargs = kwargs if kwargs else {}
+        self.kwargs = kwargs or {}
         self.items = []
 
     def makeDmenu(self):
         self.items = []
         self.kwargs['-dmenu'] = ""
-        self.kwargs["-icon-theme"] = "rofi"
+        self.kwargs["-icon-theme"] = "wmicons"
         self.kwargs['-i'] = ""
         self.kwargs['-markup'] = ""
         return self
@@ -49,7 +50,7 @@ class rofi:
 
     def makeTable(self, numOfCol):
         self.kwargs['-dmenu'] = ""
-        self.kwargs["-icon-theme"] = "rofi"
+        self.kwargs["-icon-theme"] = "wmicons"
         self.kwargs['-i'] = ""
         self.items = [[] for i in range(numOfCol)]
         return self
@@ -96,11 +97,8 @@ class rofi:
             self.kwargs['-theme+listview+lines'] = lineNum
 
         allKwArgs = {**self.kwargs, **additionArgs}
-        allArgs = []
-        for k, v in allKwArgs.items():
-            allArgs.append(k)
-            allArgs.append(v) if v else None
-
+        allArgs = [item for pair in allKwArgs.items() for item in pair if item]
+        allArgs.extend(os.getenv("OPTIONS", "").split(' '))
         try:
             return sp.check_output(["rofi", *allArgs], input=menu.encode()).decode().strip()
         except sp.CalledProcessError:

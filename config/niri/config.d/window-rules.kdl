@@ -1,26 +1,12 @@
-// kitty dropdown setup
-workspace "kitty-scratch"
-window-rule {
-    match app-id="^kitty-dropdown$"
-    open-on-workspace "kitty-scratch"
-    open-floating true
-    default-column-width { proportion 1.0; }
-    default-window-height { proportion 0.45; }
-}
-
-// Window rules let you adjust behavior for individual windows.
-// Find more information on the wiki:
 // https://niri-wm.github.io/niri/Configuration:-Window-Rules
-
-
-
-// Open the Firefox picture-in-picture player as floating by default.
 window-rule {
-    // This app-id regular expression will work for both:
-    // - host Firefox (app-id is "firefox")
-    // - Flatpak Firefox (app-id is "org.mozilla.firefox")
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     open-floating true
+}
+
+window-rule {
+    match app-id=r#"code$"#
+    open-on-workspace "code"
 }
 
 window-rule {
@@ -29,6 +15,28 @@ window-rule {
 }
 
 window-rule {
-    match app-id=r#"com.github.hluk.copyq|blueman-manager|localsend_app|pavucontrol|org.gnome.Calendar"#
+    match app-id=r#"org.telegram.desktop|evolution"#
+    open-on-workspace "mail"
+}
+
+window-rule {
+    match app-id="screenshot" title="R.Screenshot"
     open-floating true
+}
+
+window-rule {
+    match app-id=r#"evolution-alarm-notify|wdisplays|simpleNotepad|yad|com.github.hluk.copyq|blueman-manager|localsend_app|pavucontrol|org.gnome.Calendar"#
+    open-floating true
+}
+
+// Layer rule to manage Fuzzel's focus behavior in Niri
+layer-rule {
+    match namespace="^launcher$"
+    block-out-from "screencast"
+}
+
+gestures {
+    hot-corners {
+        off
+    }
 }

@@ -1,5 +1,5 @@
 from lib.pactl import AudioDevice, PACTL as pactl
-from lib.rofi import rofi
+from lib.fuzzel import fuzzel
 from time import sleep
 PAVUCTL = 'Open Pavu Control'
 REFRESH = "Reload"
@@ -9,8 +9,7 @@ class AudioDevMan:
     def __init__(self):
         self.devcies = []
         self.defaultSink = pactl.getDefaultSink()
-        self.rofi = rofi().setInputBarChildren('[ prompt ]')\
-            .makeDmenu().setPrompt('Audio Control').setTheme("overlays/center-dialog")
+        self.fz = fuzzel().makeDmenu().setPrompt('Audio Control ').setOutputLines(10).setWindowWidth(50)
 
     def get_devices(self):
         self.devcies = pactl.get_devices()
@@ -28,11 +27,11 @@ class AudioDevMan:
 
     def rofiListDev(self):
         for dev in self.devcies:
-            self.rofi.addItem(*self.makeRofiItem(dev, self.defaultSink))
+            self.fz.addItem(*self.makeRofiItem(dev, self.defaultSink))
 
-        self.rofi.addItem(PAVUCTL, "audio-control")
-        self.rofi.addItem(REFRESH, "refresh")
-        return self.rofi.run()
+        self.fz.addItem(PAVUCTL, "audio-control")
+        self.fz.addItem(REFRESH, "refresh")
+        return self.fz.run()
 
     def setDefaultSink(self, sinkDesc):
         sink = self.findDev(sinkDesc)

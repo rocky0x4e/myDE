@@ -1,5 +1,5 @@
 import subprocess as sp
-from lib.rofi import rofi
+from lib.fuzzel import fuzzel
 from lib.notification import DefautNotifier
 from lib.lsblk import StorageBlockCtl
 
@@ -33,22 +33,22 @@ def unmountBlock(self, block):
 
 def main():
     bm = StorageBlockCtl()
-    rf = rofi().makeDmenu().setTheme("overlays/center-dialog").setPrompt('Drive manager')
+    fz = fuzzel().makeDmenu().setPrompt('Drive manager ').setOutputLines(10)
     maxWidth = len(MenuItem.NO_DRIVE)
     for block in bm.getMountedBlocks() + bm.getUnmountedBlock():
-        rf.addItem(block.listname, block.icon)
+        fz.addItem(block.listname, block.icon)
         if len(block.listname) > maxWidth:
             maxWidth = len(block.listname)
-    if rf.isMenuEmpty():
-        rf.addItem(MenuItem.NO_DRIVE, "shrug")
-    rf.addItem('-' * maxWidth, "zigzag")
-    rf.addItem(MenuItem.REFRESH_MMC, 'loading-arrow')
+    if fz.isMenuEmpty():
+        fz.addItem(MenuItem.NO_DRIVE, "shrug")
+    fz.addItem('-' * maxWidth, "zigzag")
+    fz.addItem(MenuItem.REFRESH_MMC, 'loading-arrow')
     if bm.countUnmounted():
-        rf.addItem(MenuItem.MOUNT_ALL, "external-hard-drive")
+        fz.addItem(MenuItem.MOUNT_ALL, "external-hard-drive")
     if bm.countMounted():
-        rf.addItem(MenuItem.EJECT_ALL, "eject-red")
+        fz.addItem(MenuItem.EJECT_ALL, "eject-red")
 
-    selected = rf.setWindowWidth(f'{maxWidth+10}ch').run()
+    selected = fz.setWindowWidth(f'{maxWidth+10}ch').run()
     if selected == MenuItem.EJECT_ALL:
         for block in bm.blocks:
             if block.mount:

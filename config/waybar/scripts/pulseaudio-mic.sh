@@ -16,11 +16,11 @@ isMuted(){
 
 status() {
     if [ "$(isMuted)" = "yes" ]; then
-        pbIcon=""
+        pbIcon='{"text": "", "class": "muted"}'
         nIcon="microphone-sensitivity-muted-symbolic"
         txtStatus=Muted
     else
-        pbIcon=""
+        pbIcon='{"text": "", "class": "unmuted"}'
         nIcon="microphone-sensitivity-high-symbolic"
         txtStatus=Unmuted
         inputSOURCES=($(pactl list short sources | grep input | cut -f1))

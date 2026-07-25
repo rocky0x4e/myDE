@@ -4,7 +4,7 @@ import gi
 import sys
 import os
 from pathlib import Path
-from lib.rofi import rofi
+from lib.fuzzel import fuzzel
 from lib.notification import DefautNotifier
 
 gi.require_version("Gtk", "3.0")
@@ -319,18 +319,18 @@ class Notepad(Gtk.Window):
             return True  # cancel quit
 
 
-def rofiSelectNote():
-    rf = rofi({'-theme+listview+columns': '1'}).makeDmenu().setTheme('overlays/center-dialog').setPrompt("Notes")
+def dmenuSelectNote():
+    fz = fuzzel().makeDmenu().setPrompt("Notes: ").setWindowWidth(40)
     for item in NOTE_PATH.iterdir():
-        rf.addItem(item.name, "note")
-    rf.addItem(NEW_NOTE_MENU, "note-add")
-    return rf.run()
+        fz.addItem(item.name, "note")
+    fz.addItem(NEW_NOTE_MENU, "note-add")
+    return fz.run()
 
 
 def main():
     path = sys.argv[1] if len(sys.argv) > 1 else None
     if not path:
-        path = rofiSelectNote()
+        path = dmenuSelectNote()
 
     if not (Path(path).exists() and Path(path).parent.exists()):
         path = str(NOTE_PATH / path)

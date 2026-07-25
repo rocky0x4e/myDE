@@ -1,6 +1,6 @@
 import subprocess as sp
-from lib.rofi import rofi
 from lib.network import NetworkCtl, ResolveCtl
+from lib.fuzzel import fuzzel
 from lib.notification import DefautNotifier
 
 ICONS = {
@@ -26,26 +26,26 @@ netMan = NetworkCtl()
 
 def showMenu(context, menuType):
     if menuType == MenuItem.SHOW_LESS:
-        rf = rofi().makeDmenu().setTheme('overlays/thin-side-bar').setPrompt("Network")
-        rf.addItem(MenuItem.NET_MAN, "manager")
-        rf.addItem(f"Private DNS: {context['status']}", context['icon'])
-        rf.addItem(MenuItem.SHOW_MORE, "down-chevron")
-        rf.addItem(*rofi.separator(30, "Connections"))
+        fz = fuzzel().makeDmenu().setPrompt("Network").setAnchor("top-right")
+        fz.addItem(MenuItem.NET_MAN, "manager")
+        fz.addItem(f"Private DNS: {context['status']}", context['icon'])
+        fz.addItem(MenuItem.SHOW_MORE, "down-chevron")
+        fz.addItem(*fuzzel.separator(30, "Connections"))
         for con in netMan.connections:
             if "802" in con.type:
-                rf.addItem(con.name + " connecting..." if con.state ==
+                fz.addItem(con.name + " connecting..." if con.state ==
                            "activating" else con.name, ICONS[con.type][con.state])
-        return rf.run()
+        return fz.run()
     if menuType == MenuItem.SHOW_MORE:
-        rfAll = rofi().makeDmenu().setTheme('overlays/thin-side-bar').setPrompt("Network")
-        rfAll.addItem(MenuItem.NET_MAN, "manager")
-        rfAll.addItem(f"Private DNS: {context['status']}", context['icon'])
-        rfAll.addItem(MenuItem.SHOW_LESS, "up-chevron")
-        rfAll.addItem(*rofi.separator(30, "Connections"))
+        fzAll = fuzzel().makeDmenu().setPrompt("Network").setAnchor("right")
+        fzAll.addItem(MenuItem.NET_MAN, "manager")
+        fzAll.addItem(f"Private DNS: {context['status']}", context['icon'])
+        fzAll.addItem(MenuItem.SHOW_LESS, "up-chevron")
+        fzAll.addItem(*fuzzel.separator(30, "Connections"))
         for con in netMan.connections:
-            rfAll.addItem(con.name + " connecting..." if con.state ==
+            fzAll.addItem(con.name + " connecting..." if con.state ==
                           "activating" else con.name, ICONS[con.type][con.state])
-        return rfAll.run()
+        return fzAll.run()
     return ""
 
 

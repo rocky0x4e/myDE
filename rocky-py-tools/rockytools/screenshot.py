@@ -3,7 +3,6 @@ import time
 from gi.repository import Gtk, GdkPixbuf, Gdk  # type: ignore
 import gi
 import subprocess as sp
-from pathlib import Path
 from lib.notification import DefautNotifier
 gi.require_version("Gtk", "3.0")
 
@@ -12,13 +11,13 @@ MODE_AREA = {"text": "Area", "icon": "edit-select-all"}
 MODE_WINDOW = {"text": "Window", "icon": "window_fullscreen"}
 MODE_WHOLE = {"text": "Whole screen", "icon": "cs-screen"}
 ENTRIES = (MODE_AREA, MODE_WINDOW, MODE_WHOLE)
-SAVE_FILE = "Save to file (Ctrl+Enter)"
-SAVE_CLIP = "Save to clipboard (Enter)"
+SAVE_FILE = "Save to clip + file (Ctrl+Enter)"
+SAVE_CLIP = "Save to clipboard only (Enter)"
 
 SETTINGS = {'saveMode': "", 'grabMode': "", "delay": 0}
 APP_NAME = "R.Screenshot"
 
-NOTIFY = DefautNotifier().setAppName(APP_NAME).setTransient().setTimeout(5000)
+NOTIFY = DefautNotifier().setAppName(APP_NAME).setTimeout(5000)
 
 
 class ScreenGrabber(Gtk.Window):
@@ -147,48 +146,22 @@ def main():
     Gtk.main()
     if not SETTINGS["saveMode"]:
         return
-    notifyMsg = "Saved to: "
-    cmd = ['maim']
+    cmd = ['niri', 'msg', 'action']
     NOTIFY.setTitle("Counting down")
-    for i in range(SETTINGS["delay"], 0, -1):
-        NOTIFY.setMessage(i).flash(replace=True, wait=True, timeout=1)
-    if SETTINGS['grabMode'] == MODE_WINDOW["text"]:
-        try:
-            wid = sp.check_output(["xdotool", "selectwindow"]).decode().strip()
-        except sp.CalledProcessError:
-            return
-        cmd.extend(['-i', wid])
+
     if SETTINGS['grabMode'] == MODE_AREA["text"]:
-        cmd.append("-s")
-    if SETTINGS["grabMode"] == MODE_WHOLE["text"]:
-        time.sleep(0.3)
+        cmd.append("screenshot")
+    else:
+        for i in range(SETTINGS["delay"], 0, -1):
+            NOTIFY.setMessage(i).flash(replace=True, timeout=1.1)
+            time.sleep(1)
+        if SETTINGS['grabMode'] == MODE_WINDOW["text"]:
+            cmd.extend(['screenshot-window'])
+        elif SETTINGS["grabMode"] == MODE_WHOLE["text"]:
+            cmd.append("screenshot-screen")
 
-    if SETTINGS['saveMode'] == SAVE_FILE:
-        now = datetime.now()
-        folder = Path.home() / "Pictures" / "screenshots"
-        file = folder / f"{now.strftime("%Y%m%d-%H%M%S")}.png"
-        notifyMsg += "File"
-        cmd.append(str(file.absolute()))
-
-        def openPhotoCallback():
-            sp.call(["xdg-open", str(file.absolute())])
-
-        def openFolderCallback():
-            sp.call(["xdg-open", str(folder.absolute())])
-
-        def removePhotoCallback():
-            file.unlink()
-            DefautNotifier().setAppName(APP_NAME).setTitle("Removing screenshot").setMessage(file.name).flash()
-
-        NOTIFY.addAction("A1", "Open screenshot", openPhotoCallback)
-        NOTIFY.addAction("A2", "Open folder", openFolderCallback)
-        NOTIFY.addAction("A3", "Remove screenshot", removePhotoCallback)
-
-    maimProc = sp.Popen(cmd, stderr=sp.PIPE, stdout=sp.PIPE)
-    imageData, _ = maimProc.communicate()
     if SETTINGS["saveMode"] == SAVE_CLIP:
-        notifyMsg += "Clipboard"
-        xclip = sp.Popen(["xclip", "-selection", "clipboard", "-t", "image/png"], stdin=sp.PIPE)
-        xclip.communicate(input=imageData)
-
-    NOTIFY.setTitle("Screenshot taken").setMessage(notifyMsg).flash() if maimProc.returncode == 0 else None
+        if SETTINGS["grabMode"] != MODE_AREA["text"]:
+            cmd.append("--write-to-disk=false")
+    time.sleep(0.3)
+    sp.run(cmd)

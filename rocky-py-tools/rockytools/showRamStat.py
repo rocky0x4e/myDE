@@ -1,5 +1,5 @@
 import subprocess as sp
-from lib.rofi import rofi
+from lib.fuzzel import fuzzel
 from lib.notification import DefautNotifier
 
 CC = "Clear mem cache"
@@ -9,17 +9,16 @@ col2 = []
 memKb = []
 col3 = []
 unit = {
-    "GB2": 1024**2,
-    "MB4": 1024,
-    "KB2": 1,
+    "GB": 1024**2,
+    "MB": 1024,
+    "KB": 1,
 }
 
 notify = DefautNotifier().setAppName("Memory stats").setTransient()
 
 
 def main():
-    rf = rofi().makeTable(3).setInputBarChildren('[ prompt ]').setPrompt(
-        'Memory usage').setTheme('overlays/center-dialog').setWindowWidth('70ch')
+    fz = fuzzel().makeTable().setPrompt('Memory usage ').setWindowWidth('45ch').setOutputLines(7)
     with open("/proc/meminfo", "r") as f:
         for i in range(6):
             line = f.readline().strip()
@@ -29,21 +28,18 @@ def main():
             for k, v in unit.items():
                 n = used / v
                 if n > 1:
-                    used = f"{n:.2f}"
+                    used = f"{n:.2f} {k}"
                     break
                 elif n == 0:
-                    used = n
+                    used = f"{n:.2f} {k}"
                     k = "null"
                     break
             usedPercent = f"{memKb[-1] * 100 / memKb[0]:.2f}".rstrip('0').rstrip(".").rjust(5)
-            rf.addTableItem(memType, "memory", 0)
-            rf.addTableItem(str(used), k, 1)
-            rf.addTableItem(f"{usedPercent}%", "pie-chart", 2)
-    rf.rJustifyCol(1)
-    rf.addTableItem(CC, "broom", 0)
-    rf.addTableItem("", column=1)
-    rf.addTableItem("", column=2)
-    select = rf.run()
+            fz.addTableLine(line=[memType, str(used), f"{usedPercent}%"], icon='memory')
+
+    fz.addTableLine(line=[CC], icon="broom")
+    fz.fmtTable(' | ')
+    select = fz.run()
 
     if select == CC:
         notify.setTitle("Memory clean up").setMessage("Clearing pagecache, dentries, and inodes...").flash()

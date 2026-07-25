@@ -1,0 +1,46 @@
+# if mako would not run, look at .local/share/dbus-1/services/org.freedesktop.Notifications.service
+max-history=50
+default-timeout=5000
+border-size=3
+border-radius=5
+background-color=#222121dd
+format=  %s\n  %b\n\n  %a
+height=500
+width=500
+anchor=bottom-right
+outer-margin=30
+progress-color=source #222121ff
+
+[urgency=low]
+    border-color=#0fbb09
+    format=<span weight='bold' color='#0fbb09'>  %s</span>\n  %b\n\n  %a
+
+[urgency=normal]
+    border-color=#ebc621
+    format=<span weight='bold' color='#ebc621'>  %s</span>\n  %b\n\n  %a
+
+[urgency=high]
+    border-color=#dd6119
+    default-timeout=10000
+    format=<span weight='bold' color='#dd6119'>  %s</span>\n  %b\n\n  %a
+
+
+[app-name=slack]
+    markup=0
+    icon-path=com.slack.Slack
+
+[app-name=blueman]
+    history=0
+
+[summary~="Text Copied.*"]
+    history=0
+
+[summary="Data Copied"]
+    history=0
+
+[summary=CopyQ]
+    history=0
+
+[app-name=]
+    history=0
+    anchor=top-right

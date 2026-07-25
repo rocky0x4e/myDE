@@ -1,16 +1,16 @@
 import types
 import psutil
 from lib.notification import DefautNotifier
-from lib.rofi import rofi
+from lib.fuzzel import fuzzel
 from pathlib import Path
 import subprocess as sp
 import libtmux
 
 W = ""
 H = Path.home()
-rf = rofi({'-i': '', '-select': 'Suspend'}).setTheme("overlays/thin-side-bar").setPrompt("System Control")
+rf = fuzzel({'-i': '', '--select': 'Suspend'}).setPrompt("System Control ")
 notify = DefautNotifier().setAppName("System control").setTransient()
-SEP = rf.separator(32)
+SEP = rf.separator(24)
 tmuxServer = libtmux.Server()
 tmuxSession = "tmuxControl"
 
@@ -22,22 +22,22 @@ def tmuxHelper(action, command):
     except:
         session = tmuxServer.new_session(session_name=tmuxSession)
     try:
-        window = session.windows.get(window_name=appName)
+        window = session.windows.get(window_name=appName)  # type: ignore
     except:
-        window = session.new_window(window_name=appName)
-    pane = window.panes.get()
+        window = session.new_window(window_name=appName)  # type: ignore
+    pane = window.panes.get()  # type: ignore
     match action:
         case "start":
-            pane.send_keys(command)
+            pane.send_keys(command)  # type: ignore
             notify.setTitle("Tmux app control").setMessage(f"{appName} started in {window}").flash()
         case "stop":
-            pane.send_keys("C-c")
-            window.kill()
+            pane.send_keys("C-c")  # type: ignore
+            window.kill()  # type: ignore
             notify.setTitle("Tmux app control").setMessage(f"{appName} stopped").flash()
         case "choose":
-            trf = rofi().makeDmenu().setInputBarChildren('[ prompt ]')\
-                .setPrompt(appName).setTheme('overlays/center-dialog') \
-                .setWindowWidth('25ch')
+            trf = fuzzel().makeDmenu()\
+                .setPrompt(appName)\
+                .setWindowWidth(25)
             trf.addItem("Stop", 'no')
             trf.addItem("Restart", "refresh")
             select = trf.run()
@@ -51,10 +51,10 @@ def tmuxHelper(action, command):
 
 def isProcRunning(procName):
     for item in psutil.process_iter(['name', 'cmdline']):
-        if item.info['name'] == procName:
+        if item.info['name'] == procName:  # type: ignore
             return True
         try:
-            if item.info["cmdline"][1].split('/')[-1] == procName:
+            if item.info["cmdline"][1].split('/')[-1] == procName:  # type: ignore
                 return True
         except (IndexError, TypeError):
             pass
@@ -74,34 +74,31 @@ def listAvds():
 
 
 def idleTimerControl(action, icon):
-    notify.setTitle("Auto-sleep").setMessage(f"{action}ing auto-sleep").setRofiImage(icon).flash()
+    notify.setTitle("Auto-sleep").setMessage(f"{action}ing auto-sleep").setImage(icon).flash()
     sp.Popen(["systemctl", "--user", action, "Idle.timer"])
 
 
 class ControlCenter:
     CONTROLERS = [
-        {"name": f"{W} Shutdown", "icon": "system-shutdown",
+        {"name": f"{W} Shutdown", "icon": "power-button",
          "cmd": ["systemctl", "poweroff"]},
-        {"name": f"{W} Reboot", "icon": "system-reboot",
+        {"name": f"{W} Reboot", "icon": "reboot",
          "cmd": ["systemctl", "reboot"]},
-        {"name": f"{W} Logout", "icon": "system-log-out",
-         "cmd": ["i3-msg", "exit"]},
-        {"name": "Suspend", "icon": "system-suspend",
+        {"name": f"{W} Logout", "icon": "logout",
+         "cmd": ["niri", "msg", "action", "quit", "-s"]},
+        {"name": "Suspend", "icon": "sleep",
          "cmd": ["systemctl", "suspend"]},
-        {"name": "Lock", "icon": "system-lock-screen",
+        {"name": "Lock", "icon": "lock",
          "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "locker"]},
         {
-            True: {"name": "XAutolock: ON", "icon": "secure", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]},
-            False: {"name": "XAutolock: OFF", "icon": "unprotected", "cmd": [f"{H}/.config/i3/scripts/i3lock.sh", "toggle"]}
-        }[isProcRunning("xautolock")],
-        {
-            True:  {'name': "Auto sleep: ON", "icon": "auto-sleep-on", "cmd": [idleTimerControl, "stop", "green-tea"]},
-            False: {'name': "Auto sleep: OFF", "icon": "green-tea", "cmd": [idleTimerControl, "start", "auto-sleep-on"]}
-        }[sp.run(["systemctl", "--user", "is-active", "Idle.timer"]).returncode == 0],
-        {"name": "Cinnamon settings", "icon": "gnome-settings",
+            True: {"name": "Swayidle: ON", "icon": "secure", "cmd": ["pkill", "swayidle"]},
+            False: {"name": "Swayidle: OFF", "icon": "unprotected", "cmd": ["swayidle", "-w"]}
+        }[isProcRunning("swayidle")],
+        {"name": "Cinnamon settings", "icon": "settings",
          "cmd": ['cinnamon-settings']},
         {"name": "Theme settings", "icon": "cinnamon-preferences-color",
          "cmd": ['cinnamon-settings', 'themes']},
+        {"name": "Display settings", "icon": "display-settings", "cmd": "wdisplays"},
         {"name": SEP[0], 'icon': SEP[1]},
         # {"name": "HF builds", "icon": "apk-64",
         #  "cmd": ['rofi-apkInstaller.sh', f'{H}/HF-data/builds']},
@@ -124,7 +121,7 @@ class ControlCenter:
         {"name": "Screen recorder", "icon": "recording",
          "cmd": ["dex", "/usr/share/applications/simplescreenrecorder.desktop"]},
         {"name": "Window inspector", "icon": "inspection",
-         "cmd": ['bash', '-c', r'''output=$(niri msg action)
+         "cmd": ['bash', '-c', r'''output=$(niri msg pick-window)
             yad --text-info --title="Window Properties" \
             --window-icon=stock_search \
             --width=1000 --height=300 \
@@ -134,7 +131,7 @@ class ControlCenter:
         *listAppImg()
     ]
 
-    def makeRofi(self):
+    def makeDmenu(self):
         rf.makeDmenu()
         for item in ControlCenter.CONTROLERS:
             rf.addItem(item['name'], item['icon'])
@@ -164,5 +161,5 @@ class ControlCenter:
 
 def main():
     cc = ControlCenter()
-    select = cc.makeRofi()
+    select = cc.makeDmenu()
     cc.run(select)

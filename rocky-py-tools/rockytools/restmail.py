@@ -1,36 +1,29 @@
 
-from lib.rofi import rofi
+from lib.fuzzel import fuzzel
 from pathlib import Path
 from lib.restmail import RestMailClient
 
-STOREAGE = Path.home() / "restmail"
+STORAGE = Path.home() / "restmail"
 DEL_USER = "Delete this user"
 DEL_ALL_MAIL = "Delete all local emails"
 
 
 class RofiMailFE:
     def __init__(self):
-        self.cursor = STOREAGE
-        self.rofi = rofi().setInputBarChildren('[ prompt, entry ]')\
-            .makeDmenu().setTheme('overlays/thin-side-bar').setPrompt("Restmail")
+        self.cursor: RestMailClient
+        self.fuzzel = fuzzel().makeDmenu().setPrompt("Restmail ").setAnchor("right")
 
     def listUser(self):
-        self.rofi.makeDmenu()
-        for item in STOREAGE.iterdir():
+        self.fuzzel.makeDmenu()
+        for item in STORAGE.iterdir():
             if item.is_dir():
-                self.rofi.addItem(item.name, 'user-mail')
+                self.fuzzel.addItem(item.name, 'user-mail')
 
-        self.rofi.sortDmenu().addItem('Add user', 'add-user', 0)
-        selected = self.rofi.run()
+        self.fuzzel.sortDmenu().addItem('Add user', 'add-user', 0)
+        selected = self.fuzzel.run()
 
         if selected == "Add user":
-            import tkinter as tk
-            from tkinter import simpledialog
-
-            root = tk.Tk()
-            root.withdraw()  # Hide the main window
-
-            user_input = simpledialog.askstring("Input", "Enter something:")
+            user_input = fuzzel().makeDmenu().setPrompt("New user: ").run().replace(" ", '.')
             RestMailClient(user_input).makeStorage()
             self.listUser()
             return self
@@ -39,15 +32,15 @@ class RofiMailFE:
         return self
 
     def listMail(self):
-        self.rofi.makeDmenu()
+        self.fuzzel.makeDmenu()
         for item in self.cursor.listLocalMails():
-            self.rofi.addItem(item.name, "email")
-        self.rofi.sortDmenu()
-        self.rofi.addItem('Fetch', 'download')
-        self.rofi.addItem(DEL_ALL_MAIL, 'delete')
-        self.rofi.addItem(DEL_USER, 'del-user')
-        self.rofi.addItem('Back', 'back')
-        select = self.rofi.run()
+            self.fuzzel.addItem(item.name, "email")
+        self.fuzzel.sortDmenu()
+        self.fuzzel.addItem('Fetch', 'download')
+        self.fuzzel.addItem(DEL_ALL_MAIL, 'delete')
+        self.fuzzel.addItem(DEL_USER, 'del-user')
+        self.fuzzel.addItem('Back', 'back')
+        select = self.fuzzel.run()
         if select == "Back":
             self.listUser().listMail()
             return self

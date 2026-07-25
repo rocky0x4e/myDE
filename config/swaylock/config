@@ -1,0 +1,23 @@
+#color=#1e1e2a99
+#ring-color=#ffffff
+#inside-color=#ffffff00
+#separator-color=#efef6800
+#key-hl-color=#000000
+#line-color=#efef6800
+#line-wrong-color=#efef6800
+#line-ver-color=#efef6800
+#line-clear-color=#efef6800
+line-uses-inside
+
+
+ignore-empty-password
+show-failed-attempts
+daemonize
+#show-keyboard-layout
+indicator-caps-lock
+image="$HOME/.config/swaylock/background.jpg"
+font="Agave Nerd Font Mono"
+font-size=25
+indicator-radius=100
+indicator-thickness=20
+indicator-idle-visible
