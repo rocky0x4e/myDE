@@ -9,8 +9,8 @@ def main():
     for _, wl in groupedWindows.items():
         for window in wl:
             fz.addTableRow(row=[window.appIdSort, window.title, window.id], icon=window.appId)
-
-    fz.fmtTable(" | ")
+    sep = ' | '
+    fz.fmtTable(sep)
     select = fz.run()
-    windowId = select.split('|')[-1].strip()
+    windowId = select.split(sep)[-1].strip()
     niriwm.focusWindow(windowId)
