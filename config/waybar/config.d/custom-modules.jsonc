@@ -29,7 +29,7 @@
         "on-click": "OPTIONS='-a top-right' simpleNotepad"
     },
     "custom/tux": {
-        "format": "",
+        "format": " ",
         "tooltip": false,
         "on-click": "fuzzel -a top-right",
         "on-click-right": "OPTIONS='-a top-right' controlCenter",
@@ -41,55 +41,20 @@
         "on-click": "makoHistory",
         "on-double-click": "makoctl reload"
     },
+    "custom/browsers": {
+        "format": " {icon} ",
+        "exec": "/home/rocky/.config/waybar/scripts/browser.py show",
+        "return-type": "json",
+        "interval": "once",
+        "tooltip": true,
+        "icon-size": 24,
+        "on-click": "/home/rocky/.config/waybar/scripts/browser.py open",
+        "on-click-middle": "/home/rocky/.config/waybar/scripts/browser.py change",
+        "on-click-right": "/home/rocky/.config/waybar/scripts/browser.py select"
+    },
     "custom/extDrive": {
         "format": "",
         "tooltip": false,
         "on-click": "OPTIONS='-a top-right' extDrive"
-    },
-    // "custom/browsers": {
-    //     "format": "{icon} {text}",
-    //     "exec": "/home/rocky/.config/waybar/scripts/browser.py",
-    //     "return-type": "json",
-    //     "interval": 5,
-    //     "tooltip": false,
-    //     "icon-size": 24
-    // },
-    "group/syshealth": {
-        "orientation": "inherit",
-        "drawer": {
-            "transition-duration": 500,
-            "children-class": "syshc",
-            "transition-left-to-right": false
-        },
-        "modules": [
-            "cpu",
-            "battery",
-            "memory"
-        ]
-    },
-    "group/systray": {
-        "orientation": "inherit",
-        "drawer": {
-            "transition-duration": 500,
-            "children-class": "systc",
-            "transition-left-to-right": true
-        },
-        "modules": [
-            "tray",
-            "custom/sep1",
-            "wlr/taskbar"
-        ]
-    },
-    "group/datetime": {
-        "orientation": "inherit",
-        "drawer": {
-            "transition-duration": 500,
-            "children-class": "systray",
-            "transition-left-to-right": false
-        },
-        "modules": [
-            "clock",
-            "clock#date"
-        ]
     }
 }

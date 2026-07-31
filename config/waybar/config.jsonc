@@ -4,6 +4,7 @@
     "height": 38,
     "spacing": 0,
     "reload_style_on_change": true,
+    "fixed-center": true,
     // Module Placement
     "modules-left": [
         "niri/workspaces",
@@ -11,10 +12,12 @@
         "custom/left"
     ],
     "modules-center": [
+        "custom/right",
         "group/datetime",
+        "custom/browsers",
         "custom/micstat",
-        // "custom/browsers"
-        "custom/notification"
+        "custom/notification",
+        "custom/left"
     ],
     "modules-right": [
         "custom/right",
@@ -27,6 +30,7 @@
     ],
     "include": [
         "~/.config/waybar/config.d/built-in-modules.jsonc",
-        "~/.config/waybar/config.d/custom-modules.jsonc"
+        "~/.config/waybar/config.d/custom-modules.jsonc",
+        "~/.config/waybar/config.d/groups.jsonc"
     ]
 }

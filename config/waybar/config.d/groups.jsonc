@@ -1,0 +1,42 @@
+{
+    "group/syshealth": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "syshc",
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "cpu",
+            "battery",
+            "memory"
+        ]
+    },
+    "group/systray": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "systc",
+            "transition-left-to-right": true,
+            "start-expanded": true,
+            "reveal-delay": 5000
+        },
+        "modules": [
+            "tray",
+            "custom/sep1",
+            "wlr/taskbar"
+        ]
+    },
+    "group/datetime": {
+        "orientation": "inherit",
+        "drawer": {
+            "transition-duration": 500,
+            "children-class": "systray",
+            "transition-left-to-right": false
+        },
+        "modules": [
+            "clock",
+            "clock#date"
+        ]
+    }
+}

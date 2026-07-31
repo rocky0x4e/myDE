@@ -5,16 +5,16 @@
         "icon-size": 24,
         "tooltip-format": "{title}",
         "on-click": "activate",
-        "on-click-middle": "close"
+        "on-click-middle": "close",
+        "bar-css-states": true
     },
     "niri/workspaces": {
         "format": "{icon}",
         "format-icons": {
-            // You can use different icons for the workspace states
             "focused": "",
             "active": "",
             "default": "",
-            "empty": "•"
+            "empty": ""
         }
     },
     "clock": {
@@ -74,5 +74,8 @@
     "tray": {
         "icon-size": 24, // Adjust icon size to fit your bar height
         "spacing": 10 // Pixels of space between each icon
+    },
+    "orders": {
+        "input": 0
     }
 }

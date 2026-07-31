@@ -2,45 +2,97 @@
 
 import subprocess as sp
 import json
-from datetime import datetime
-browsers = [
-    {
+import sys
+
+
+browsers = {
+    "brave-browser.desktop": {
         "xdgName": "brave-browser.desktop",
         "name": "Brave",
-        "processName": "brave-browser",
-        "wmclass": "Brave-browser",
-        "icon": "brave",
+        "app-id": "brave-browser",
     },
-    {
+    "google-chrome.desktop": {
         "xdgName": "google-chrome.desktop",
         "name": "Chrome",
-        "processName": "^chrome$",
-        "wmclass": "Google-chrome",
-        "icon": "google-chrome",
+        "app-id": "Google-chrome",
     },
-    {
-        "xdgName": "opera.desktop",
-        "name": "Opera",
-        "processName": "^opera$",
-        "wmclass": "Opera",
-        "icon": "opera",
-    },
-    {
+    "firefox.desktop": {
         "xdgName": "firefox.desktop",
         "name": "Firefox",
-        "processName": "^firefox-bin$",
-        "wmclass": "firefox",
-        "icon": "firefox",
+        "app-id": "firefox",
     }
-]
+}
+unknow = {
+    "xdgName": "",
+    "name": "Unknown",
+    "app-id": "",
+}
+DEX_DIR = "/usr/share/applications"
+
+
+def findByName(name):
+    for o in browsers.values():
+        if name == o['name']:
+            return o
+    return {}
 
 
 def getCurrentBrowser():
     return sp.run(["xdg-settings", "get", "default-web-browser"], capture_output=True, text=True).stdout.strip()
 
 
-def showCurrentBrowserOnWayBar():
-    return json.dumps({"icon": "brave-browser", "text": datetime.now().second})
+def show():
+    print(json.dumps({"class": browsers.get(getCurrentBrowser(), unknow)["name"],
+                      "tooltip": "Click: cycle/open browser \nRight click: open other browser\nMiddle click: change default browser"}))
 
 
-print(showCurrentBrowserOnWayBar())
+def open(name=''):
+    if not name:
+        curr = browsers.get(getCurrentBrowser(), unknow)
+    else:
+        curr = findByName(name)
+
+    appId = curr['app-id']
+    from lib.niri import niriwm
+    windows = sorted(niriwm.getWindows().findWindows(appid=appId), key=lambda k: k.id)
+    count = len(windows)
+    if not windows:
+        sp.call(["dex", f"{DEX_DIR}/{curr['xdgName']}"])
+        return
+    for i in range(count):
+        if windows[i].isFocused:
+            niriwm.focusWindow(windows[i - 1])
+            return
+    niriwm.focusWindow(windows[0])
+
+
+def selectOpen():
+    from lib.fuzzel import fuzzel
+    curr = browsers.get(getCurrentBrowser(), unknow)
+    fz = fuzzel({'--select': curr['name']}).makeDmenu().setAnchor("top").setMesg("Open browser ").hidePrompt()
+    for k, o in browsers.items():
+        fz.addItem(o['name'], o['name'])
+    select = fz.run()
+    open(select)
+
+
+def changeDefault():
+    from lib.fuzzel import fuzzel
+    curr = browsers.get(getCurrentBrowser(), unknow)
+    fz = fuzzel({'--select': curr['name']}).makeDmenu().setAnchor("top").setMesg("Select default browser ").hidePrompt()
+    for k, o in browsers.items():
+        fz.addItem(o['name'], o['name'])
+    select = fz.run()
+    newBr = findByName(select)['xdgName']
+    sp.call(["xdg-settings", "set", "default-web-browser", newBr])
+
+
+ACTION = sys.argv[1]
+if ACTION == "show":
+    show()
+elif ACTION == "change":
+    changeDefault()
+elif ACTION == "open":
+    open()
+elif ACTION == "select":
+    selectOpen()
