@@ -41,6 +41,22 @@ progress-color=source #222121ff
 [summary=CopyQ]
     history=0
 
-[app-name=]
+[app-name= summary~="([0-9]|[1-6][0-9])\%"]
     history=0
     anchor=top-right
+    progress-color=source #2fb45a
+    format=<span weight='bold'>%s</span>\n%b
+
+
+[app-name= summary~="[7-8][0-9]\%"]
+    history=0
+    anchor=top-right
+    progress-color=source #F2F0A1
+    format=<span weight='bold' color='black'>%s</span>\n<span color='black'>%b</span>
+
+
+[app-name= summary~="[9][0-9]|[0-9][0-9][0-9]\%"]
+    history=0
+    anchor=top-right
+    progress-color=source #FF7276
+    format=<span weight='bold'>%s</span>\n%b
