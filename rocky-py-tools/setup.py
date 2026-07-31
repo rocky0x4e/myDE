@@ -24,6 +24,7 @@ setup(
             'simpleNotepad = rockytools.simpleNotepad:main',
             'screenshot = rockytools.screenshot:main',
             'makoHistory = rockytools.makoHistory:main',
+            'showWindows = rockytools.showWindows:main',
         ],
     },
     install_requires=[

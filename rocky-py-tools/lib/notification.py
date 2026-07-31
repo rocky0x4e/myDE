@@ -166,7 +166,9 @@ class DunstCtl(Notifier):
 
 
 class MakoCtl(Notifier):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.notifier = "notify-send"
 
 
 DefautNotifier = MakoCtl

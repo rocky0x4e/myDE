@@ -16,8 +16,8 @@ binds {
     Mod+Right { focus-column-right; }
     Mod+Z     { focus-column-left; }
     Mod+X     { focus-column-right; }
-    Mod+E     { focus-workspace-up; }
-    Mod+D     { focus-workspace-down; }
+    Mod+E     { focus-window-up; }
+    Mod+D     { focus-window-down; }
 
     Mod+Ctrl+Left  { move-column-left; }
     Mod+Ctrl+Right { move-column-right; }
@@ -136,13 +136,10 @@ binds {
 
     Mod+Shift+P { power-off-monitors; }
 
-    Mod+Return hotkey-overlay-title="Toggle Dropdown Terminal" {
-        spawn "kitten" "quick-access-terminal";
+    Mod+Return {
+        spawn "kitten" "quick-access-terminal" ;
     }
 
-    Ctrl+XF86AudioMute        { spawn-sh "volume.sh toggle";}
-    XF86AudioMute             { spawn-sh "pa-mic-toggle.sh";}
-    Shift+XF86AudioMute       { spawn "/usr/bin/pavucontrol";}
     Mod+Escape                { spawn-sh "fuzzel --show-action -l 15 -w 120"; }
     Mod+grave                 { spawn-sh "fuzzel --show-action -l 15 -w 120";}
     Mod+t                     { spawn "nemo";}
@@ -151,6 +148,8 @@ binds {
     Mod+BackSpace             { spawn-sh "OPTIONS='-a top-right' controlCenter";}
     Mod+n                     { spawn "networkControl";}
     Mod+a                     { spawn "audioControl";}
+    Mod+Tab                   { spawn "showWindows"; }
+
 
     // XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.2"; }
     // XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05-"; }
@@ -158,9 +157,18 @@ binds {
 
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "volume.sh +5"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn-sh "volume.sh -5"; }
-
+    Shift+XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "volume.sh +1"; }
+    Shift+XF86AudioLowerVolume allow-when-locked=true { spawn-sh "volume.sh -1"; }
+    Ctrl+XF86AudioMute        { spawn-sh "volume.sh toggle";}
+    XF86AudioMute             { spawn-sh "pa-mic-toggle.sh";}
+    Mod+XF86AudioMute         { spawn-sh "audioControl";}
+    Shift+XF86AudioMute       { spawn "/usr/bin/pavucontrol";}
 
     Ctrl+Alt+V { spawn-sh "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=copyq com.github.hluk.copyq toggle"; }
+    Ctrl+MouseRight { spawn-sh "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=copyq com.github.hluk.copyq toggle"; }
+
     Ctrl+1 { spawn-sh "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=copyq com.github.hluk.copyq previous"; }
     Ctrl+2 { spawn-sh "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=copyq com.github.hluk.copyq next"; }
+
+    Mod+Backslash {spawn-sh "makoHistory";}
 }
