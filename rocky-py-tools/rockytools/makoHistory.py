@@ -18,7 +18,7 @@ def main():
         appname = item['app_name']
         id = item["id"]
         icon = item['app_icon'] or DEFAULT_ROW_ICON
-        fz.addTableLine(line=[id, appname, summary, body], icon=icon)
+        fz.addTableRow(row=[id, appname, summary, body], icon=icon)
     fz.fmtTable(" | ")
     fz.addItem("Reload config", "refresh")
     if fz.isMenuEmpty():

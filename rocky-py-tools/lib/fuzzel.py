@@ -8,12 +8,12 @@ class fuzzel:
         self.items = []
         self.table = []
         self.isTable = False
-        self.tableLine = 0
+        self.tableRowCount = 0
         self.tableColumn = 0
         self.tableColumnWidth = {}
-        self.maxLines = 30
+        self.maxLines = 29
 
-    def configMaxLines(self, lineNum):
+    def setMaxLines(self, lineNum):
         self.maxLines = lineNum
         return self
 
@@ -43,30 +43,41 @@ class fuzzel:
         self.isTable = True
         return self
 
-    def addTableLine(self, **kwargs):
+    def addTableRow(self, **kwargs):
+        """ Add a row to the table
+        Params:
+            @row: a list of items in the row
+            @icon: icon of the row
+
+        Returns:
+            _type_: _description_
+        """
         if not self.isTable:
             raise RuntimeError(
                 "Object does not support table format, "
                 "use 'makeTabke' method first to create a table menu")
-        line = kwargs['line'] = [f'{c}' for c in kwargs.get('line', [])]
+        row = kwargs['row'] = [f'{c}' for c in kwargs.get('row', [])]
         self.table.append(kwargs)
-        self.tableLine += 1
-        self.tableColumn = len(line) if len(line) > self.tableColumn else self.tableColumn
-        for i in range(len(line)):
-            if len(line[i]) > self.tableColumnWidth.get(i, 0):
-                self.tableColumnWidth[i] = len(line[i])
+        self.tableRowCount += 1
+        self.tableColumn = len(row) if len(row) > self.tableColumn else self.tableColumn
+        for i in range(len(row)):
+            if len(row[i]) > self.tableColumnWidth.get(i, 0):
+                self.tableColumnWidth[i] = len(row[i])
 
         return self
 
     def fmtTable(self, colSeparator="〱"):
         for item in self.table:
-            line, icon = item['line'], item.get('icon', '')
-            fmtLine = [line[i].ljust(self.tableColumnWidth[i]) for i in range(len(line))]
-            self.items.append(colSeparator.join(fmtLine) + f"\x00icon\x1f{icon}")
+            row, icon = item['row'], item.get('icon', '')
+            fmtRow = [row[i].ljust(self.tableColumnWidth[i]) for i in range(len(row))]
+            self.items.append(colSeparator.join(fmtRow) + f"\x00icon\x1f{icon}")
         return self
 
-    def setIconTheme(self, iconTheme):
-        self.kwargs["--icon-theme"] = iconTheme
+    def setIconTheme(self, iconTheme=''):
+        if iconTheme:
+            self.kwargs["--icon-theme"] = iconTheme
+        else:
+            del (self.kwargs["--icon-theme"])
         return self
 
     def setPrompt(self, prompt):

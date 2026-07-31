@@ -35,9 +35,9 @@ def main():
                     k = "null"
                     break
             usedPercent = f"{memKb[-1] * 100 / memKb[0]:.2f}".rstrip('0').rstrip(".").rjust(5)
-            fz.addTableLine(line=[memType, str(used), f"{usedPercent}%"], icon='memory')
+            fz.addTableRow(row=[memType, str(used), f"{usedPercent}%"], icon='memory')
 
-    fz.addTableLine(line=[CC], icon="broom")
+    fz.addTableRow(row=[CC], icon="broom")
     fz.fmtTable(' | ')
     select = fz.run()
 

@@ -18,7 +18,7 @@ def main():
         appname = item['appname']['data']
         id = item["id"]["data"]
         icon = item['icon_path']['data'] or DEFAULT_ROW_ICON
-        fz.addTableLine(line=[id, appname, summary, body], icon=icon)
+        fz.addTableRow(row=[id, appname, summary, body], icon=icon)
 
     fz.fmtTable(" | ")
     if fz.isMenuEmpty():
