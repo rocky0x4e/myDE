@@ -13,3 +13,4 @@
 spawn-sh-at-startup "/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=copyq com.github.hluk.copyq --start-server"
 spawn-at-startup "swayidle" "-w"
 spawn-at-startup "swaybg" "--image" "/home/rocky/.config/niri/background.jpg" "--mode" "fill"
+spawn-at-startup "xwayland-satellite :0"

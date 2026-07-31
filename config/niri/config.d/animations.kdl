@@ -4,27 +4,25 @@
 
 animations {
     window-open {
-        duration-ms 250
-        curve "ease-out-expo"
+        spring damping-ratio=0.7 stiffness=1000 epsilon=0.0001
     }
 
     window-close {
-        duration-ms 250
-        curve "ease-out-quad"
+        spring damping-ratio=0.7 stiffness=1000 epsilon=0.0001
     }
 
     window-movement {
-        // Snappy default spring
-        spring stiffness=800 damping-ratio=1.0 epsilon=0.01
-
-        // Alternatively, use a traditional duration curve if you prefer linear timing:
-        // curve type="ease-out-cubic" duration-ms=200
+        spring stiffness=900 damping-ratio=0.7 epsilon=0.0001
     }
 
-    // Note: The camera tracking that follows the window as it moves 
-    // is still handled by this block:
     horizontal-view-movement {
         spring stiffness=400 damping-ratio=1.0 epsilon=0.0009
     }
-
+    workspace-switch {
+        spring damping-ratio=0.7 stiffness=1000 epsilon=0.0001
+    }
+    overview-open-close {
+        duration-ms 200
+        curve "ease-out-quad"
+    }
 }

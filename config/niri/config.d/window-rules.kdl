@@ -1,5 +1,11 @@
 // https://niri-wm.github.io/niri/Configuration:-Window-Rules
 window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+    draw-border-with-background false
+}
+
+window-rule {
     match app-id=r#"firefox$"# title="^Picture-in-Picture$"
     open-floating true
 }
@@ -7,11 +13,6 @@ window-rule {
 window-rule {
     match app-id=r#"code$"#
     open-on-workspace "code"
-}
-
-window-rule {
-    geometry-corner-radius 12
-    clip-to-geometry true
 }
 
 window-rule {
@@ -25,11 +26,10 @@ window-rule {
 }
 
 window-rule {
-    match app-id=r#"evolution-alarm-notify|wdisplays|simpleNotepad|yad|com.github.hluk.copyq|blueman-manager|localsend_app|pavucontrol|org.gnome.Calendar"#
+    match app-id=r#"xdg-desktop-portal-gtk|evolution-alarm-notify|simpleNotepad|yad|com.github.hluk.copyq|blueman-manager|localsend_app|pavucontrol|org.gnome.Calendar"#
     open-floating true
 }
 
-// Layer rule to manage Fuzzel's focus behavior in Niri
 layer-rule {
     match namespace="^launcher$"
     block-out-from "screencast"

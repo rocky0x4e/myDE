@@ -5,7 +5,6 @@ include "./config.d/keybinds.kdl"
 include "./config.d/layout.kdl"
 include "./config.d/startup.kdl"
 include "./config.d/window-rules.kdl"
-include "./config.d/misc.kdl"
 
 workspace "code"
 workspace "mail"
@@ -15,4 +14,10 @@ environment {
     "GDK_BACKEND" "wayland"
 }
 
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+prefer-no-csd
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
