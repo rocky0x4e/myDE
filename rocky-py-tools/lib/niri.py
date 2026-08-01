@@ -74,6 +74,9 @@ class niriWindowList:
         self.windowList = sorted(self.windowList, key=lambda x: x.workspaceId)
         return self
 
+    def __iter__(self):
+        return iter(self.windowList)
+
 
 class niriWorkspace:
     def __init__(self, data) -> None:

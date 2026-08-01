@@ -1,11 +1,10 @@
 from lib.fuzzel import fuzzel
 from lib.niri import niriwm
 
-NAME_REPLACE_LIST = {"org.telegram.desktop": "org.telegram.desktop",
-                     "ONLYOFFICE": "org.onlyoffice.desktopeditors"}
-
 
 def iconReplacer(appId):
+    NAME_REPLACE_LIST = {"org.telegram.desktop": "org.telegram.desktop",
+                         "ONLYOFFICE": "org.onlyoffice.desktopeditors"}
     for match, replace in NAME_REPLACE_LIST.items():
         if match in appId:
             return replace
@@ -17,7 +16,7 @@ def main():
     fz = fuzzel().makeTable().setIconTheme().setWindowWidth(120)
     windows = niriwm.getWindows().shortByWorkspaceId()
     workspaces = niriwm.getWorkspaces()
-    for window in windows.windowList:
+    for window in windows:
         appIcon = iconReplacer(window.appId)
         fz.addTableRow(row=[window.appIdSort,
                             workspaces.getWsById(window.workspaceId).name,
