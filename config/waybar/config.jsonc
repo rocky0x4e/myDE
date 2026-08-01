@@ -15,6 +15,7 @@
         "custom/right",
         "group/datetime",
         "custom/browsers",
+        // "image#browser",
         "custom/micstat",
         "custom/notification",
         "custom/left"
@@ -26,7 +27,7 @@
         "custom/extDrive",
         "custom/simpleNote",
         "custom/sep2",
-        "custom/tux"
+        "image#tux"
     ],
     "include": [
         "~/.config/waybar/config.d/built-in-modules.jsonc",

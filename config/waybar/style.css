@@ -290,13 +290,6 @@ label:focus {
     padding: 0px;
 }
 
-#custom-tux {
-    padding: 0 10px;
-    color: #2b303b;
-    font-size: 28px;
-    background-image: url("../../.local/share/icons/wmicons/512x512/apps/linux.png");
-}
-
 #custom-separator {
     padding: 0px;
 }
