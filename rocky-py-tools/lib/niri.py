@@ -70,6 +70,10 @@ class niriWindowList:
                 groups[w.workspaceId] = [w]
         return groups
 
+    def shortByWorkspaceId(self):
+        self.windowList = sorted(self.windowList, key=lambda x: x.workspaceId)
+        return self
+
 
 class niriWorkspace:
     def __init__(self, data) -> None:
@@ -85,7 +89,7 @@ class niriWorkspace:
 
     @property
     def name(self):
-        return self.data.get('name', '-')
+        return self.data.get('name') or '-'
 
     @property
     def activeWindowId(self):

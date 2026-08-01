@@ -29,14 +29,13 @@
     },
     "group/datetime": {
         "orientation": "inherit",
-        "drawer": {
-            "transition-duration": 500,
-            "children-class": "systray",
-            "transition-left-to-right": false
-        },
+        // "drawer": {
+        //     "transition-duration": 500,
+        //     "transition-left-to-right": false
+        // },
         "modules": [
-            "clock",
-            "clock#date"
+            "clock#date",
+            "clock#time"
         ]
     }
 }

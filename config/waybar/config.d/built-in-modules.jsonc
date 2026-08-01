@@ -17,7 +17,7 @@
             "empty": ""
         }
     },
-    "clock": {
+    "clock#time": {
         "format": "{:%H:%M}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "calendar": {

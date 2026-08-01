@@ -3,7 +3,9 @@
 @define-color bar-bg #1a1a2e;
 @define-color urgent #eb4d4b;
 @define-color box gold;
-@define-color menu-bg rgba(9, 0, 7,0.8);
+@define-color menu-bg rgba(237, 235, 230,0.95);
+@define-color menu-fg #1a1a2e;
+@define-color menu-fg-hover #ffffff;
 
 * {
     /* `otf-font-awesome` is required to be installed for icons */
@@ -17,11 +19,13 @@
 }
 
 #tray menu menuitem:hover {
-    background-color: @module-bg; 
+    background-color: @module-bg;
+    color: @menu-fg-hover;
 }
 
 #tray menu menuitem * {
     background-color: transparent;
+    color: @menu-fg;
     font-size: 12px;
     font-family: VT323, Roboto;
 }

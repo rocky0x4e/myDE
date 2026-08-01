@@ -8,7 +8,7 @@
     // Module Placement
     "modules-left": [
         "niri/workspaces",
-        "group/systray",
+        "tray",
         "custom/left"
     ],
     "modules-center": [
