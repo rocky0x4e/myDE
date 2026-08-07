@@ -1,6 +1,6 @@
 // https://niri-wm.github.io/niri/Configuration:-Window-Rules
 window-rule {
-    geometry-corner-radius 12
+    geometry-corner-radius 10
     clip-to-geometry true
     draw-border-with-background false
 }
@@ -35,8 +35,35 @@ window-rule {
 }
 
 layer-rule {
+    match namespace="waybar"
+    background-effect {
+        blur true
+    }
+}
+
+layer-rule {
     match namespace="^launcher$"
     block-out-from "screencast"
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+layer-rule {
+    match namespace="^kitty-quick-access$"
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+layer-rule {
+    match namespace="mako"
+    background-effect {
+        blur true
+        xray false
+    }
 }
 
 gestures {

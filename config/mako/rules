@@ -1,0 +1,52 @@
+[urgency=low]
+    border-color=#0fbb09
+    format=<span weight='bold' color='#0fbb09'>  %s</span>\n  %b\n\n  %a
+
+[urgency=normal]
+    border-color=#ebc621
+    format=<span weight='bold' color='#ebc621'>  %s</span>\n  %b\n\n  %a
+
+[urgency=high]
+    border-color=#dd6119
+    default-timeout=10000
+    format=<span weight='bold' color='#dd6119'>  %s</span>\n  %b\n\n  %a
+
+
+[app-name=slack]
+    markup=0
+    icon-path=com.slack.Slack
+
+[app-name=blueman]
+    history=0
+
+[summary~="Text Copied.*"]
+    history=0
+
+[summary="Data Copied"]
+    history=0
+
+[summary=CopyQ]
+    history=0
+
+[app-name= summary~="([0-9]|[1-6][0-9])\%"]
+    history=0
+    anchor=top-right
+    progress-color=source #2fb45a
+    format=<span weight='bold'>%s</span>\n%b
+    max-icon-size=32
+    font=monospace 8
+    height=250
+    width=250
+
+[app-name= summary~="[7-8][0-9]\%"]
+    history=0
+    anchor=top-right
+    progress-color=source #F2F0A1
+    format=<span weight='bold' color='black'>%s</span>\n<span color='black'>%b</span>
+
+
+[app-name= summary~="[9][0-9]|[0-9][0-9][0-9]\%"]
+    history=0
+    anchor=top-right
+    progress-color=source #FF7276
+    format=<span weight='bold'>%s</span>\n%b

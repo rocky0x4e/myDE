@@ -2,7 +2,7 @@ import subprocess as sp
 import json
 from lib.fuzzel import fuzzel
 
-DEFAULT_ROW_ICON = 'notification'
+DEFAULT_ROW_ICON = 'information'
 
 
 def main():

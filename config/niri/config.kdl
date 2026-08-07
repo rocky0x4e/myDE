@@ -1,10 +1,10 @@
-include "./config.d/animations.kdl"
+include "./config.d/effects.kdl"
 include "./config.d/input.kdl"
 include "./config.d/output.kdl"
 include "./config.d/keybinds.kdl"
 include "./config.d/layout.kdl"
 include "./config.d/startup.kdl"
-include "./config.d/window-rules.kdl"
+include "./config.d/rules.kdl"
 
 workspace "code"
 workspace "mail"

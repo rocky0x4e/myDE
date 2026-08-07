@@ -25,4 +25,21 @@ animations {
         duration-ms 200
         curve "ease-out-quad"
     }
+
+    screenshot-ui-open {
+        duration-ms 200
+        curve "ease-out-quad"
+    }
+
+    recent-windows-close {
+        spring damping-ratio=1.0 stiffness=800 epsilon=0.001
+    }
+}
+
+blur {
+    // off
+    passes 2
+    offset 1
+    noise 0.04
+    saturation 2
 }
