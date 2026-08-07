@@ -4,9 +4,7 @@ MAX_VOL=120
 
 arg="$1"
 sink=$(pactl get-default-sink)
-outputDevName=$(pactl -f json list sinks | jq -r '
-  .[] | select(.name == "'"$sink"'") | .description
-')
+outputDevName=$(pactl -f json list sinks | jq -r --arg s "$sink" '.[] | select(.name == $s) | (.properties."device.profile.description" // .description)')
 
 function flash {
     t=/tmp/volume.sh.tmp
