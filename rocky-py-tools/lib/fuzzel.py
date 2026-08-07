@@ -105,6 +105,10 @@ class fuzzel:
         self.items = sorted(self.items, reverse=reverse)
         return self
 
+    def setSelectIdx(self, index):
+        self.kwargs['--select-index'] = str(index)
+        return self
+
     def addItem(self, item, icon=None, index=-1):
         if icon:
             item = f"{item}\x00icon\x1f{icon}" if icon else item

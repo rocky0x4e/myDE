@@ -11,6 +11,10 @@ class AudioDevice:
         return self.data.get("properties")
 
     @property
+    def index(self):
+        return self.data.get("index")
+
+    @property
     def state(self):
         return self.data.get("state")
 
@@ -19,8 +23,15 @@ class AudioDevice:
         return self.data.get("description")
 
     @property
+    def devProfileDesc(self):
+        return self._properties.get("device.profile.description")
+
+    @property
     def sinkName(self):
         return self.data.get("name")
+
+    def getScreenName(self):
+        return self.devProfileDesc or self.desc
 
 
 class PACTL:

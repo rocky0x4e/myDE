@@ -16,13 +16,20 @@ def main():
     fz = fuzzel().makeTable().setIconTheme().setWindowWidth(120)
     windows = niriwm.getWindows().shortByWorkspaceId()
     workspaces = niriwm.getWorkspaces()
-    for window in windows:
+    selectIndex = 0
+    windowCount = len(windows)
+    for i in range(windowCount):
+        window = windows[i]
+        if window.isFocused:
+            nextIdx = i+1
+            selectIndex = 0 if nextIdx == windowCount else nextIdx
         appIcon = iconReplacer(window.appId)
         fz.addTableRow(row=[window.appIdSort,
                             workspaces.getWsById(window.workspaceId).name,
                             window.title, window.id],
                        icon=appIcon)
     fz.fmtTable(sep)
+    fz.setSelectIdx(selectIndex)
     select = fz.run()
     windowId = select.split(sep)[-1].strip()
     niriwm.focusWindow(windowId)

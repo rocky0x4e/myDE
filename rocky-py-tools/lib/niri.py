@@ -35,6 +35,10 @@ class niriWindow:
     def title(self):
         return self.data['title']
 
+    @property
+    def posInRibbon(self):
+        return self.data['layout']['pos_in_scrolling_layout']
+
 
 class niriWindowList:
     def __init__(self, listData) -> None:
@@ -71,11 +75,17 @@ class niriWindowList:
         return groups
 
     def shortByWorkspaceId(self):
-        self.windowList = sorted(self.windowList, key=lambda x: x.workspaceId)
+        self.windowList = sorted(self.windowList, key=lambda x: (x.workspaceId, x.posInRibbon))
         return self
 
     def __iter__(self):
         return iter(self.windowList)
+
+    def __len__(self):
+        return len(self.windowList)
+
+    def __getitem__(self, key):
+        return self.windowList[key]
 
 
 class niriWorkspace:
