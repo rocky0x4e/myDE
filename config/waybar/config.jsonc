@@ -17,15 +17,18 @@
         "custom/browsers",
         // "image#browser",
         "custom/micstat",
-        "custom/notification",
+        // "custom/notification",
+        "image#notification",
         "custom/left"
     ],
     "modules-right": [
         "custom/right",
         "group/syshealth",
         "custom/sep2",
-        "custom/extDrive",
-        "custom/simpleNote",
+        // "custom/extDrive",
+        // "custom/simpleNote",
+        "image#extDrive",
+        "image#note",
         "custom/sep2",
         "image#tux"
     ],

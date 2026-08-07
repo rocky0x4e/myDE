@@ -57,7 +57,7 @@ def show():
 
 def showIcon():
     curr = getCurrentBrowser()
-    print(json.dumps([{"path": curr["icon"], "marker": "normal", "tooltip": TOOLTIP}]))
+    print(json.dumps([{"path": curr["icon"], "tooltip": TOOLTIP, "marker": "normal"}]))
 
 
 def open(name=''):
@@ -112,4 +112,4 @@ elif ACTION == "open":
     open()
 elif ACTION == "select":
     selectOpen()
-sp.call(["pkill", "-n", "waybar", "--signal", "41"])
+# sp.call(["pkill", "-n", "waybar", "--signal", "41"])

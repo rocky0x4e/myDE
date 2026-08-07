@@ -76,16 +76,16 @@
         "spacing": 10 // Pixels of space between each icon
     },
     "image#browser": {
-        "size": 32,
+        "size": 24,
         "multiple": true,
         "tooltip": true,
-        "exec": "/home/rocky/.config/waybar/scripts/browser2.py showIcon",
+        "exec": "/home/rocky/.config/waybar/scripts/browser.py showIcon",
         "return-type": "json",
         "interval": "once",
         "marker": "normal",
-        "on-click": "/home/rocky/.config/waybar/scripts/browser2.py open",
-        "on-click-middle": "/home/rocky/.config/waybar/scripts/browser2.py change",
-        "on-click-right": "/home/rocky/.config/waybar/scripts/browser2.py select"
+        "on-click": "/home/rocky/.config/waybar/scripts/browser.py open",
+        "on-click-middle": "/home/rocky/.config/waybar/scripts/browser.py change",
+        "on-click-right": "/home/rocky/.config/waybar/scripts/browser.py select"
     },
     "image#tux": {
         "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/linux.png",
@@ -94,6 +94,25 @@
         "on-click": "fuzzel -a top-right",
         "on-click-right": "OPTIONS='-a top-right' controlCenter",
         "on-double-click": "pkill -SIGUSR2 waybar"
+    },
+    "image#notification": {
+        "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/information-popup.png",
+        "size": 24,
+        "interval": "once",
+        "on-click": "makoHistory",
+        "on-double-click": "makoctl reload"
+    },
+    "image#note": {
+        "size": 24,
+        "interval": "once",
+        "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/note.png",
+        "on-click": "OPTIONS='-a top-right' simpleNotepad"
+    },
+    "image#extDrive": {
+        "size": 24,
+        "interval": "once",
+        "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/memory-card.png",
+        "on-click": "OPTIONS='-a top-right' extDrive"
     },
     "orders": {
         "input": 0

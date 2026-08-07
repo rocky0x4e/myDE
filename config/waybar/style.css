@@ -1,11 +1,14 @@
-@define-color module-bg #7b68ee;
-@define-color module-fg #ffffff;
-@define-color bar-bg #1a1a2e;
+/*
+some nice colors: #8ec07c #7aa2f7 #bb9af7 #9ece6a #88c0d0  #81a1c1
+*/
+@define-color module-bg #7aa2f7;
+@define-color module-fg #2e3440;
+@define-color bar-bg rgba(30, 30, 46, 0.4);
 @define-color urgent #eb4d4b;
 @define-color box gold;
-@define-color menu-bg rgba(237, 235, 230,0.95);
-@define-color menu-fg #1a1a2e;
-@define-color menu-fg-hover #ffffff;
+@define-color menu-bg rgba(46,52,64,0.9);
+@define-color menu-fg #ffffff;
+@define-color menu-fg-hover #000000;
 
 * {
     /* `otf-font-awesome` is required to be installed for icons */
@@ -27,7 +30,7 @@
     background-color: transparent;
     color: @menu-fg;
     font-size: 12px;
-    font-family: VT323, Roboto;
+    font-family: Roboto;
 }
 
 #tray>.passive {
@@ -46,7 +49,6 @@ menu check {
 
 window#waybar {
     background-color: @bar-bg;
-    color: @module-fg;
     transition-property: background-color;
     transition-duration: .5s;
 }
@@ -129,7 +131,7 @@ button:hover {
 
 #clock {
     font-family: "Conthrax", sans-serif;
-    color: yellow;
+    color: teal;
     font-size: 24px;
 }
 
@@ -147,7 +149,7 @@ button:hover {
 
 #battery.charging,
 #battery.plugged {
-    color: #ffd700;
+    color: teal;
 }
 
 @keyframes blink {
@@ -268,24 +270,24 @@ label:focus {
     min-width: 16px;
 }
 
-#custom-micstat {
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 24px;
-    padding: 0 10px;
-    background-color: #66cc99;
-}
-
+#custom-micstat,
 #custom-micstat.muted {
-    padding-left: 3px;
-    padding-right: 17px;
-    background-color: @urgent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    min-width: 24px;
+    min-height: 24px;
+    background-image: url("../../.local/share/icons/wmicons/512x512/apps/microphone-mute.png");
+}
+#custom-micstat {
+    background-image: url("../../.local/share/icons/wmicons/512x512/apps/microphone.png");
 }
 
 #custom-left,
 #custom-right {
     font-family: "Agave Nerd Font Mono", "AgaveNerdFontMono", sans-serif;
     font-size: 37px;
-    background-color: @bar-bg;
+    background-color: transparent;
     color: @module-bg;
     padding: 0px;
 }

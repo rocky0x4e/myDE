@@ -1,5 +1,6 @@
 {
     "custom/micstat": {
+        "format": " ",
         "exec": "/home/rocky/.config/waybar/scripts/pulseaudio-mic.sh listen",
         "return-type": "json",
         "restart-interval": 5,
