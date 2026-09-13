@@ -4,7 +4,8 @@ from lib.niri import niriwm
 
 def iconReplacer(appId):
     NAME_REPLACE_LIST = {"org.telegram.desktop": "org.telegram.desktop",
-                         "ONLYOFFICE": "org.onlyoffice.desktopeditors"}
+                         "ONLYOFFICE": "org.onlyoffice.desktopeditors",
+                         "tv.plex.plex-bin": "plex"}
     for match, replace in NAME_REPLACE_LIST.items():
         if match in appId:
             return replace

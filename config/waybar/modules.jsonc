@@ -1,0 +1,225 @@
+{
+    "privacy": {
+        "icon-spacing": 4,
+        "icon-size": 24,
+        "transition-duration": 250,
+        "modules": [
+            {
+                "type": "screenshare",
+                "tooltip": true,
+                "tooltip-icon-size": 24,
+                "icon-name": "screencast-recorded-symbolic"
+            },
+            // { // let mpris handle this
+            //     "type": "audio-out",
+            //     "tooltip": true,
+            //     "tooltip-icon-size": 24,
+            //     "icon-name": "audio-speaker-left"
+            // },
+            {
+                "type": "audio-in",
+                "tooltip": true,
+                "tooltip-icon-size": 24,
+                "icon-name": "audio-input-microphone"
+            },
+            {
+                "type": "location",
+                "icon-name": "location-services-active-symbolic"
+            }
+        ],
+        "ignore-monitor": true,
+        "ignore": [
+            {
+                "type": "audio-in",
+                "name": "cava"
+            },
+            {
+                "type": "screenshare",
+                "name": "obs"
+            }
+        ]
+    },
+    "niri/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "focused": "",
+            "active": "",
+            "default": "",
+            "empty": "􀆐"
+        }
+    },
+    "clock#time": {
+        "format": "{:%H:%M}",
+        "tooltip": false,
+        "calendar": {
+            "mode": "month",
+            "format": {
+                "today": "<span color='#75f1fa'><b>{}</b></span>"
+            }
+        },
+        "on-click": "pkill gnome-clocks || gnome-clocks"
+    },
+    "clock#date": {
+        "format": "{:%a, %b %d}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>",
+        "calendar": {
+            "mode": "month",
+            "format": {
+                "today": "<span color='#75f1fa'><b>{}</b></span>"
+            }
+        },
+        "on-click": "pkill gnome-calendar || gnome-calendar"
+    },
+    "cpu": {
+        "format": "<span size='x-large'></span> {usage}%",
+        "interval": 5,
+        "tooltip": true,
+        "rotate": 0
+    },
+    "memory": {
+        "format": "<span size='x-large'></span> {}%",
+        "interval": 15,
+        "on-click": "showRamStat"
+    },
+    "network": {
+        "format-wifi": " {essid}",
+        "format-ethernet": "󰈀 {ipaddr}",
+        "format-disconnected": "󰖪 Disconnected",
+        "tooltip-format": "{ifname} via {gwaddr}"
+    },
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "events": {
+            "on-discharging-warning": "dunstify 'Battery low' 'Battery is under 30%! CHARGE NOW !!!' -u critical"
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "󱐋 {capacity}%",
+        "format-icons": [
+            "",
+            "",
+            "",
+            "",
+            ""
+        ]
+    },
+    "tray": {
+        "icon-size": 24,
+        "spacing": 10
+    },
+    "mpris": {
+        "format": "{status_icon}",
+        "player-icons": {
+            "default": "",
+            "mpv": "🎵"
+        },
+        "status-icons": {
+            "paused": "",
+            "playing": "",
+            "stopped": ""
+        },
+        "prefer-album-artist": true,
+        "dynamic-order": [
+            "title",
+            "artist"
+        ],
+        "dynamic-separator": "  ",
+        "interval": 0
+    },
+    "image#marko": {
+        "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/information-popup.png",
+        "marker": "notification",
+        "size": 24,
+        "on-click": "makoHistory",
+        "on-double-click": "makoctl reload"
+    },
+    "image#g1": {
+        "multiple": true,
+        "entries": [
+            {
+                "marker": "ext-drive",
+                "interval": "once",
+                "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/memory-card.png",
+                "on-click": "OPTIONS='-a top-right' extDrive"
+            },
+            {
+                "marker": "note",
+                "interval": "once",
+                "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/note.png",
+                "on-click": "OPTIONS='-a top-right' simpleNotepad"
+            },
+            {
+                "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/close.png",
+                "marker": "close-window",
+                "tooltip": "Click to close focused window",
+                "on-click": "niri msg action close-window"
+            }
+        ],
+        "size": 24,
+        "interval": "once"
+    },
+    "image#tux": {
+        "marker": "tux",
+        "path": "/home/rocky/.local/share/icons/wmicons/512x512/apps/linux.png",
+        "size": 32,
+        "on-click": "fuzzel -a top-right",
+        "on-click-right": "OPTIONS='-a top-right' controlCenter",
+        "on-double-click": "pkill -SIGUSR2 waybar"
+    },
+    "orders": {
+        "input": 0
+    },
+    "custom/micstat": {
+        "format": " ",
+        "exec": "/home/rocky/.config/waybar/scripts/pulseaudio-mic.sh listen",
+        "return-type": "json",
+        "restart-interval": 5,
+        "tooltip": false,
+        "on-click": "pa-mic-toggle.sh"
+    },
+    "custom/right": {
+        // "format": "",
+        "format": "┆",
+        "tooltip": false
+    },
+    "custom/left": {
+        // "format": "",
+        "format": "┆",
+        "tooltip": false
+    },
+    // 〱┆   ╱   ⎮ ┃ ⛏ ⭐ ꔷ ꠶       
+    "custom/sep": {
+        "format": "┆",
+        "tooltip": false
+    },
+    "custom/simpleNote": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "OPTIONS='-a top-right' simpleNotepad"
+    },
+    "custom/tux": {
+        "format": " ",
+        "tooltip": false,
+        "on-click": "fuzzel -a top-right",
+        "on-click-right": "OPTIONS='-a top-right' controlCenter",
+        "on-double-click": "pkill -SIGUSR2 waybar"
+    },
+    "custom/browsers": {
+        "format": " {icon} ",
+        "exec": "/home/rocky/.config/waybar/scripts/browser.py show",
+        "return-type": "json",
+        "interval": "once",
+        "tooltip": true,
+        "icon-size": 24,
+        "on-click": "/home/rocky/.config/waybar/scripts/browser.py open",
+        "on-click-middle": "/home/rocky/.config/waybar/scripts/browser.py change",
+        "on-click-right": "/home/rocky/.config/waybar/scripts/browser.py select"
+    },
+    "custom/extDrive": {
+        "format": "",
+        "tooltip": false,
+        "on-click": "OPTIONS='-a top-right' extDrive"
+    }
+}

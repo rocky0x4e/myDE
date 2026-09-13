@@ -2,7 +2,7 @@
 // Find more information on the wiki:
 // https://niri-wm.github.io/niri/Configuration:-Layout
 layout {
-    gaps 4
+    gaps 2
     center-focused-column "never"
     preset-column-widths {
         proportion 0.33333
@@ -12,18 +12,14 @@ layout {
 
     default-column-width { proportion 0.5; }
     focus-ring {
+        off
         width 2
         active-color "#7b68ee"
-        inactive-color "#505050"
-
-        // active-gradient from="#80c8ff" to="#c7ff7f" angle=45
-        // inactive-gradient from="#505050" to="#808080" angle=45 relative-to="workspace-view"
+        inactive-color "#519948"
     }
 
     border {
-
         off
-
         width 4
         active-color "#ffc87f"
         inactive-color "#505050"
@@ -31,18 +27,18 @@ layout {
     }
 
     shadow {
-        softness 30
-        spread 5
-        offset x=0 y=5
-        color "#0007"
+        softness 10
+        spread 3
+        offset x=0 y=0
+        color "#0009"
     }
 
 
     struts {
-        // left 64
-        // right 64
-        // top 64
-        // bottom 64
+        left 0
+        right 0
+        top 0
+        bottom 0
     }
     tab-indicator {
         width 5

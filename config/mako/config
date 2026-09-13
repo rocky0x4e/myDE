@@ -1,7 +1,7 @@
 # if mako would not run, look at .local/share/dbus-1/services/org.freedesktop.Notifications.service
 max-history=50
 default-timeout=5000
-border-size=3
+border-size=0
 border-radius=5
 background-color=#222121dd
 format=  %s\n  %b\n\n  %a

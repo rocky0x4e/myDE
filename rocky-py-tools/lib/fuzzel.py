@@ -130,7 +130,7 @@ class fuzzel:
         try:
             return sp.check_output(["fuzzel", *allArgs], input=menu.encode()).decode().strip()
         except sp.CalledProcessError as e:
-            print(":::::: ERROR :::::\n", e)
+            # print(":::::: ERROR :::::\n", e)
             exit(0)
 
     def isMenuEmpty(self):

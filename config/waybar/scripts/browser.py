@@ -83,7 +83,7 @@ def open(name=''):
 def selectOpen():
     from lib.fuzzel import fuzzel
     curr = getCurrentBrowser()
-    fz = fuzzel({'--select': curr['name']}).makeDmenu().setAnchor("top").setMesg("Open browser ").hidePrompt()
+    fz = fuzzel({'--select': curr['name']}).makeDmenu().setAnchor("top-right").setMesg("Open browser ").hidePrompt()
     for k, o in BROWSERS.items():
         fz.addItem(o['name'], o['name'])
     select = fz.run()

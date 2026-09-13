@@ -1,14 +1,15 @@
+from lib.notification import DefautNotifier
 from gi.repository import Gtk, GtkSource, Gdk, GLib, WebKit2  # type: ignore
+from lib.fuzzel import fuzzel
+from pathlib import Path
+import os
+import sys
 import markdown
 import gi
-import sys
-import os
-from pathlib import Path
-from lib.fuzzel import fuzzel
-from lib.notification import DefautNotifier
-
 gi.require_version("Gtk", "3.0")
 gi.require_version("GtkSource", "4")
+gi.require_version('WebKit2', '4.1')
+
 
 NOTE_PATH = Path.home() / "Notes"
 APPNAME = "Simple notepad"

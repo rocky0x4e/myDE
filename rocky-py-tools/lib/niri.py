@@ -39,6 +39,14 @@ class niriWindow:
     def posInRibbon(self):
         return self.data['layout']['pos_in_scrolling_layout']
 
+    @property
+    def width(self):
+        return self.data['layout']['window_size'][0]
+
+    @property
+    def height(self):
+        return self.data['layout']['window_size'][1]
+
 
 class niriWindowList:
     def __init__(self, listData) -> None:
@@ -117,6 +125,19 @@ class niriWorkspaceList:
         return self.workspaces[id]
 
 
+class niriOutput():
+    def __init__(self, data) -> None:
+        self.data = data
+
+    @property
+    def width(self):
+        return self.data['logical']['width']
+
+    @property
+    def height(self):
+        return self.data['logical']['height']
+
+
 class niriwm:
     @staticmethod
     def getWindows():
@@ -141,3 +162,17 @@ class niriwm:
     def getWorkspaces():
         data = sp.check_output(["niri", "msg", "--json", "workspaces"]).decode()
         return niriWorkspaceList(json.loads(data))
+
+    @staticmethod
+    def getFocusedOutPut():
+        return json.loads(sp.check_output(['niri', 'msg', '--json', 'focused-output']).decode())
+
+    @classmethod
+    def moveFocusedColumnLeft(cls):
+        focusedOutput = cls.getFocusedOutPut()
+        focusedWindow = cls.getFocusedWindow()
+        ...
+
+    @staticmethod
+    def moveFocusedColumnRight():
+        ...

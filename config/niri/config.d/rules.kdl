@@ -20,7 +20,7 @@ window-rule {
 }
 
 window-rule {
-    match app-id=r#"org.telegram.desktop|evolution"#
+    match app-id=r#"evolution"#
     open-on-workspace "mail"
 }
 
@@ -30,8 +30,22 @@ window-rule {
 }
 
 window-rule {
-    match app-id=r#"xdg-desktop-portal-gtk|evolution-alarm-notify|simpleNotepad|yad|com.github.hluk.copyq|blueman-manager|localsend_app|pavucontrol|org.gnome.Calendar"#
+    match app-id=r#"org.gnome.clocks|xdg-desktop-portal-gtk|evolution-alarm-notify|simpleNotepad|yad|com.github.hluk.copyq|blueman-manager|localsend_app|pavucontrol|org.gnome.Calendar"#
     open-floating true
+}
+
+window-rule {
+    match is-floating=true
+    border {
+        off
+    }
+    focus-ring {
+        off
+    }
+    shadow {
+        on
+    }
+
 }
 
 layer-rule {
@@ -48,6 +62,11 @@ layer-rule {
         blur true
         xray false
     }
+    shadow {
+        on
+    }
+    geometry-corner-radius 10
+
 }
 
 layer-rule {
@@ -68,6 +87,19 @@ layer-rule {
 
 gestures {
     hot-corners {
-        off
+        top-right
     }
+    
+    dnd-edge-workspace-switch {
+        trigger-height 50
+        delay-ms 100
+        max-speed 3000
+    }
+
+    dnd-edge-view-scroll {
+        trigger-width 30
+        delay-ms 100
+        max-speed 3000
+    }
+
 }

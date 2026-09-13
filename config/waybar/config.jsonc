@@ -5,36 +5,26 @@
     "spacing": 0,
     "reload_style_on_change": true,
     "fixed-center": true,
-    // Module Placement
     "modules-left": [
-        "niri/workspaces",
-        "tray",
-        "custom/left"
+        "group/syshealth",
+        "custom/sep",
+        "tray"
     ],
     "modules-center": [
-        "custom/right",
         "group/datetime",
-        "custom/browsers",
-        // "image#browser",
-        "custom/micstat",
-        // "custom/notification",
-        "image#notification",
-        "custom/left"
+        "mpris",
+        "niri/workspaces"
     ],
     "modules-right": [
-        "custom/right",
-        "group/syshealth",
-        "custom/sep2",
-        // "custom/extDrive",
-        // "custom/simpleNote",
-        "image#extDrive",
-        "image#note",
-        "custom/sep2",
+        "custom/browsers",
+        "custom/micstat",
+        "privacy",
+        "image#marko",
+        "image#g1",
         "image#tux"
     ],
     "include": [
-        "~/.config/waybar/config.d/built-in-modules.jsonc",
-        "~/.config/waybar/config.d/custom-modules.jsonc",
-        "~/.config/waybar/config.d/groups.jsonc"
+        "~/.config/waybar/modules.jsonc",
+        "~/.config/waybar/groups.jsonc"
     ]
 }

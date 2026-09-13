@@ -137,7 +137,7 @@ binds {
     Mod+Shift+P { power-off-monitors; }
 
     Mod+Return {
-        spawn "kitten" "quick-access-terminal" ;
+        spawn-sh "kitten quick-access-terminal --detach";
     }
 
     Mod+Escape                { spawn-sh "fuzzel --show-action -l 15 -w 120"; }
@@ -148,7 +148,7 @@ binds {
     Mod+BackSpace             { spawn-sh "OPTIONS='-a top-right' controlCenter";}
     Mod+n                     { spawn "networkControl";}
     Mod+a                     { spawn "audioControl";}
-    Mod+Tab                   { spawn "showWindows"; }
+    Alt+Tab                   { spawn "windowSwitcher"; }
 
 
     // XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.2"; }
